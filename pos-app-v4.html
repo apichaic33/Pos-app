@@ -1971,6 +1971,15 @@ renderOrder();
    Apps Script Deploy → Web App URL
 ═══════════════════════════════════════════════════════ */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyZVBte9My3h2KOD0WAUBy_mhZftWu7PFDOI2_Fhq0ONlo0ZkfV9VTnfNRV3Ph3MdpI/exec';
+
+/* ── Global error catch — แสดง toast แทนพังเงียบ ── */
+window.addEventListener('error', e => {
+  console.error('JS Error:', e.message, e.filename, e.lineno);
+  toast('⚠ Error: ' + e.message);
+});
+window.addEventListener('unhandledrejection', e => {
+  console.error('Promise Error:', e.reason);
+});
 const LS_KEY     = 'pos_db_v4';
 const LS_DIRTY   = 'pos_dirty_v4';
 const LS_LASTSYNC= 'pos_lastsync_v4';
@@ -1999,14 +2008,25 @@ function saveLocal() {
 function loadLocal() {
   try {
     const raw = localStorage.getItem(LS_KEY);
-    if (raw) {
-      const saved = JSON.parse(raw);
-      // Merge saved data into DB (keep structure safe)
-      Object.keys(saved).forEach(k => { if (k in DB) DB[k] = saved[k]; });
-      return true;
-    }
-  } catch(e) { console.warn('loadLocal error', e); }
-  return false;
+    if (!raw) return false;
+    const saved = JSON.parse(raw);
+    // Merge only array/primitive fields — skip if corrupt
+    Object.keys(saved).forEach(k => {
+      if (!(k in DB)) return;
+      const v = saved[k];
+      // Array fields must be arrays
+      if (Array.isArray(DB[k]) && !Array.isArray(v)) return;
+      // nextId must be a number
+      if (k === 'nextId' && typeof v !== 'number') return;
+      DB[k] = v;
+    });
+    return true;
+  } catch(e) {
+    console.warn('loadLocal error — clearing cache', e);
+    localStorage.removeItem(LS_KEY);
+    localStorage.removeItem(LS_DIRTY);
+    return false;
+  }
 }
 
 /* ── POST to Apps Script ── */
@@ -2090,68 +2110,28 @@ function scheduleSync() {
 }
 
 /* ═══════════════════════════════════════════════════════
-   PATCH SAVE FUNCTIONS — เพิ่ม saveLocal() + scheduleSync()
-   หลังทุก operation ที่แก้ไข DB
+   PATCH SAVE FUNCTIONS — safe wrap ที่มีฟังก์ชันจริง
 ═══════════════════════════════════════════════════════ */
-const _origSaveMenu = saveMenu;
-saveMenu = function() {
-  _origSaveMenu();
-  scheduleSync();
-};
+function patchFn(name, wrapper) {
+  if (typeof window[name] === 'function') {
+    const orig = window[name];
+    window[name] = function(...args) {
+      orig.apply(this, args);
+      wrapper(...args);
+    };
+  }
+}
 
-const _origSavePromo = savePromo;
-savePromo = function() {
-  _origSavePromo();
-  scheduleSync();
-};
-
-const _origConfirmOrder = confirmOrder;
-confirmOrder = function() {
-  _origConfirmOrder();
-  scheduleSync();
-};
-
-const _origLogStaffDrink = logStaffDrink;
-logStaffDrink = function() {
-  _origLogStaffDrink();
-  scheduleSync();
-};
-
-const _origSaveStoreItem = saveStoreItem;
-saveStoreItem = function() {
-  _origSaveStoreItem();
-  scheduleSync();
-};
-
-const _origSaveUseLog = saveUseLog;
-saveUseLog = function() {
-  _origSaveUseLog();
-  scheduleSync();
-};
-
-const _origSaveBlendFormula = saveBlendFormula;
-saveBlendFormula = function() {
-  _origSaveBlendFormula();
-  scheduleSync();
-};
-
-const _origConfirmBatch = confirmBatch;
-confirmBatch = function() {
-  _origConfirmBatch();
-  scheduleSync();
-};
-
-const _origDeleteMenu = deleteMenu;
-deleteMenu = function(id) {
-  _origDeleteMenu(id);
-  scheduleSync();
-};
-
-const _origDeletePromo = deletePromo;
-deletePromo = function(id) {
-  _origDeletePromo(id);
-  scheduleSync();
-};
+patchFn('saveMenu',          () => scheduleSync());
+patchFn('savePromo',         () => scheduleSync());
+patchFn('confirmOrder',      () => scheduleSync());
+patchFn('logStaffDrink',     () => scheduleSync());
+patchFn('saveStoreItem',     () => scheduleSync());
+patchFn('saveUseLog',        () => scheduleSync());
+patchFn('saveBlendFormula',  () => scheduleSync());
+patchFn('confirmBatch',      () => scheduleSync());
+patchFn('deleteMenu',        () => scheduleSync());
+patchFn('deletePromo',       () => scheduleSync());
 
 /* ═══════════════════════════════════════════════════════
    STARTUP SEQUENCE
