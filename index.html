@@ -378,6 +378,15 @@
     }
 
     /* scroll body */
+    .s-tab.active {
+      box-shadow: var(--neu-in-xs) !important;
+      color: var(--cara) !important;
+    }
+
+    .s-tab.active span {
+      color: var(--cara) !important;
+    }
+
     .scroll-body {
       flex: 1;
       overflow-y: auto;
@@ -2770,8 +2779,8 @@
           <button class="tab-btn" onclick="switchPromoTab(this,'pct')">% ลด</button> <button class="tab-btn"
             onclick="switchPromoTab(this,'fixed')">ลดราคา</button> <button class="tab-btn"
             onclick="switchPromoTab(this,'buy')">ซื้อ X แถม Y</button> <button class="tab-btn"
-            onclick="switchPromoTab(this,'freeN')">ซื้อ N ฟรี 1</button>
-        </div>
+            onclick="switchPromoTab(this,'freeN')">ซื้อ N ฟรี 1</button> <button class="tab-btn"
+            onclick="switchPromoTab(this,'bundle')">Bundle</button> </div>
         <div class="scroll-body" id="promoList" style="padding-bottom:20px"></div>
       </div> <!-- PAGE: MANAGE -->
       <div class="page" id="pg-manage">
@@ -2797,12 +2806,12 @@
             <div class="pg-title">รายงาน</div>
             <div class="pg-sub" id="reportDate"></div>
           </div>
-          <div class="tab-bar" style="margin:0;width:auto"> <button class="tab-btn active btn-xs"
-              onclick="switchReportPeriod(this,1)" style="padding:6px 9px;font-size:9px">วันนี้</button> <button
-              class="tab-btn btn-xs" onclick="switchReportPeriod(this,7)" style="padding:6px 9px;font-size:9px">7
-              วัน</button> <button class="tab-btn btn-xs" onclick="switchReportPeriod(this,30)"
-              style="padding:6px 9px;font-size:9px">30 วัน</button> </div>
         </div>
+        <div class="tab-bar" style="padding:0 16px"> <button class="tab-btn active btn-xs"
+            onclick="switchReportPeriod(this,1)" style="padding:6px 9px;font-size:9px">วันนี้</button> <button
+            class="tab-btn btn-xs" onclick="switchReportPeriod(this,7)" style="padding:6px 9px;font-size:9px">7
+            วัน</button> <button class="tab-btn btn-xs" onclick="switchReportPeriod(this,30)"
+            style="padding:6px 9px;font-size:9px">30 วัน</button> </div>
         <div class="scroll-body" style="padding-bottom:20px">
           <div class="stat-cards" id="statCards">
             <div class="stat-card">
@@ -2837,15 +2846,34 @@
             <div class="pg-sub" id="storesSub"></div>
           </div> <button class="btn btn-primary btn-sm" onclick="openStoreAdd()">+ เพิ่ม</button>
         </div>
-        <div class="stores-tabs" id="storesTabs"> <button class="s-tab active"
-            onclick="switchStoreTab(this,'ingredient')">วัตถุดิบ</button> <button class="s-tab"
-            onclick="switchStoreTab(this,'package')">บรรจุภัณฑ์</button> <button class="s-tab"
-            onclick="switchStoreTab(this,'equipment')">อุปกรณ์</button> <button class="s-tab"
-            onclick="switchStoreTab(this,'blend')">เบลนด์</button> <button class="s-tab"
-            onclick="switchStoreTab(this,'recipe')">คำนวณสูตร</button> <button class="s-tab"
-            onclick="switchStoreTab(this,'uselog')">บันทึกใช้</button> <button class="s-tab"
-            onclick="switchStoreTab(this,'po')">สั่งซื้อ (PO)</button> <button class="s-tab"
-            onclick="switchStoreTab(this,'alert')">แจ้งเตือน</button> </div>
+        <div style="padding:10px 16px 0;flex-shrink:0">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="storesTabs">
+            <button class="s-tab active" onclick="switchStoreTab(this,'ingredient')"
+              style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--esp)"><span
+                style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>eco</span>วัตถุดิบ</button>
+            <button class="s-tab" onclick="switchStoreTab(this,'package')"
+              style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span
+                style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>package_2</span>บรรจุภัณฑ์</button>
+            <button class="s-tab" onclick="switchStoreTab(this,'equipment')"
+              style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span
+                style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>blender</span>อุปกรณ์</button>
+            <button class="s-tab" onclick="switchStoreTab(this,'blend')"
+              style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span
+                style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>science</span>เบลนด์</button>
+            <button class="s-tab" onclick="switchStoreTab(this,'recipe')"
+              style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span
+                style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>calculate</span>สูตร</button>
+            <button class="s-tab" onclick="switchStoreTab(this,'uselog')"
+              style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span
+                style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>edit_note</span>บันทึกใช้</button>
+            <button class="s-tab" onclick="switchStoreTab(this,'po')"
+              style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span
+                style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>local_shipping</span>สั่งซื้อ</button>
+            <button class="s-tab" onclick="switchStoreTab(this,'alert')"
+              style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span
+                style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>notifications_active</span>แจ้งเตือน</button>
+          </div>
+        </div>
         <div class="scroll-body" id="storeContent" style="padding-bottom:20px"></div>
       </div> <!-- PAGE: SALES TODAY -->
       <div class="page" id="pg-sales">
@@ -2905,15 +2933,15 @@
             <div class="pg-title">ประวัติการทำรายการ</div>
             <div class="pg-sub" id="auditSub">Audit Log</div>
           </div>
-          <div class="tab-bar" style="margin:0;width:auto"> <button class="tab-btn active"
-              onclick="switchAuditFilter(this,'all')" style="padding:6px 9px;font-size:9px">ทั้งหมด</button> <button
-              class="tab-btn" onclick="switchAuditFilter(this,'order')"
-              style="padding:6px 9px;font-size:9px">ออเดอร์</button> <button class="tab-btn"
-              onclick="switchAuditFilter(this,'void')" style="padding:6px 9px;font-size:9px">ยกเลิก</button> <button
-              class="tab-btn" onclick="switchAuditFilter(this,'edit')"
-              style="padding:6px 9px;font-size:9px">แก้ไข</button> <button class="tab-btn"
-              onclick="switchAuditFilter(this,'auth')" style="padding:6px 9px;font-size:9px">การยืนยัน</button> </div>
         </div>
+        <div class="tab-bar" style="padding:0 16px"> <button class="tab-btn active"
+            onclick="switchAuditFilter(this,'all')" style="padding:6px 9px;font-size:9px">ทั้งหมด</button> <button
+            class="tab-btn" onclick="switchAuditFilter(this,'order')"
+            style="padding:6px 9px;font-size:9px">ออเดอร์</button> <button class="tab-btn"
+            onclick="switchAuditFilter(this,'void')" style="padding:6px 9px;font-size:9px">ยกเลิก</button> <button
+            class="tab-btn" onclick="switchAuditFilter(this,'edit')"
+            style="padding:6px 9px;font-size:9px">แก้ไข</button> <button class="tab-btn"
+            onclick="switchAuditFilter(this,'auth')" style="padding:6px 9px;font-size:9px">การยืนยัน</button> </div>
         <div class="scroll-body" id="auditList" style="padding-bottom:20px"></div>
       </div>
     </div><!-- /pages --> <!-- BOTTOM NAV — ORDER + SALES TODAY -->
@@ -2982,8 +3010,7 @@
               style="font-size:24px">backspace</span></button> <button class="numpad-btn"
             onclick="loginPinKey('0')">0</button> <button class="numpad-btn"
             style="background:var(--cara);color:#fff;box-shadow:0 4px 14px var(--cara-glow)"
-            onclick="loginSubmit()">เข้า</button>
-        </div> <!-- Error -->
+            onclick="loginSubmit()">เข้า</button> </div> <!-- Error -->
         <div id="loginError" style="text-align:center;font-size:12px;color:var(--red);min-height:20px;font-weight:600">
         </div>
         <div style="text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--bg-dk)"><button
@@ -3082,8 +3109,7 @@
       </div>
       <div class="op-action-row"> <button class="btn btn-secondary"
           style="padding:14px 16px;border-radius:var(--r4);font-size:12px" onclick="requestVoidOrder()">ยกเลิก</button>
-        <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button>
-      </div>
+        <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button> </div>
     </div>
   </div> <!-- RECEIPT PAGE -->
   <div class="receipt-page" id="receiptPage">
@@ -3110,8 +3136,7 @@
       <div style="margin:14px 0 6px"> <label class="f-label" style="text-align:center;display:block">รหัสพนักงาน</label>
         <input class="f-input" id="approvalEmpId" placeholder="เช่น MGR01"
           style="text-transform:uppercase;font-size:20px;font-weight:700;text-align:center;letter-spacing:4px"
-          oninput="this.value=this.value.toUpperCase();clearApprovalError()" autocomplete="off">
-      </div>
+          oninput="this.value=this.value.toUpperCase();clearApprovalError()" autocomplete="off"> </div>
       <div id="approvalEmpName"
         style="text-align:center;font-size:13px;font-weight:700;color:var(--green);min-height:20px;margin-bottom:8px">
       </div>
@@ -3193,8 +3218,7 @@
                 style="font-size:12px;font-weight:700;color:var(--t2);font-family:var(--fh)">วัตถุดิบต่อ 1 แก้ว</span>
               <button onclick="addRecipeRow()"
                 style="background:var(--blue-lt);color:var(--blue);border:none;border-radius:var(--rf);padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">+
-                เพิ่ม</button>
-            </div>
+                เพิ่ม</button> </div>
             <div id="menuRecipeRows"></div>
             <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(140,123,107,.2)">
               <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span
@@ -3248,6 +3272,7 @@
             <option value="buy">ซื้อ X แถม Y</option>
             <option value="freeN">ซื้อ N ฟรี 1 (ราคาต่ำสุด)</option>
             <option value="min">ซื้อครบขั้นต่ำลด</option>
+            <option value="bundle">ซื้อจำนวนราคาพิเศษ</option>
           </select></div>
         <div class="f-row" id="promoValRow">
           <div class="f-group"><label class="f-label" id="promoValLabel">ส่วนลด (%)</label><input class="f-input"
@@ -3530,8 +3555,7 @@
         <div style="padding:18px 24px 4px;display:flex;align-items:center;gap:12px">
           <div
             style="width:44px;height:44px;border-radius:var(--r3);background:linear-gradient(135deg,var(--esp),#8B5E3C);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">
-            <span class="mi" style="color:#fff">admin_panel_settings</span>
-          </div>
+            <span class="mi" style="color:#fff">admin_panel_settings</span></div>
           <div>
             <div style="font-size:16px;font-weight:800;color:var(--t1);font-family:var(--fh)">พื้นที่ผู้จัดการ</div>
             <div style="font-size:11px;color:var(--t4);margin-top:2px">ต้องใช้รหัส Manager เพื่อเข้าถึง</div>
@@ -4481,7 +4505,7 @@
       function renderPromos(type) {
         const list = type === 'all' ? DB.promos : DB.promos.filter(p => p.type === type);
         document.getElementById('promoCount').textContent = DB.promos.filter(p => p.active).length + 'ใช้งาน / ' + DB.promos.length + 'ทั้งหมด';
-        const typeInfo = { pct: { label: '%', bg: '#FEF8E4', col: '#B8860B' }, fixed: { label: '฿', bg: 'var(--green-lt)', col: 'var(--green)' }, buy: { label: 'X+Y', bg: 'var(--blue-lt)', col: 'var(--blue)' }, freeN: { label: 'N+1', bg: 'rgba(200,130,106,.15)', col: 'var(--cara)' }, min: { label: 'MIN', bg: 'var(--purple-lt)', col: 'var(--purple)' } };
+        const typeInfo = { pct: { label: '%', bg: '#FEF8E4', col: '#B8860B' }, fixed: { label: '฿', bg: 'var(--green-lt)', col: 'var(--green)' }, buy: { label: 'X+Y', bg: 'var(--blue-lt)', col: 'var(--blue)' }, freeN: { label: 'N+1', bg: 'rgba(200,130,106,.15)', col: 'var(--cara)' }, min: { label: 'MIN', bg: 'var(--purple-lt)', col: 'var(--purple)' }, bundle: { label: 'PKG', bg: 'rgba(45,122,79,.15)', col: 'var(--green)' } };
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('promoList').innerHTML = list.map(p => {
           const ti = typeInfo[p.type] || typeInfo.pct;
@@ -4516,13 +4540,14 @@
       }
       function updatePromoFields() {
         const type = document.getElementById('promoType').value;
-        const labels = { pct: 'ส่วนลด (%)', fixed: 'ลดราคา (฿)', buy: 'ซื้อ (แก้ว)', freeN: 'ซื้อกี่แก้ว (N)', min: 'ยอดขั้นต่ำ (฿)' };
-        const labels2 = { buy: 'แถมฟรี (แก้ว)', min: 'ลด (%)' };
+        const labels = { pct: 'ส่วนลด (%)', fixed: 'ลดราคา (฿)', buy: 'ซื้อ (แก้ว)', freeN: 'ซื้อกี่แก้ว (N)', min: 'ยอดขั้นต่ำ (฿)', bundle: 'ซื้อจำนวน (ชิ้น)' };
+        const labels2 = { buy: 'แถมฟรี (แก้ว)', min: 'ลด (%)', bundle: 'ราคารวม (฿)' };
         document.getElementById('promoValLabel').textContent = labels[type] || 'ค่า';
         const g2 = document.getElementById('promoVal2Group');
-        // freeN: ต้องการแค่ val (จำนวนที่ต้องซื้อ), ไม่มี val2
-        if (type === 'buy' || type === 'min') { g2.style.display = 'block'; document.getElementById('promoVal2Label').textContent = labels2[type]; }
-        else g2.style.display = 'none';
+        if (type === 'buy' || type === 'min' || type === 'bundle') {
+          g2.style.display = 'block';
+          document.getElementById('promoVal2Label').textContent = labels2[type];
+        } else g2.style.display = 'none';
       }
       function savePromo() {
         const id = parseInt(document.getElementById('promoEditId').value) || null;
@@ -4587,23 +4612,57 @@
         const sold = {};
         DB.orders.forEach(o => o.items.forEach(i => { sold[i.menuId] = (sold[i.menuId] || 0) + i.qty; }));
         const ranked = DB.menus.map(m => ({ ...m, totalSold: sold[m.id] || 0 })).sort((a, b) => b.totalSold - a.totalSold).slice(0, 5);
-        document.getElementById('topList').innerHTML = ranked.map((m, idx) => `
- <div class="top-item"> <div class="top-rank ${idx === 0 ? 'r1' : idx === 1 ? 'r2' : idx === 2 ? 'r3' : ''}">${idx + 1}</div> <div class="top-name">${m.name}</div> <div class="top-sold">${m.totalSold} แก้ว</div> <div class="top-rev">฿${(m.totalSold * m.price).toLocaleString()}</div> </div>`
-        ).join('');
+        const medals = ['🥇', '🥈', '🥉', '4', '5'];
+        const maxSold = Math.max(...ranked.map(m => m.totalSold), 1);
+        document.getElementById('topList').innerHTML = '<div style="padding:0 16px 8px">' + ranked.map((m, idx) => {
+          const pct = Math.round(m.totalSold / maxSold * 100);
+          const colors = ['var(--gold)', 'var(--t3)', 'var(--cara)', 'var(--t4)', 'var(--t4)'];
+          return `<div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px 14px;margin-bottom:8px">
+     <div style="display:flex;align-items:center;gap:10px">
+       <div style="width:28px;height:28px;border-radius:50%;background:${idx < 3 ? 'linear-gradient(135deg,' + colors[idx] + ',' + colors[idx] + '88)' : 'var(--bg-dk)'};display:flex;align-items:center;justify-content:center;font-size:${idx < 3 ? '14' : '11'}px;font-weight:800;color:${idx < 3 ? '#fff' : 'var(--t3)'};">${idx < 3 ? medals[idx] : idx + 1}</div>
+       <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.name}</div>
+       <div style="margin-top:5px;height:4px;border-radius:2px;background:var(--bg-dk)"><div style="height:4px;border-radius:2px;background:${colors[idx]};width:${pct}%;transition:width .6s"></div></div></div>
+       <div style="text-align:right;flex-shrink:0"><div style="font-size:13px;font-weight:800;color:var(--cara)">${m.totalSold}<span style="font-size:9px;font-weight:400;color:var(--t4)"> แก้ว</span></div>
+       <div style="font-size:10px;color:var(--t4)">฿${(m.totalSold * m.price).toLocaleString()}</div></div>
+     </div></div>`;
+        }).join('') + '</div>';
       }
       function renderStaffLogSummary() {
         const el = document.getElementById('staffLog');
-        if (!DB.staffLogs.length) { el.innerHTML = '<div style="font-size:12px;color:var(--t4);padding:8px 0 16px">ยังไม่มีบันทึก</div>'; return; }
-        el.innerHTML = DB.staffLogs.slice(-5).reverse().map(l => `
- <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(176,154,133,.12)"> <span class="badge badge-blue">${{ drink: 'พนักงาน', test: 'ทดลอง', waste: 'ทิ้ง' }[l.type] || l.type}</span> <span style="font-size:12px;flex:1">${l.menuName} x${l.qty} · ${l.staff}</span> <span style="font-size:10px;color:var(--t4)">${new Date(l.ts).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })}</span> </div>`
-        ).join('');
+        if (!DB.staffLogs.length) { el.innerHTML = '<div style="padding:0 16px 8px;font-size:12px;color:var(--t4)">ยังไม่มีบันทึก</div>'; return; }
+        const typeColor = { drink: 'var(--blue)', test: 'var(--gold)', waste: 'var(--red)' };
+        const typeBg = { drink: 'var(--blue-lt)', test: 'var(--gold-lt)', waste: 'var(--red-lt)' };
+        const typeLabel = { drink: 'พนักงาน', test: 'ทดลอง', waste: 'ทิ้ง' };
+        el.innerHTML = '<div style="padding:0 16px 8px">' + DB.staffLogs.slice(-8).reverse().map(l => `
+   <div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px">
+     <div style="width:32px;height:32px;border-radius:50%;background:${typeBg[l.type] || 'var(--bg-dk)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+       <span style='font-family:"Material Symbols Outlined";font-size:16px;font-weight:normal;color:${typeColor[l.type] || "var(--t3)"}'>local_cafe</span></div>
+     <div style="flex:1;min-width:0">
+       <div style="font-size:12px;font-weight:700;color:var(--t1)">${l.menuName} <span style="font-weight:400">×${l.qty}</span></div>
+       <div style="font-size:10px;color:var(--t4);margin-top:1px">${l.staff}</div></div>
+     <div style="text-align:right;flex-shrink:0">
+       <span style="font-size:9px;font-weight:700;background:${typeBg[l.type] || 'var(--bg-dk)'};color:${typeColor[l.type] || 'var(--t3)'};padding:2px 7px;border-radius:var(--rf)">${typeLabel[l.type] || l.type}</span>
+       <div style="font-size:10px;color:var(--t4);margin-top:3px">${new Date(l.ts).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })}</div></div>
+   </div>`).join('') + '</div>';
       }
       function renderPromoPerf() {
         const el = document.getElementById('promoPerf');
-        if (!DB.promos.length) { el.innerHTML = '<div style="font-size:12px;color:var(--t4);padding:8px 0 16px">ยังไม่มีโปรโมชั่น</div>'; return; }
-        el.innerHTML = DB.promos.map(p => `
- <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(176,154,133,.12)"> <span class="badge ${p.active ? 'badge-green' : 'badge-gray'}">${p.active ? 'ใช้' : 'ปิด'}</span> <div style="flex:1"><div style="font-size:12px;font-weight:700">${p.name}</div><div style="font-size:10px;color:var(--t4)">${getPromoDesc(p)}</div></div> <div style="text-align:right"><div style="font-size:11px;font-weight:700;color:var(--cara)">${p.used} ครั้ง</div><div style="font-size:10px;color:var(--t4)">-฿${p.discount}</div></div> </div>`
-        ).join('');
+        if (!DB.promos.length) { el.innerHTML = '<div style="padding:0 16px 8px;font-size:12px;color:var(--t4)">ยังไม่มีโปรโมชั่น</div>'; return; }
+        const maxUsed = Math.max(...DB.promos.map(p => p.used || 0), 1);
+        el.innerHTML = '<div style="padding:0 16px 8px">' + DB.promos.map(p => {
+          const pct = Math.round((p.used || 0) / maxUsed * 100);
+          return `<div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px 14px;margin-bottom:8px">
+     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+       <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:var(--rf);background:${p.active ? 'var(--green-lt)' : 'var(--bg-dk)'};color:${p.active ? 'var(--green)' : 'var(--t4)'}">${p.active ? 'ใช้งาน' : 'ปิด'}</span>
+       <div style="flex:1;font-size:12px;font-weight:700;color:var(--t1)">${p.name}</div>
+       <div style="text-align:right;flex-shrink:0"><div style="font-size:13px;font-weight:800;color:var(--cara)">${p.used || 0}<span style="font-size:9px;font-weight:400;color:var(--t4)"> ครั้ง</span></div></div>
+     </div>
+     <div style="font-size:10px;color:var(--t4);margin-bottom:6px">${getPromoDesc(p)}</div>
+     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+       <div style="flex:1;height:4px;border-radius:2px;background:var(--bg-dk)"><div style="height:4px;border-radius:2px;background:var(--cara);width:${pct}%;transition:width .6s"></div></div>
+       <div style="font-size:10px;color:var(--red);font-weight:700;flex-shrink:0">-฿${(p.discount || 0).toLocaleString()}</div>
+     </div></div>`;
+        }).join('') + '</div>';
       }
 
 
@@ -4936,15 +4995,26 @@
         }).join('');
       }
 
-      function renderStaffLoginHistory(filterEmpId) {
-        const loginLogs = DB.auditLog.filter(a => a.type === 'login' && (!filterEmpId || a.empId === filterEmpId)
-        ).slice(0, 100);
+      function renderStaffLoginHistory(filterEmpId, dateFrom, dateTo) {
+        let loginLogs = DB.auditLog.filter(a => a.type === 'login' && (!filterEmpId || String(a.empId) === String(filterEmpId)));
+        if (dateFrom) { const from = new Date(dateFrom).setHours(0, 0, 0, 0); loginLogs = loginLogs.filter(a => a.ts >= from); }
+        if (dateTo) { const to = new Date(dateTo).setHours(23, 59, 59, 999); loginLogs = loginLogs.filter(a => a.ts <= to); }
+        loginLogs = loginLogs.slice(0, 200);
 
         const empFilter = filterEmpId ? DB.employees.find(e => String(e.id) === String(filterEmpId)) : null;
         const filterBadge = empFilter
-          ? `<div style="display:flex;align-items:center;gap:8px;padding:8px 0 12px"> <span style="font-size:11px;font-weight:700;color:var(--blue)"> ${empFilter.name}</span> <button onclick="renderStaffMgmt('history')" style="font-size:9px;background:var(--bg-dk);border:none;border-radius:var(--rf);padding:2px 7px;cursor:pointer;color:var(--t3)"> ล้างตัวกรอง</button> </div>` : '';
+          ? `<div style="display:flex;align-items:center;gap:8px;padding:8px 0 12px"> <span style="font-size:11px;font-weight:700;color:var(--blue)">${empFilter.name}</span> <button onclick="renderStaffMgmt('history')" style="font-size:9px;background:var(--bg-dk);border:none;border-radius:var(--rf);padding:2px 7px;cursor:pointer;color:var(--t3)">ล้างตัวกรอง</button> </div>` : '';
 
-        if (!loginLogs.length) return filterBadge +
+        const today = new Date().toISOString().slice(0, 10);
+        const defFrom = new Date(Date.now() - 6 * 86400000).toISOString().slice(0, 10);
+        const dateFilter = `<div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+   <div style="flex:1"><div style="font-size:9px;color:var(--t4);margin-bottom:2px">จาก</div>
+   <input type="date" id="histFrom" value="${dateFrom || defFrom}" style="width:100%;font-family:var(--fb);font-size:11px;padding:6px 8px;border-radius:var(--r2);border:1px solid var(--bg-dk);background:var(--bg)" onchange="applyHistFilter()"></div>
+   <div style="flex:1"><div style="font-size:9px;color:var(--t4);margin-bottom:2px">ถึง</div>
+   <input type="date" id="histTo" value="${dateTo || today}" style="width:100%;font-family:var(--fb);font-size:11px;padding:6px 8px;border-radius:var(--r2);border:1px solid var(--bg-dk);background:var(--bg)" onchange="applyHistFilter()"></div>
+ </div>`;
+
+        if (!loginLogs.length) return filterBadge + dateFilter +
           `<div class="empty-state"><div class="e-icon">[ ]</div><div class="e-title">ยังไม่มีประวัติ</div></div>`;
 
         const rows = loginLogs.map(a => {
@@ -4953,9 +5023,17 @@
           return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(176,154,133,.12)"> <span style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal;flex-shrink:0;color:${emp?.role === "manager" ? "var(--blue)" : "var(--t4)"}'>${emp?.role === "manager" ? "manage_accounts" : "person"}</span> <div style="flex:1"> <div style="font-size:12px;font-weight:600;color:var(--t1)">${a.empName || a.empId || '—'}</div> <div style="font-size:10px;color:var(--t4)">${a.empId || ''}</div> </div> <div style="text-align:right;font-size:10px;color:var(--t4)">${dt}</div> </div>`;
         }).join('');
 
-        return filterBadge + `<div style="padding:0 2px">${rows}</div>`;
+        return filterBadge + dateFilter + `<div style="padding:0 2px">${rows}</div>`;
       }
 
+      function applyHistFilter() {
+        const from = document.getElementById('histFrom')?.value;
+        const to = document.getElementById('histTo')?.value;
+        // หา filterEmpId จาก element ถ้ามี
+        document.getElementById('staffMgmtContent').innerHTML =
+          `<div class="tab-bar" style="margin-bottom:14px"> <button class="tab-btn" onclick="renderStaffMgmt('list')">รายชื่อ</button> <button class="tab-btn active" onclick="renderStaffMgmt('history')">ประวัติเข้าระบบ</button> </div>` +
+          renderStaffLoginHistory(null, from, to);
+      }
       function viewStaffHistory(empId) {
         staffMgmtTab = 'history';
         document.getElementById('staffMgmtContent').innerHTML =
