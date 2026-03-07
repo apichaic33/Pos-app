@@ -961,10 +961,30 @@ if ('serviceWorker' in navigator) {
  font-size:14px;font-weight:600;color:var(--t4);
  transition:all .2s;
  ">—</div> <!-- PIN label --> <div class="f-label" style="margin-bottom:8px">รหัส PIN (4 หลัก)</div> <!-- PIN dots --> <!-- First-run hint + Setup Mode button --> <div id="loginFirstRunHint" style="display:none"> <div style="background:rgba(184,134,11,.08);border:1px solid rgba(184,134,11,.2);border-radius:var(--r3);padding:12px 14px;margin-bottom:12px;text-align:center"> <div style="font-size:20px;margin-bottom:6px"></div> <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px">ยังไม่มีพนักงานในระบบ</div> <div style="font-size:11px;color:var(--t4);margin-bottom:14px;line-height:1.6">ต้องตั้งค่าครั้งแรกก่อนเริ่มใช้งาน<br>กรุณาสร้างบัญชี Manager</div> <button onclick="openSetupMode()" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--esp),#5C3317);color:#fff;border:none;border-radius:var(--r3);font-size:14px;font-weight:700;font-family:var(--fh);cursor:pointer;box-shadow:0 4px 14px rgba(44,24,16,.3)">เริ่มตั้งค่าระบบ
- </button> </div> </div> <div style="display:flex;justify-content:center;gap:12px;margin-bottom:16px" id="loginPinDots"> <div class="pin-dot" id="dot0"></div> <div class="pin-dot" id="dot1"></div> <div class="pin-dot" id="dot2"></div> <div class="pin-dot" id="dot3"></div> </div> <!-- Numpad --> <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px" id="loginNumpad"> <button class="numpad-btn" onclick="loginPinKey('1')">1</button> <button class="numpad-btn" onclick="loginPinKey('2')">2</button> <button class="numpad-btn" onclick="loginPinKey('3')">3</button> <button class="numpad-btn" onclick="loginPinKey('4')">4</button> <button class="numpad-btn" onclick="loginPinKey('5')">5</button> <button class="numpad-btn" onclick="loginPinKey('6')">6</button> <button class="numpad-btn" onclick="loginPinKey('7')">7</button> <button class="numpad-btn" onclick="loginPinKey('8')">8</button> <button class="numpad-btn" onclick="loginPinKey('9')">9</button> <button class="numpad-btn" onclick="loginPinClear()"><span class="mi" style="font-size:24px">backspace</span></button> <button class="numpad-btn" onclick="loginPinKey('0')">0</button> <button class="numpad-btn" style="background:var(--cara);color:#fff;box-shadow:0 4px 14px var(--cara-glow)" onclick="loginSubmit()">เข้า</button> </div> <!-- Error --> <div id="loginError" style="text-align:center;font-size:12px;color:var(--red);min-height:20px;font-weight:600"></div> <div style="text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--bg-dk)"><button onclick="openSetupMode()" style="font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;font-family:var(--fb);display:inline-flex;align-items:center;gap:6px"><span class="mi">settings</span> ตั้งค่า / เพิ่ม Manager</button></div> </div> <div style="text-align:center;font-size:10px;color:var(--t5);margin-top:20px">POS-APP · Secure Login</div> </div>
+ </button> </div> </div> <div style="display:flex;justify-content:center;gap:12px;margin-bottom:16px" id="loginPinDots"> <div class="pin-dot" id="dot0"></div> <div class="pin-dot" id="dot1"></div> <div class="pin-dot" id="dot2"></div> <div class="pin-dot" id="dot3"></div> </div> <!-- Numpad --> <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px" id="loginNumpad"> <button class="numpad-btn" onclick="loginPinKey('1')">1</button> <button class="numpad-btn" onclick="loginPinKey('2')">2</button> <button class="numpad-btn" onclick="loginPinKey('3')">3</button> <button class="numpad-btn" onclick="loginPinKey('4')">4</button> <button class="numpad-btn" onclick="loginPinKey('5')">5</button> <button class="numpad-btn" onclick="loginPinKey('6')">6</button> <button class="numpad-btn" onclick="loginPinKey('7')">7</button> <button class="numpad-btn" onclick="loginPinKey('8')">8</button> <button class="numpad-btn" onclick="loginPinKey('9')">9</button> <button class="numpad-btn" onclick="loginPinClear()"><span class="mi" style="font-size:24px">backspace</span></button> <button class="numpad-btn" onclick="loginPinKey('0')">0</button> <button class="numpad-btn" style="background:var(--cara);color:#fff;box-shadow:0 4px 14px var(--cara-glow)" onclick="loginSubmit()">เข้า</button> </div>
+ <!-- ลืม PIN -->
+ <div style="text-align:center;margin-top:10px">
+  <button onclick="openRecoveryModal()"
+   style="font-size:11px;color:var(--t4);background:none;border:none;cursor:pointer;font-family:var(--fb);padding:4px 8px;display:inline-flex;align-items:center;gap:4px;opacity:.8">
+   <span class="mi" style="font-size:14px">lock_open</span>ลืม PIN? กู้คืนการเข้าถึง
+  </button>
+ </div>
+ <!-- Error --> <div id="loginError" style="text-align:center;font-size:12px;color:var(--red);min-height:20px;font-weight:600"></div> </div> <div style="text-align:center;font-size:10px;color:var(--t5);margin-top:8px">POS-APP · Secure Login</div> </div>
 </div> <!-- DRAWER -->
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
-<div class="drawer" id="drawer"> <div class="drawer-head"> <div class="drawer-logo">POS<span>·</span>APP</div> <div class="drawer-sub">ระบบบริหารร้านกาแฟ v5</div> <div id="drawerUserInfo" style="font-size:11px;color:var(--cara);font-weight:700;margin-top:6px;font-family:var(--fh)"></div> <button onclick="logoutUser()" style="margin-top:8px;padding:6px 14px;border-radius:var(--rf);background:var(--red-lt);color:var(--red);font-size:11px;font-weight:700;font-family:var(--fh)">ออกจากระบบ</button> </div> <div class="drawer-body"> <!-- Manager session badge --> <div id="mgrSessionBadge" style="display:none;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(90deg,rgba(43,94,167,.12),transparent);border-bottom:1px solid rgba(43,94,167,.15);margin-bottom:4px"> <span class="mi" style="font-size:20px;color:var(--blue)">shield_person</span> <div style="flex:1"> <div style="font-size:10px;font-weight:700;color:var(--blue)">Manager Mode</div> <div id="mgrBadgeName" style="font-size:11px;color:var(--t2)"></div> </div> <div style="text-align:right"> <div id="mgrBadgeTime" style="font-size:11px;font-weight:700;color:var(--blue);font-family:var(--fh)">10:00</div> <button onclick="mgrLogout()" style="font-size:9px;color:var(--red);background:var(--red-lt);border:none;border-radius:var(--rf);padding:2px 6px;margin-top:2px;cursor:pointer;font-weight:700">ออก</button> </div> </div> <div class="drawer-item active" id="dnav-order" onclick="drawerGo('order')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">point_of_sale</span></div> <span>รับออเดอร์</span> </div> <div class="drawer-item" id="dnav-sales" onclick="drawerGo('sales')"> <div class="drawer-item-icon" style="color:var(--blue)"><span class="mi">bar_chart</span></div> <span>รายการขายวันนี้</span> </div> <div class="drawer-sep"></div> <div class="drawer-item" id="dnav-promo" onclick="drawerGo('promo')"> <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">sell</span></div> <span>โปรโมชั่น</span> </div> <div class="drawer-item" id="dnav-manage" onclick="drawerGo('manage')"> <div class="drawer-item-icon" style="color:var(--esp)"><span class="mi">restaurant_menu</span></div> <span>จัดการเมนู</span> </div> <div class="drawer-item" id="dnav-bills" onclick="drawerGo('bills')"> <div class="drawer-item-icon" style="color:var(--red)"><span class="mi">receipt_long</span></div> <span>จัดการบิล</span> </div> <div class="drawer-item" id="dnav-staff-mgmt" onclick="drawerGo('staff-mgmt')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">group</span></div> <span>พนักงาน</span> </div> <div class="drawer-item" id="dnav-audit" onclick="drawerGo('audit')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">history</span></div> <span>ประวัติ</span> </div> <div class="drawer-item" id="dnav-report" onclick="drawerGo('report')"> <div class="drawer-item-icon" style="color:var(--green)"><span class="mi">trending_up</span></div> <span>รายงาน</span> </div> <div class="drawer-item" id="dnav-stores" onclick="drawerGo('stores')"> <div class="drawer-item-icon" style="color:var(--purple)"><span class="mi">inventory_2</span></div> <span>คลัง</span> </div> </div> <div class="drawer-foot"> <div class="drawer-sync-badge"> <div class="top-live" id="drawerLive" style="width:7px;height:7px;"></div> <span id="drawerSync">—</span> </div> </div>
+<div class="drawer" id="drawer"> <div class="drawer-head"> <div class="drawer-logo">POS<span>·</span>APP</div> <div class="drawer-sub">ระบบบริหารร้านกาแฟ v5</div> <div id="drawerUserInfo" style="font-size:11px;color:var(--cara);font-weight:700;margin-top:6px;font-family:var(--fh)"></div> <button onclick="logoutUser()" style="margin-top:8px;padding:6px 14px;border-radius:var(--rf);background:var(--red-lt);color:var(--red);font-size:11px;font-weight:700;font-family:var(--fh)">ออกจากระบบ</button> </div> <div class="drawer-body"> <!-- Manager session badge --> <div id="mgrSessionBadge" style="display:none;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(90deg,rgba(43,94,167,.12),transparent);border-bottom:1px solid rgba(43,94,167,.15);margin-bottom:4px"> <span class="mi" style="font-size:20px;color:var(--blue)">shield_person</span> <div style="flex:1"> <div style="font-size:10px;font-weight:700;color:var(--blue)">Manager Mode</div> <div id="mgrBadgeName" style="font-size:11px;color:var(--t2)"></div> </div> <div style="text-align:right"> <div id="mgrBadgeTime" style="font-size:11px;font-weight:700;color:var(--blue);font-family:var(--fh)">10:00</div> <button onclick="mgrLogout()" style="font-size:9px;color:var(--red);background:var(--red-lt);border:none;border-radius:var(--rf);padding:2px 6px;margin-top:2px;cursor:pointer;font-weight:700">ออก</button> </div> </div> <div class="drawer-item active" id="dnav-order" onclick="drawerGo('order')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">point_of_sale</span></div> <span>รับออเดอร์</span> </div> <div class="drawer-item" id="dnav-sales" onclick="drawerGo('sales')"> <div class="drawer-item-icon" style="color:var(--blue)"><span class="mi">bar_chart</span></div> <span>รายการขายวันนี้</span> </div> <div class="drawer-sep"></div> <div class="drawer-item" id="dnav-promo" onclick="drawerGo('promo')"> <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">sell</span></div> <span>โปรโมชั่น</span> </div> <div class="drawer-item" id="dnav-manage" onclick="drawerGo('manage')"> <div class="drawer-item-icon" style="color:var(--esp)"><span class="mi">restaurant_menu</span></div> <span>จัดการเมนู</span> </div> <div class="drawer-item" id="dnav-bills" onclick="drawerGo('bills')"> <div class="drawer-item-icon" style="color:var(--red)"><span class="mi">receipt_long</span></div> <span>จัดการบิล</span> </div> <div class="drawer-item" id="dnav-staff-mgmt" onclick="drawerGo('staff-mgmt')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">group</span></div> <span>พนักงาน</span> </div> <div class="drawer-item" id="dnav-audit" onclick="drawerGo('audit')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">history</span></div> <span>ประวัติ</span> </div> <div class="drawer-item" id="dnav-report" onclick="drawerGo('report')"> <div class="drawer-item-icon" style="color:var(--green)"><span class="mi">trending_up</span></div> <span>รายงาน</span> </div> <div class="drawer-item" id="dnav-stores" onclick="drawerGo('stores')"> <div class="drawer-item-icon" style="color:var(--purple)"><span class="mi">inventory_2</span></div> <span>คลัง</span> </div>
+ <div id="drawerRecoveryRow" style="display:none;border-top:1px solid var(--bg-dk);padding:10px 16px 6px">
+  <div style="font-size:9px;color:var(--t5);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px">ความปลอดภัย</div>
+  <button onclick="showRecoveryCodeAlert(DB.recoveryCode);closeDrawer()" 
+   style="width:100%;background:rgba(184,134,11,.08);border:1px solid rgba(184,134,11,.2);border-radius:var(--r3);padding:9px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;text-align:left">
+   <span class="mi" style="font-size:18px;color:var(--gold)">key</span>
+   <div>
+    <div style="font-size:12px;font-weight:700;color:var(--t2);font-family:var(--fh)">ดู Recovery Code</div>
+    <div style="font-size:10px;color:var(--t4)">ใช้กู้คืนเมื่อลืม PIN</div>
+   </div>
+  </button>
+ </div>
+ </div> <div class="drawer-foot"> <div class="drawer-sync-badge"> <div class="top-live" id="drawerLive" style="width:7px;height:7px;"></div> <span id="drawerSync">—</span> </div> </div>
 </div> <!-- ORDER PANEL PAGE -->
 <div class="order-panel-page" id="orderPanelPage"> <div class="op-handle-wrap" onclick="closeOrderPanel()"><div class="op-handle"></div></div> <div class="op-topbar"> <button class="op-close" onclick="closeOrderPanel()"></button> <span class="op-title">รายการออเดอร์</span> <span style="font-size:11px;color:var(--t4)" id="opItemCount">0 รายการ</span> </div> <div class="op-list" id="opList"> <div class="op-empty"> <div class="e-icon"></div> <div class="op-empty-title">ยังไม่มีรายการ</div> </div> </div> <div class="op-footer"> <div class="op-summary" id="opSummary"> <div class="op-sum-row"><span id="opCount">0 รายการ</span><span id="opSubTotal">฿0</span></div> <div class="op-sum-row" id="discountRow" style="display:none;color:var(--red)"><span>ส่วนลด</span><span id="opDiscountAmt">-฿0</span></div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px" onclick="requestVoidOrder()">ยกเลิก</button> <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button> </div> </div>
 </div> <!-- RECEIPT PAGE -->
@@ -1122,6 +1142,7 @@ let DB = {
  shopName: '', // ← ชื่อร้าน
  shopSub: '', // ← คำอธิบายร้าน
  posId: 'POS-01', // ← หมายเลข POS
+ recoveryCode: '', // ← รหัสกู้คืน Emergency
  menus: [],
  promos: [],
  orders: [],
@@ -2375,6 +2396,11 @@ function submitSetup(){
  // บันทึก
  DB.employees.push({id, name, role:'manager', pin});
  if(shop){ DB.shopName = shop; DB.shopSub = sub || shop; }
+ // สร้าง Recovery Code ถ้ายังไม่มี
+ if(!DB.recoveryCode){
+   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+   DB.recoveryCode=Array.from({length:8},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+ }
 
  closeModal('modal-setup');
 
@@ -2392,6 +2418,8 @@ function submitSetup(){
 
  addAudit('setup','ตั้งค่าระบบครั้งแรก','สร้าง Manager: '+name+' ('+id+') · ร้าน: '+shop,'','rgba(43,94,167,.1)','high',{id,name,role:'manager'});
  scheduleSync();
+ // แสดง Recovery Code ให้บันทึก
+ showRecoveryCodeAlert(DB.recoveryCode);
  toast('ตั้งค่าสำเร็จ! กรุณากรอก PIN เพื่อเข้าระบบ');
 }
 
@@ -3564,6 +3592,7 @@ function updateMgrBadge(){
  if(isMgrActive()){
  badge.style.display='flex';
  badge.querySelector('#mgrBadgeName').textContent = mgrSession.emp.name;
+ const rrow=document.getElementById('drawerRecoveryRow'); if(rrow) rrow.style.display='block';
  // countdown
  clearInterval(badge._timer);
  badge._timer = setInterval(()=>{
@@ -3575,6 +3604,7 @@ function updateMgrBadge(){
  }, 1000);
  } else {
  badge.style.display='none';
+ const rrow2=document.getElementById('drawerRecoveryRow'); if(rrow2) rrow2.style.display='none';
  clearInterval(badge._timer);
  }
 }
@@ -3628,6 +3658,93 @@ function _goPageDirect(p){
  if(p==='bills') renderBillManagement('today');
  if(p==='audit') renderAuditLog(auditFilter||'all');
  if(p==='staff-mgmt') renderStaffMgmt();
+}
+
+
+// ════════════════════════════════════════════════
+// EMERGENCY RECOVERY SYSTEM
+// ════════════════════════════════════════════════
+function showRecoveryCodeAlert(code){
+ // สร้าง overlay แสดง recovery code ให้บันทึก
+ const overlay = document.createElement('div');
+ overlay.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:20px';
+ overlay.innerHTML=`
+  <div style="background:var(--bg);border-radius:var(--r4);padding:24px;max-width:320px;width:100%;text-align:center">
+   <span class="material-symbols-outlined" style="font-size:48px;color:var(--gold)">key</span>
+   <div style="font-size:16px;font-weight:800;color:var(--t1);margin:10px 0 4px;font-family:var(--fh)">Recovery Code ของคุณ</div>
+   <div style="font-size:11px;color:var(--t4);margin-bottom:16px">บันทึกไว้ใช้เมื่อลืม PIN — ใช้ได้ครั้งเดียว</div>
+   <div style="background:var(--bg-dk);border:2px dashed var(--gold);border-radius:var(--r3);padding:14px;margin-bottom:16px">
+    <div style="font-size:28px;font-weight:900;font-family:monospace;letter-spacing:6px;color:var(--gold)">${code}</div>
+   </div>
+   <div style="font-size:10px;color:var(--red);margin-bottom:16px;font-weight:600">⚠️ ถ่ายรูปหรือจดไว้ก่อนปิดหน้านี้</div>
+   <button onclick="this.closest('div[style]').remove()" 
+    style="width:100%;padding:12px;background:var(--esp);color:#fff;border:none;border-radius:var(--r3);font-size:14px;font-weight:700;font-family:var(--fh);cursor:pointer">
+    บันทึกแล้ว ปิด
+   </button>
+  </div>`;
+ document.body.appendChild(overlay);
+}
+
+function openRecoveryModal(){
+ // เติม Manager list
+ const sel = document.getElementById('recoveryEmpSel');
+ const managers = DB.employees.filter(e=>e.role==='manager');
+ if(!managers.length){ toast('ไม่มี Manager ในระบบ'); return; }
+ sel.innerHTML = managers.map(e=>`<option value="${e.id}">${e.name} (${e.id})</option>`).join('');
+ // reset steps
+ document.getElementById('recoveryStep1').style.display='block';
+ document.getElementById('recoveryStep2').style.display='none';
+ document.getElementById('recoveryCode').value='';
+ document.getElementById('recoveryError').textContent='';
+ document.getElementById('recoveryNewPin').value='';
+ document.getElementById('recoveryNewPin2').value='';
+ document.getElementById('recoveryPinError').textContent='';
+ openModal('modal-recovery');
+}
+
+function verifyRecoveryCode(){
+ const code = document.getElementById('recoveryCode').value.trim().toUpperCase();
+ const errEl = document.getElementById('recoveryError');
+ errEl.textContent='';
+ if(!code){ errEl.textContent='กรุณากรอก Recovery Code'; return; }
+ if(!DB.recoveryCode){ errEl.textContent='ระบบยังไม่มี Recovery Code (Setup ใหม่)'; return; }
+ if(code !== DB.recoveryCode.toUpperCase()){
+   errEl.textContent='Recovery Code ไม่ถูกต้อง';
+   // shake
+   const inp=document.getElementById('recoveryCode');
+   inp.style.animation='shake .3s';
+   setTimeout(()=>inp.style.animation='',300);
+   return;
+ }
+ // ถูกต้อง → ไป Step 2
+ const empId = document.getElementById('recoveryEmpSel').value;
+ const emp = DB.employees.find(e=>String(e.id)===String(empId));
+ document.getElementById('recoveryEmpName').textContent = emp ? emp.name+' ('+emp.id+')' : '';
+ document.getElementById('recoveryStep1').style.display='none';
+ document.getElementById('recoveryStep2').style.display='block';
+}
+
+function doRecoveryReset(){
+ const empId = document.getElementById('recoveryEmpSel').value;
+ const newPin = document.getElementById('recoveryNewPin').value.trim();
+ const newPin2 = document.getElementById('recoveryNewPin2').value.trim();
+ const errEl = document.getElementById('recoveryPinError');
+ errEl.textContent='';
+ if(!newPin || newPin.length!==4){ errEl.textContent='PIN ต้องมี 4 หลัก'; return; }
+ if(newPin !== newPin2){ errEl.textContent='PIN ไม่ตรงกัน'; return; }
+ const emp = DB.employees.find(e=>String(e.id)===String(empId));
+ if(!emp){ errEl.textContent='ไม่พบพนักงาน'; return; }
+ emp.pin = newPin;
+ // สร้าง Recovery Code ใหม่หลัง reset (ใช้ได้ครั้งเดียว)
+ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+ const newCode=Array.from({length:8},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+ DB.recoveryCode = newCode;
+ addAudit('recovery','Emergency PIN Reset','Reset PIN: '+emp.name+' ('+emp.id+')','','rgba(217,79,68,.08)','high',emp);
+ scheduleSync();
+ closeModal('modal-recovery');
+ // แสดง recovery code ใหม่
+ showRecoveryCodeAlert(newCode);
+ toast('Reset PIN สำเร็จ! บันทึก Recovery Code ใหม่ด้วย');
 }
 
 window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
@@ -3701,6 +3818,69 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
     <span class="mi" style="font-size:16px;vertical-align:-3px">close</span>
    </button>
    <button class="btn btn-dark" style="flex:2" onclick="savePO()">สั่งซื้อ</button>
+  </div>
+ </div>
+</div>
+
+
+<!-- MODAL: Emergency Recovery -->
+<div class="modal-overlay" id="modal-recovery" style="z-index:9200">
+ <div class="modal-sheet">
+  <div class="modal-handle"></div>
+  <div class="modal-head">
+   <span class="modal-title">🔑 กู้คืนการเข้าถึง</span>
+  </div>
+  <div class="modal-body">
+   <div style="background:rgba(217,79,68,.07);border-left:3px solid var(--red);border-radius:0 var(--r2) var(--r2) 0;padding:8px 12px;margin-bottom:14px;font-size:11px;color:var(--t3)">
+    ใช้เมื่อ Manager ลืม PIN — ระบบจะ Reset PIN ของ Manager ท่านนั้น
+   </div>
+   <!-- Step 1: เลือก Manager -->
+   <div id="recoveryStep1">
+    <div class="f-group">
+     <label class="f-label">เลือก Manager ที่ต้องการ Reset</label>
+     <select class="f-select" id="recoveryEmpSel"></select>
+    </div>
+    <div class="f-group" style="margin-top:10px">
+     <label class="f-label" style="display:flex;align-items:center;gap:6px">
+      Recovery Code
+      <span style="font-size:9px;background:rgba(217,79,68,.12);color:var(--red);padding:1px 6px;border-radius:10px;font-weight:600">ดูได้ใน Google Sheets</span>
+     </label>
+     <input class="f-input" id="recoveryCode" placeholder="กรอก Recovery Code" 
+      style="font-family:monospace;letter-spacing:2px">
+     <div style="font-size:10px;color:var(--t4);margin-top:3px">
+      เปิด Google Sheets → แถบ <b>Config</b> → ช่อง <b>RECOVERY_CODE</b>
+     </div>
+    </div>
+    <div id="recoveryError" style="font-size:12px;color:var(--red);min-height:16px;font-weight:600;margin-top:4px"></div>
+    <div class="modal-foot" style="padding:12px 0 0">
+     <button class="btn btn-dark" style="flex:1" onclick="verifyRecoveryCode()">ยืนยัน</button>
+    </div>
+   </div>
+   <!-- Step 2: ตั้ง PIN ใหม่ -->
+   <div id="recoveryStep2" style="display:none">
+    <div style="text-align:center;padding:8px 0 14px">
+     <span class="material-symbols-outlined" style="font-size:40px;color:var(--green)">check_circle</span>
+     <div style="font-size:13px;font-weight:700;color:var(--green);margin-top:4px">ยืนยันตัวตนสำเร็จ</div>
+     <div id="recoveryEmpName" style="font-size:11px;color:var(--t4);margin-top:2px"></div>
+    </div>
+    <div class="f-row">
+     <div class="f-group">
+      <label class="f-label">PIN ใหม่ (4 หลัก)</label>
+      <input class="f-input" id="recoveryNewPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
+     </div>
+     <div class="f-group">
+      <label class="f-label">ยืนยัน PIN ใหม่</label>
+      <input class="f-input" id="recoveryNewPin2" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
+     </div>
+    </div>
+    <div id="recoveryPinError" style="font-size:12px;color:var(--red);min-height:16px;font-weight:600"></div>
+    <div class="modal-foot" style="padding:12px 0 0">
+     <button class="btn btn-secondary" style="padding:12px 16px" onclick="closeModal('modal-recovery')">
+      <span class="mi" style="font-size:16px;vertical-align:-3px">close</span>
+     </button>
+     <button class="btn btn-dark" style="flex:2" onclick="doRecoveryReset()">Reset PIN</button>
+    </div>
+   </div>
   </div>
  </div>
 </div>
