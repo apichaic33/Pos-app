@@ -2780,7 +2780,8 @@
             onclick="switchPromoTab(this,'fixed')">ลดราคา</button> <button class="tab-btn"
             onclick="switchPromoTab(this,'buy')">ซื้อ X แถม Y</button> <button class="tab-btn"
             onclick="switchPromoTab(this,'freeN')">ซื้อ N ฟรี 1</button> <button class="tab-btn"
-            onclick="switchPromoTab(this,'bundle')">Bundle</button> </div>
+            onclick="switchPromoTab(this,'bundle')">Bundle</button>
+        </div>
         <div class="scroll-body" id="promoList" style="padding-bottom:20px"></div>
       </div> <!-- PAGE: MANAGE -->
       <div class="page" id="pg-manage">
@@ -2888,18 +2889,24 @@
             <div style="font-size:10px;color:var(--t4)">รวมวันนี้</div>
           </div>
         </div> <!-- summary chips -->
-        <div style="display:flex;gap:8px;padding:0 16px 10px;flex-shrink:0;overflow-x:auto">
-          <div class="stat-card" style="flex-shrink:0;min-width:100px;padding:10px 12px">
-            <div class="sc-label">ออเดอร์</div>
-            <div class="sc-val" id="salesTodayCount" style="font-size:20px">0</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 12px;flex-shrink:0">
+          <div
+            style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px;text-align:center">
+            <div style="font-size:10px;color:var(--t4);margin-bottom:4px">ออเดอร์</div>
+            <div id="salesTodayCount" style="font-size:22px;font-weight:800;color:var(--esp);font-family:var(--fh)">0
+            </div>
           </div>
-          <div class="stat-card" style="flex-shrink:0;min-width:100px;padding:10px 12px">
-            <div class="sc-label">ยอดขาย</div>
-            <div class="sc-val" id="salesTodayAmt" style="font-size:16px;color:var(--cara)">฿0</div>
+          <div
+            style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px;text-align:center">
+            <div style="font-size:10px;color:var(--t4);margin-bottom:4px">ยอดขาย</div>
+            <div id="salesTodayAmt" style="font-size:16px;font-weight:800;color:var(--cara);font-family:var(--fh)">฿0
+            </div>
           </div>
-          <div class="stat-card" style="flex-shrink:0;min-width:100px;padding:10px 12px">
-            <div class="sc-label">กำไร</div>
-            <div class="sc-val" id="salesTodayProfit" style="font-size:16px;color:var(--green)">฿0</div>
+          <div
+            style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px;text-align:center">
+            <div style="font-size:10px;color:var(--t4);margin-bottom:4px">กำไร</div>
+            <div id="salesTodayProfit" style="font-size:16px;font-weight:800;color:var(--green);font-family:var(--fh)">
+              ฿0</div>
           </div>
         </div>
         <div class="scroll-body" id="salesTodayList" style="padding-bottom:20px"></div>
@@ -3010,7 +3017,8 @@
               style="font-size:24px">backspace</span></button> <button class="numpad-btn"
             onclick="loginPinKey('0')">0</button> <button class="numpad-btn"
             style="background:var(--cara);color:#fff;box-shadow:0 4px 14px var(--cara-glow)"
-            onclick="loginSubmit()">เข้า</button> </div> <!-- Error -->
+            onclick="loginSubmit()">เข้า</button>
+        </div> <!-- Error -->
         <div id="loginError" style="text-align:center;font-size:12px;color:var(--red);min-height:20px;font-weight:600">
         </div>
         <div style="text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--bg-dk)"><button
@@ -3109,7 +3117,8 @@
       </div>
       <div class="op-action-row"> <button class="btn btn-secondary"
           style="padding:14px 16px;border-radius:var(--r4);font-size:12px" onclick="requestVoidOrder()">ยกเลิก</button>
-        <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button> </div>
+        <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button>
+      </div>
     </div>
   </div> <!-- RECEIPT PAGE -->
   <div class="receipt-page" id="receiptPage">
@@ -3136,7 +3145,8 @@
       <div style="margin:14px 0 6px"> <label class="f-label" style="text-align:center;display:block">รหัสพนักงาน</label>
         <input class="f-input" id="approvalEmpId" placeholder="เช่น MGR01"
           style="text-transform:uppercase;font-size:20px;font-weight:700;text-align:center;letter-spacing:4px"
-          oninput="this.value=this.value.toUpperCase();clearApprovalError()" autocomplete="off"> </div>
+          oninput="this.value=this.value.toUpperCase();clearApprovalError()" autocomplete="off">
+      </div>
       <div id="approvalEmpName"
         style="text-align:center;font-size:13px;font-weight:700;color:var(--green);min-height:20px;margin-bottom:8px">
       </div>
@@ -3218,7 +3228,8 @@
                 style="font-size:12px;font-weight:700;color:var(--t2);font-family:var(--fh)">วัตถุดิบต่อ 1 แก้ว</span>
               <button onclick="addRecipeRow()"
                 style="background:var(--blue-lt);color:var(--blue);border:none;border-radius:var(--rf);padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">+
-                เพิ่ม</button> </div>
+                เพิ่ม</button>
+            </div>
             <div id="menuRecipeRows"></div>
             <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(140,123,107,.2)">
               <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span
@@ -3280,7 +3291,14 @@
           <div class="f-group" id="promoVal2Group" style="display:none"><label class="f-label" id="promoVal2Label">แถม
               (แก้ว)</label><input class="f-input" id="promoVal2" type="number" placeholder="1"></div>
         </div>
-        <div class="f-row">
+        <div
+          style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:10px 12px;background:var(--bg-dk);border-radius:var(--r3)">
+          <input type="checkbox" id="promoNoExpiry"
+            style="width:16px;height:16px;cursor:pointer;accent-color:var(--cara)" onchange="togglePromoExpiry()">
+          <label for="promoNoExpiry" style="font-size:12px;font-weight:600;color:var(--t2);cursor:pointer">ไม่จำกัดวัน
+            (ใช้งานได้ตลอด)</label>
+        </div>
+        <div id="promoDatesRow" class="f-row">
           <div class="f-group"><label class="f-label">วันเริ่ม</label><input class="f-input" id="promoStart"
               type="date"></div>
           <div class="f-group"><label class="f-label">วันสิ้นสุด</label><input class="f-input" id="promoEnd"
@@ -3555,7 +3573,8 @@
         <div style="padding:18px 24px 4px;display:flex;align-items:center;gap:12px">
           <div
             style="width:44px;height:44px;border-radius:var(--r3);background:linear-gradient(135deg,var(--esp),#8B5E3C);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">
-            <span class="mi" style="color:#fff">admin_panel_settings</span></div>
+            <span class="mi" style="color:#fff">admin_panel_settings</span>
+          </div>
           <div>
             <div style="font-size:16px;font-weight:800;color:var(--t1);font-family:var(--fh)">พื้นที่ผู้จัดการ</div>
             <div style="font-size:11px;color:var(--t4);margin-top:2px">ต้องใช้รหัส Manager เพื่อเข้าถึง</div>
@@ -3790,8 +3809,11 @@
       }
 
       function renderCatPills() {
-        const cats = [['coffee', 'กาแฟ'], ['tea', 'ชา'], ['cocoa', 'โกโก้']];
-        document.getElementById('catRow').innerHTML = cats.map(([v, l]) => `<button class="cat-pill${activeCat === v ? 'active' : ''}" onclick="filterCat(this,'${v}')">${l}</button>`
+        const cats = [['all', 'ทั้งหมด'], ['coffee', 'กาแฟ'], ['tea', 'ชา'], ['cocoa', 'โกโก้'], ['other', 'อื่นๆ']];
+        const icons = { all: 'apps', coffee: 'coffee', tea: 'local_cafe', cocoa: 'emoji_food_beverage', other: 'more_horiz' };
+        document.getElementById('catRow').innerHTML = cats.map(([v, l]) =>
+          `<button class="cat-pill ${activeCat === v ? 'active' : ''}" onclick="filterCat(this,'${v}')">
+     <span style='font-family:"Material Symbols Outlined";font-size:14px;font-weight:normal;vertical-align:-2px;margin-right:3px'>${icons[v] || 'circle'}</span>${l}</button>`
         ).join('');
       }
 
@@ -3814,8 +3836,17 @@
         const grid = document.getElementById('orderGrid');
         if (!list.length) { grid.innerHTML = `<div class="empty-state" style="grid-column:span 2"><div class="e-icon"></div><div class="e-title">ไม่มีเมนูในหมวดนี้</div></div>`; return; }
         grid.innerHTML = list.map(m => `
- <div class="prod-card fade-up"> <div class="prod-img" style="background:${m.color}">${m.icon}</div> <div class="prod-body"> <div class="prod-name">${m.name}</div> ${m.sold > 0 ? `<div class="prod-sold-under">${m.sold} แก้ว</div>` : ''}
- <div class="prod-footer"> <span class="prod-price">฿${m.price}</span> <button class="prod-add" onclick="openProductModal(${m.id})">+</button> </div> </div> </div> `).join('');
+ <div class="prod-card fade-up" style="position:relative">
+   <div class="prod-img" style="background:${m.color};border-radius:var(--r3) var(--r3) 0 0;font-size:28px">${m.icon}</div>
+   <div class="prod-body">
+     <div class="prod-name" style="font-size:12px;font-weight:700;line-height:1.3">${m.name}</div>
+     ${m.sold > 0 ? `<div style="font-size:9px;color:var(--t4);margin-top:1px">${m.sold} แก้ว</div>` : '<div style="font-size:9px;color:var(--t5);margin-top:1px">฿${m.cost||0} ต้นทุน</div>'}
+     <div class="prod-footer" style="margin-top:6px">
+       <span class="prod-price" style="font-size:14px;font-weight:800">฿${m.price}</span>
+       <button class="prod-add" onclick="openProductModal(${m.id})" style="width:28px;height:28px;font-size:18px">+</button>
+     </div>
+   </div>
+ </div>`).join('');
       }
 
       /* Product Detail Modal */
@@ -4528,7 +4559,9 @@
         document.getElementById('promoType').value = p.type;
         document.getElementById('promoVal').value = p.val;
         document.getElementById('promoVal2').value = p.val2 || '';
-        document.getElementById('promoStart').value = p.start;
+        document.getElementById('promoNoExpiry').checked = !!p.noExpiry;
+        document.getElementById('promoDatesRow').style.display = p.noExpiry ? 'none' : '';
+        document.getElementById('promoStart').value = p.start || '';
         document.getElementById('promoEnd').value = p.end || '';
         document.getElementById('promoScope').value = p.scope;
         document.getElementById('promoNote').value = p.note;
@@ -4537,6 +4570,10 @@
       function delPromo(id) {
         if (!confirm('ลบโปรโมชั่นนี้?')) return;
         DB.promos = DB.promos.filter(p => p.id !== id); renderPromos(promoFilterTab); toast('ลบโปรโมชั่นแล้ว');
+      }
+      function togglePromoExpiry() {
+        const noExp = document.getElementById('promoNoExpiry').checked;
+        document.getElementById('promoDatesRow').style.display = noExp ? 'none' : '';
       }
       function updatePromoFields() {
         const type = document.getElementById('promoType').value;
@@ -4990,7 +5027,7 @@
           const loginCount = DB.auditLog.filter(a => a.type === 'login' && a.empId === e.id).length;
           return `
  <div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px 14px;margin-bottom:10px"> <div style="display:flex;align-items:center;gap:12px"> <div style="width:40px;height:40px;border-radius:50%;background:${e.role === 'manager' ? 'var(--blue-lt)' : 'var(--bg-dk)'};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0"><span style='font-family:"Material Symbols Outlined";font-size:20px;font-weight:normal;color:${e.role === "manager" ? "var(--blue)" : "var(--t3)"}'>${e.role === "manager" ? "manage_accounts" : "person"}</span>
- </div> <div style="flex:1;min-width:0"> <div style="font-size:13px;font-weight:700;color:var(--t1)">${e.name}</div> <div style="font-size:11px;color:var(--t4);margin-top:2px;display:flex;gap:6px;flex-wrap:wrap"> <span style="background:var(--bg-dk);border-radius:var(--rf);padding:1px 7px">${e.id}</span> <span style="color:${roleColor[e.role]};font-weight:600">${roleLabel[e.role] || e.role}</span> </div> </div> <div style="display:flex;gap:5px"> <button class="btn btn-secondary btn-xs" onclick="openStaffModal('${e.id}')" title="แก้ไข"><span style='font-family:"Material Symbols Outlined";font-size:14px;font-weight:normal'>edit</span></button> <button class="btn btn-danger btn-xs" onclick="deleteStaff('${e.id}')" title="ลบ"><span style='font-family:"Material Symbols Outlined";font-size:14px;font-weight:normal'>delete</span></button> </div> </div> <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(176,154,133,.15);display:flex;justify-content:space-between;align-items:center"> <div style="font-size:10px;color:var(--t4)"> <span> เข้าล่าสุด: <strong style="color:var(--t3)">${lastStr}</strong></span> </div> <div style="font-size:10px;color:var(--t4)"> เข้าระบบ <strong style="color:var(--t3)">${loginCount}</strong> ครั้ง
+ </div> <div style="flex:1;min-width:0"> <div style="font-size:13px;font-weight:700;color:var(--t1)">${e.name}</div> <div style="font-size:11px;color:var(--t4);margin-top:2px;display:flex;gap:6px;flex-wrap:wrap"> <span style="background:var(--bg-dk);border-radius:var(--rf);padding:1px 7px">${e.id}</span> <span style="color:${roleColor[e.role]};font-weight:600">${roleLabel[e.role] || e.role}</span> </div> </div> <div style="display:flex;gap:5px"> <button class="btn btn-secondary btn-xs" onclick="openStaffModal(String('${e.id}'))" title="แก้ไข" style="padding:6px 10px"><span style='font-family:"Material Symbols Outlined";font-size:14px;font-weight:normal'>edit</span></button> <button class="btn btn-danger btn-xs" onclick="deleteStaff('${e.id}')" title="ลบ" style="padding:6px 10px"><span style='font-family:"Material Symbols Outlined";font-size:14px;font-weight:normal'>delete</span></button> </div> </div> <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(176,154,133,.15);display:flex;justify-content:space-between;align-items:center"> <div style="font-size:10px;color:var(--t4)"> <span> เข้าล่าสุด: <strong style="color:var(--t3)">${lastStr}</strong></span> </div> <div style="font-size:10px;color:var(--t4)"> เข้าระบบ <strong style="color:var(--t3)">${loginCount}</strong> ครั้ง
  <button onclick="viewStaffHistory('${e.id}')" style="margin-left:6px;font-size:9px;background:var(--bg-dk);border:none;border-radius:var(--rf);padding:2px 7px;cursor:pointer;color:var(--blue)">ดูประวัติ</button> </div> </div> </div>`;
         }).join('');
       }
@@ -5041,6 +5078,7 @@
       }
 
       function openStaffModal(editId) {
+        if (editId) editId = String(editId);
         const isEdit = !!editId;
         document.getElementById('empModalTitle').textContent = isEdit ? 'แก้ไขพนักงาน' : 'เพิ่มพนักงาน';
         document.getElementById('empEditId').value = editId || '';
@@ -5327,16 +5365,40 @@
         const today = new Date().toISOString().split('T')[0];
         const soon = new Date(); soon.setDate(soon.getDate() + 7); const soonStr = soon.toISOString().split('T')[0];
         if (!data.length) { el.innerHTML = `<div class="empty-state"><div class="e-title">ยังไม่มีรายการ</div><div class="e-sub">กดปุ่ม + เพิ่มรายการ</div></div>`; return; }
-        el.innerHTML = data.map(item => {
+        el.innerHTML = '<div style="padding:12px 16px">' + data.map(item => {
           const lowStock = item.qty <= item.min;
           const expiring = item.expiry && item.expiry <= soonStr;
           const expired = item.expiry && item.expiry < today;
-          let dotClass = 'si-dot';
-          if (item.status !== 'active') dotClass += 'inactive';
-          else if (expired || item.status === 'damaged') dotClass += 'danger';
-          else if (lowStock || expiring) dotClass += 'warn';
-          return `<div class="store-item"> <div class="${dotClass}"></div> <div class="si-info"> <div class="si-name">${item.name}</div> <div class="si-meta">฿${item.cost}/${item.unit}${item.expiry ? ` · ${item.expiry}` : ''}${expired ? '<span class="expiry-out">หมดอายุ</span>' : expiring ? '<span class="expiry-near">ใกล้หมด</span>' : ''}${item.status !== 'active' ? `<span class="badge badge-red" style="margin-left:4px">${{ damaged: 'เสียหาย', retired: 'เลิกใช้' }[item.status]}</span>` : ''}${item.note ? ` · <em style="color:var(--t4)">${item.note}</em>` : ''}</div> </div> <div class="si-qty">${lowStock ? '<span style="color:var(--red);font-size:9px">ใกล้หมด</span>' : ''}${item.qty}<span>${item.unit}</span></div> <div style="display:flex;gap:3px;margin-left:4px"> <button class="btn btn-secondary btn-xs" onclick="editStoreItem('${tab}',${item.id})"></button> <button class="btn btn-danger btn-xs" onclick="delStoreItem('${tab}',${item.id})"></button> </div> </div>`;
-        }).join('');
+          const dotCol = expired || item.status === 'damaged' ? 'var(--red)' : lowStock || expiring ? 'var(--gold)' : item.status !== 'active' ? 'var(--t4)' : 'var(--green)';
+          const badge = expired ? `<span style="font-size:9px;font-weight:700;background:var(--red-lt);color:var(--red);padding:1px 6px;border-radius:var(--rf)">หมดอายุ</span>` :
+            expiring ? `<span style="font-size:9px;font-weight:700;background:var(--gold-lt);color:var(--gold);padding:1px 6px;border-radius:var(--rf)">ใกล้หมดอายุ</span>` : '';
+          const statusBadge = item.status !== 'active' ? `<span style="font-size:9px;font-weight:700;background:var(--red-lt);color:var(--red);padding:1px 6px;border-radius:var(--rf)">${{ damaged: 'เสียหาย', retired: 'เลิกใช้' }[item.status] || item.status}</span>` : '';
+          return `<div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px 14px;margin-bottom:8px">
+   <div style="display:flex;align-items:center;gap:10px">
+     <div style="width:36px;height:36px;border-radius:50%;background:${dotCol}22;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+       <div style="width:8px;height:8px;border-radius:50%;background:${dotCol};box-shadow:0 0 6px ${dotCol}"></div></div>
+     <div style="flex:1;min-width:0">
+       <div style="font-size:13px;font-weight:700;color:var(--t1)">${item.name}</div>
+       <div style="font-size:10px;color:var(--t4);margin-top:3px;display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+         <span>฿${item.cost}/${item.unit}</span>
+         ${item.expiry ? `<span>· หมดอายุ ${item.expiry}</span>` : ''}
+         ${badge}${statusBadge}
+       </div>
+     </div>
+     <div style="text-align:right;flex-shrink:0">
+       <div style="font-size:18px;font-weight:800;color:${lowStock ? 'var(--red)' : 'var(--esp)'}">
+         ${item.qty}<span style="font-size:10px;font-weight:400;color:var(--t4)"> ${item.unit}</span></div>
+       ${lowStock ? `<div style="font-size:9px;color:var(--red);font-weight:700">ต่ำกว่าขั้นต่ำ</div>` : `<div style="font-size:9px;color:var(--t5)">min ${item.min || 0}</div>`}
+     </div>
+   </div>
+   <div style="display:flex;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid rgba(176,154,133,.12)">
+     <button onclick="editStoreItem('${tab}',${item.id})" style="flex:1;padding:7px;font-size:11px;border-radius:var(--r2);background:var(--bg);box-shadow:var(--neu-out-xs);font-family:var(--fb);font-weight:600;color:var(--t2)">
+       <span style='font-family:"Material Symbols Outlined";font-size:13px;font-weight:normal;vertical-align:-2px'>edit</span> แก้ไข</button>
+     <button onclick="delStoreItem('${tab}',${item.id})" style="padding:7px 14px;font-size:11px;border-radius:var(--r2);background:var(--red-lt);color:var(--red);font-family:var(--fb);font-weight:600">
+       <span style='font-family:"Material Symbols Outlined";font-size:13px;font-weight:normal;vertical-align:-2px'>delete</span></button>
+   </div>
+ </div>`;
+        }).join('') + '</div>';
       }
       function calcRecipeCostPerCup(rec) {
         if (!rec || !rec.ingredients) return 0;
@@ -5738,7 +5800,7 @@
             + '</div>';
           return '<div style="margin:0 16px 10px;background:var(--bg);border-radius:var(--r4);box-shadow:var(--neu-out-sm);overflow:hidden;opacity:' + opacity + '">'
             + '<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer" onclick="toggleBillDetail(\'' + detailId + '\')">'
-            + '<div style="width:34px;height:34px;border-radius:var(--r3);background:' + bgEsp + ';display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+            + '<div style="width:36px;height:36px;border-radius:var(--r3);background:' + bgEsp + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(42,24,16,.25)">'
             + '<span style="font-size:11px;font-weight:800;color:#fff;font-family:var(--fh)">#' + o.id + '</span>'
             + '</div>'
             + '<div style="flex:1">'
