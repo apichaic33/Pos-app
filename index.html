@@ -834,7 +834,7 @@ textarea.f-input{resize:none;}
 </div> <!-- MODAL: Recipe -->
 <!-- MODAL: SETUP MODE (First-run) -->
 <div class="modal-overlay" id="modal-setup" style="z-index:9100"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title">ตั้งค่าระบบครั้งแรก</span> </div> <div class="modal-body"> <div style="background:rgba(43,94,167,.07);border-radius:var(--r3);padding:10px 14px;margin-bottom:16px;font-size:11px;color:var(--blue);line-height:1.7"> สร้างบัญชี Manager คนแรกสำหรับเข้าสู่ระบบ<br> รหัสนี้จะใช้จัดการพนักงานและข้อมูลร้านค้า
- </div> <div class="f-row"> <div class="f-group" style="flex:1"><label class="f-label">รหัสพนักงาน</label> <input class="f-input" id="setupEmpId" placeholder="เช่น MGR01" maxlength="10" oninput="this.value=this.value.toUpperCase()"> </div> <div class="f-group" style="flex:2"><label class="f-label">ชื่อ-นามสกุล</label> <input class="f-input" id="setupName" placeholder="ชื่อ นามสกุล"> </div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">PIN (4 หลัก)</label> <input class="f-input" id="setupPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"> </div> <div class="f-group"><label class="f-label">ยืนยัน PIN</label> <input class="f-input" id="setupPinConfirm" type="password" inputmode="numeric" maxlength="4" placeholder="••••"> </div> </div> <div class="f-group"> <label class="f-label">ชื่อร้าน</label> <input class="f-input" id="setupShopName" placeholder="เช่น Coffee Corner"> </div> <div class="f-group"> <label class="f-label">คำอธิบายร้าน</label> <input class="f-input" id="setupShopSub" placeholder="เช่น Coffee & Beverages"> </div> <div id="setupError" style="font-size:12px;color:var(--red);min-height:16px;font-weight:600"></div> </div> <div class="modal-foot"> <button class="btn btn-dark" style="flex:1" onclick="submitSetup()"> สร้างบัญชีและเริ่มใช้งาน</button> </div> </div>
+ </div> <div class="f-row"> <div class="f-group" style="flex:1"><label class="f-label">รหัสพนักงาน</label> <input class="f-input" id="setupEmpId" placeholder="เช่น MGR01" maxlength="10" oninput="this.value=this.value.toUpperCase()"> </div> <div class="f-group" style="flex:2"><label class="f-label">ชื่อ-นามสกุล</label> <input class="f-input" id="setupName" placeholder="ชื่อ นามสกุล"> </div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">PIN (4 หลัก)</label> <input class="f-input" id="setupPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"> </div> <div class="f-group"><label class="f-label">ยืนยัน PIN</label> <input class="f-input" id="setupPinConfirm" type="password" inputmode="numeric" maxlength="4" placeholder="••••"> </div> </div> <div id="setupShopFields"> <div class="f-group"> <label class="f-label">ชื่อร้าน</label> <input class="f-input" id="setupShopName" placeholder="เช่น Coffee Corner"> </div> <div class="f-group"> <label class="f-label">คำอธิบายร้าน</label> <input class="f-input" id="setupShopSub" placeholder="เช่น Coffee & Beverages"> </div> <div id="setupError" style="font-size:12px;color:var(--red);min-height:16px;font-weight:600"></div> </div> <div class="modal-foot"> <button class="btn btn-dark" style="flex:1" onclick="submitSetup()"> สร้างบัญชีและเริ่มใช้งาน</button> </div> </div>
 </div> <!-- MODAL: ADD/EDIT STAFF -->
 <div class="modal-overlay" id="modal-emp"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title" id="empModalTitle">เพิ่มพนักงาน</span> <button class="modal-close" onclick="closeModal('modal-emp')"></button> </div> <div class="modal-body"> <input type="hidden" id="empEditId"> <div class="f-row"> <div class="f-group" style="flex:1"><label class="f-label">รหัสพนักงาน</label><input class="f-input" id="empId" placeholder="เช่น E01" maxlength="10" oninput="this.value=this.value.toUpperCase()"></div> <div class="f-group" style="flex:2"><label class="f-label">ชื่อ-นามสกุล</label><input class="f-input" id="empName" placeholder="ชื่อ นามสกุล"></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">สิทธิ์</label> <select class="f-select" id="empRole"> <option value="cashier">Cashier (แคชเชียร์)</option> <option value="manager">Manager (ผู้จัดการ)</option> </select> </div> <div class="f-group"><label class="f-label">PIN (4 หลัก)</label><input class="f-input" id="empPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div> </div> <div class="f-group"><label class="f-label">ยืนยัน PIN</label><input class="f-input" id="empPinConfirm" type="password" inputmode="numeric" maxlength="4" placeholder="••••"></div> <div id="empFormError" style="font-size:12px;color:var(--red);min-height:16px;font-weight:600"></div> <!-- Reset PIN section (edit mode only) --> <div id="empResetSection" style="display:none;background:rgba(43,94,167,.07);border:1px solid rgba(43,94,167,.18);border-radius:var(--r3);padding:10px 12px;margin-top:4px"> <div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:3px"> รีเซ็ต PIN</div> <div style="font-size:10px;color:var(--t4)">กรอก PIN ใหม่ด้านบน แล้วกด "บันทึก" — ระบบจะขอยืนยัน Manager ก่อนทุกครั้ง</div> <div style="font-size:10px;color:var(--t4);margin-top:2px">ปล่อยว่างถ้าไม่ต้องการเปลี่ยน PIN</div> </div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-emp')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="saveStaff()">บันทึก</button> </div> </div>
 </div> <!-- MANAGER GATE OVERLAY -->
@@ -2002,11 +2002,15 @@ document.addEventListener('keydown', e=>{
  */
 /* SETUP MODE */
 function openSetupMode(){
- // ป้องกัน: เปิดได้เฉพาะตอนยังไม่มีพนักงาน
- if(DB.employees.length){ toast('ระบบมีพนักงานแล้ว'); return; }
  ['setupEmpId','setupName','setupPin','setupPinConfirm','setupShopName','setupShopSub']
  .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
  document.getElementById('setupError').textContent='';
+ // เปลี่ยน title ตาม context
+ const titleEl = document.getElementById('setupModalTitle');
+ if(titleEl) titleEl.textContent = DB.employees.length ? '⚙️ เพิ่ม Manager' : '⚙️ ตั้งค่าระบบครั้งแรก';
+ // ซ่อน shopName fields ถ้ามีร้านอยู่แล้ว
+ const shopFields = document.getElementById('setupShopFields');
+ if(shopFields) shopFields.style.display = DB.employees.length ? 'none' : '';
  openModal('modal-setup');
 }
 
@@ -2024,12 +2028,11 @@ function submitSetup(){
  if(!name){ errEl.textContent='กรุณาใส่ชื่อ'; return; }
  if(!pin || pin.length!==4){ errEl.textContent='PIN ต้องมี 4 หลัก'; return; }
  if(pin!==pin2){ errEl.textContent='PIN ไม่ตรงกัน'; return; }
- if(!shop){ errEl.textContent='กรุณาใส่ชื่อร้าน'; return; }
+ if(!DB.employees.length && !shop){ errEl.textContent='กรุณาใส่ชื่อร้าน'; return; }
 
  // บันทึก
  DB.employees.push({id, name, role:'manager', pin});
- DB.shopName = shop;
- DB.shopSub = sub || shop;
+ if(shop){ DB.shopName = shop; DB.shopSub = sub || shop; }
 
  closeModal('modal-setup');
 
