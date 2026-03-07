@@ -3625,8 +3625,18 @@
         <div class="f-row">
           <div class="f-group"><label class="f-label">ต้นทุน/หน่วย (฿)</label><input class="f-input" id="storeItemCost"
               type="number" placeholder="0"></div>
-          <div class="f-group"><label class="f-label">จำนวนขั้นต่ำ</label><input class="f-input" id="storeItemMin"
-              type="number" placeholder="0"></div>
+          <div class="f-group">
+            <label class="f-label" style="display:flex;align-items:center;gap:5px">
+              จำนวนขั้นต่ำ
+              <span
+                style="font-size:9px;background:rgba(43,94,167,.12);color:var(--blue);padding:1px 6px;border-radius:10px;font-weight:600">Reorder
+                Point</span>
+            </label>
+            <input class="f-input" id="storeItemMin" type="number" placeholder="0">
+            <div style="font-size:10px;color:var(--t4);margin-top:3px;padding:0 2px">
+              เมื่อสต็อกลดเหลือจำนวนนี้ ระบบจะแจ้งเตือนให้สั่งซื้อเพิ่ม
+            </div>
+          </div>
         </div>
         <div class="f-group" id="storeExpiryGroup"><label class="f-label">วันหมดอายุ</label><input class="f-input"
             id="storeItemExpiry" type="date"></div>
@@ -3780,9 +3790,13 @@
   <div class="modal-overlay" id="modal-recipe">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-head"><span class="modal-title">คำนวณสูตร</span><button class="modal-close"
-          onclick="closeModal('modal-recipe')"></button></div>
+      <div class="modal-head"><span class="modal-title">คำนวณสูตร</span></div>
       <div class="modal-body">
+        <div
+          style="background:rgba(43,94,167,.07);border-left:3px solid var(--blue);border-radius:0 var(--r2) var(--r2) 0;padding:7px 10px;margin-bottom:12px;font-size:10px;color:var(--t3)">
+          <span style="font-weight:700;color:var(--blue)">คำนวณสูตร</span> — คำนวณต้นทุนต่อแก้วและ Margin
+          เพื่อวางแผนราคาขาย ไม่หักสต็อก
+        </div>
         <div class="f-row">
           <div class="f-group" style="flex:2"><label class="f-label">ชื่อสูตร</label><input class="f-input"
               id="recipeName" placeholder="ชื่อสูตร"></div>
@@ -3804,15 +3818,20 @@
   <div class="modal-overlay" id="modal-blend">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-head"><span class="modal-title" id="blendModalTitle">สร้างสูตรเบลนด์</span><button
-          class="modal-close" onclick="closeModal('modal-blend')"></button></div>
-      <div class="modal-body"> <input type="hidden" id="blendEditId">
+      <div class="modal-head"><span class="modal-title" id="blendModalTitle">สร้างสูตรเบลนด์</span></div>
+      <div class="modal-body">
+        <div
+          style="background:rgba(52,168,83,.07);border-left:3px solid var(--green);border-radius:0 var(--r2) var(--r2) 0;padding:7px 10px;margin-bottom:12px;font-size:10px;color:var(--t3)">
+          <span style="font-weight:700;color:var(--green)">สูตรเบลนด์</span> — ผลิตไซรัป/ซอส/เบสเป็น Batch
+          แล้วเก็บลงคลัง หักวัตถุดิบจริง
+        </div>
+        <input type="hidden" id="blendEditId">
         <div class="f-row">
           <div class="f-group" style="flex:2"><label class="f-label">ชื่อ</label><input class="f-input" id="blendName"
               placeholder="เช่น ไซรัปวานิลลา"></div>
           <div class="f-group"><label class="f-label">ประเภท</label><select class="f-select" id="blendType">
               <option value="syrup">ไซรัป</option>
-              <option value="tea_base">ฐานชา</option>
+              <option value="base_ingredient">วัตถุดิบหลัก</option>
               <option value="sauce">ซอส</option>
               <option value="other">อื่นๆ</option>
             </select></div>
@@ -3832,8 +3851,19 @@
         <div class="f-row">
           <div class="f-group"><label class="f-label">ได้ปริมาณ (หน่วย/batch)</label><input class="f-input"
               id="blendYield" type="number" placeholder="500"></div>
-          <div class="f-group"><label class="f-label">ต้นทุน/batch (฿)</label><input class="f-input" id="blendCost"
-              type="number" placeholder="0"></div>
+          <div class="f-group">
+            <label class="f-label" style="display:flex;align-items:center;gap:6px">
+              ต้นทุน/batch (฿)
+              <span
+                style="font-size:9px;background:rgba(52,168,83,.12);color:var(--green);padding:1px 6px;border-radius:10px;font-weight:600">คำนวณอัตโนมัติ</span>
+            </label>
+            <input class="f-input" id="blendCost" type="number" placeholder="0" readonly
+              onclick="this.removeAttribute('readonly');this.style.background='';this.style.color=''"
+              style="background:var(--bg-dk);color:var(--cara);font-weight:700;font-size:15px">
+            <div style="font-size:10px;color:var(--t4);margin-top:3px;padding:0 2px">
+              คำนวณจากวัตถุดิบที่เลือก — แก้ไขได้ถ้าต้องการกำหนดเอง
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1"
@@ -3859,8 +3889,7 @@
   <div class="modal-overlay" id="modal-use-log">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-head"><span class="modal-title">บันทึกการใช้วัตถุดิบ</span><button class="modal-close"
-          onclick="closeModal('modal-use-log')"></button></div>
+      <div class="modal-head"><span class="modal-title">บันทึกการใช้วัตถุดิบ</span></div>
       <div class="modal-body">
         <div class="f-group"><label class="f-label">วัตถุดิบ</label><select class="f-select" id="useLogItem"></select>
         </div>
@@ -5804,11 +5833,26 @@
       openModal('modal-blend');
     }
     function addBlendIng() { const idx = blendIngArr.length; blendIngArr.push({ ingId: '', qty: 0, note: '' }); renderBlendIngRow(idx); }
+    function calcBlendCost() {
+      // คำนวณต้นทุนรวมจากวัตถุดิบทุกแถว
+      const costEl = document.getElementById('blendCost');
+      if (!costEl || !costEl.readOnly) return; // ถ้า user unlock แล้ว ไม่ override
+      let total = 0;
+      blendIngArr.forEach((_, idx) => {
+        const ingId = parseInt(document.getElementById(`bing-ing-${idx}`)?.value);
+        const qty = parseFloat(document.getElementById(`bing-qty-${idx}`)?.value) || 0;
+        if (!ingId || !qty) return;
+        const ing = [...DB.ingredients, ...DB.packages].find(x => x.id === ingId);
+        if (ing && ing.cost) total += ing.cost * qty;
+      });
+      costEl.value = total > 0 ? Math.round(total * 100) / 100 : '';
+    }
     function renderBlendIngRow(idx) {
       const existing = blendIngArr[idx] || {};
       const row = document.createElement('div'); row.className = 'recipe-ing-row'; row.id = `bing-${idx}`;
-      row.innerHTML = `<div class="f-group" style="flex:2"><label class="f-label">วัตถุดิบ</label><select class="f-select" id="bing-ing-${idx}"><option value="">เลือก...</option>${DB.ingredients.map(i => `<option value="${i.id}"${i.id === existing.ingId ? 'selected' : ''}>${i.name}</option>`).join('')}</select></div><div class="f-group"><label class="f-label">ปริมาณ</label><input class="f-input" id="bing-qty-${idx}" type="number" value="${existing.qty || ''}" placeholder="0"></div><button class="btn btn-danger btn-sm btn-icon" onclick="document.getElementById('bing-${idx}')?.remove()" style="align-self:flex-end"></button>`;
+      row.innerHTML = `<div class="f-group" style="flex:2"><label class="f-label">วัตถุดิบ</label><select class="f-select" id="bing-ing-${idx}" onchange="calcBlendCost()"><option value="">เลือก...</option>${[...DB.ingredients, ...DB.packages].map(i => `<option value="${i.id}"${i.id === existing.ingId ? 'selected' : ''}>${i.name} (฿${i.cost || 0}/${i.unit || 'หน่วย'})</option>`).join('')}</select></div><div class="f-group"><label class="f-label">ปริมาณ</label><input class="f-input" id="bing-qty-${idx}" type="number" value="${existing.qty || ''}" placeholder="0" oninput="calcBlendCost()"></div><button class="btn btn-danger btn-sm btn-icon" onclick="document.getElementById('bing-${idx}')?.remove();calcBlendCost()" style="align-self:flex-end"></button>`;
       document.getElementById('blendIngList').appendChild(row);
+      calcBlendCost();
     }
     function saveBlendFormula() {
       const id = parseInt(document.getElementById('blendEditId').value) || null;
@@ -6437,7 +6481,7 @@
       <div class="modal-handle"></div>
       <div class="modal-head">
         <span class="modal-title">สร้างใบสั่งซื้อ</span>
-        <button class="modal-close" onclick="closeModal('modal-po')"></button>
+
       </div>
       <div class="modal-body">
         <input type="hidden" id="poEditId">
