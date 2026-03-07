@@ -73,8 +73,8 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 500px;
-      padding: 10px 20px calc(10px + env(safe-area-inset-bottom, 0px));
-      background: linear-gradient(to top, var(--bg) 70%, transparent);
+      padding: 10px 24px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: linear-gradient(to top, var(--bg) 80%, transparent);
       display: none;
       align-items: center;
       justify-content: center;
@@ -3064,33 +3064,21 @@
     <div class="toast" id="toast"></div>
     <!-- BOTTOM ACTION BARS -->
     <div class="bottom-action-bar" id="bab-promo">
-      <button class="bab-btn secondary" onclick="goPage('order')">
-        <span class="mi" style="font-size:16px">arrow_back</span>กลับ
-      </button>
       <button class="bab-btn" onclick="openModal('modal-add-promo')">
         <span class="mi" style="font-size:16px">add</span>สร้างโปรโมชั่น
       </button>
     </div>
     <div class="bottom-action-bar" id="bab-manage">
-      <button class="bab-btn secondary" onclick="goPage('order')">
-        <span class="mi" style="font-size:16px">arrow_back</span>กลับ
-      </button>
       <button class="bab-btn" onclick="openModal('modal-add-menu')">
         <span class="mi" style="font-size:16px">add</span>เพิ่มเมนู
       </button>
     </div>
     <div class="bottom-action-bar" id="bab-stores">
-      <button class="bab-btn secondary" onclick="goPage('order')">
-        <span class="mi" style="font-size:16px">arrow_back</span>กลับ
-      </button>
-      <button class="bab-btn" onclick="openStoreAdd()">
+      <button class="bab-btn" onclick="openStoreAdd()" id="bab-stores-btn">
         <span class="mi" style="font-size:16px">add</span>เพิ่มรายการ
       </button>
     </div>
     <div class="bottom-action-bar" id="bab-staff">
-      <button class="bab-btn secondary" onclick="goPage('order')">
-        <span class="mi" style="font-size:16px">arrow_back</span>กลับ
-      </button>
       <button class="bab-btn" onclick="openStaffModal()">
         <span class="mi" style="font-size:16px">person_add</span>เพิ่มพนักงาน
       </button>
@@ -3296,8 +3284,7 @@
   <div class="modal-overlay" id="modal-add-menu">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-head"> <span class="modal-title" id="menuModalTitle">เพิ่มเมนูใหม่</span> <button
-          class="modal-close" onclick="closeModal('modal-add-menu')"></button> </div>
+      <div class="modal-head"> <span class="modal-title" id="menuModalTitle">เพิ่มเมนูใหม่</span> </div>
       <div class="modal-body"> <input type="hidden" id="menuEditId"> <input type="hidden" id="menuRecipeId" value="">
         <!-- Tab bar -->
         <div class="tab-bar" style="margin-bottom:14px"> <button class="tab-btn active" id="menuTab-info"
@@ -3407,8 +3394,7 @@
   <div class="modal-overlay" id="modal-add-promo">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-head"> <span class="modal-title" id="promoModalTitle">สร้างโปรโมชั่น</span> <button
-          class="modal-close" onclick="closeModal('modal-add-promo')"></button> </div>
+      <div class="modal-head"> <span class="modal-title" id="promoModalTitle">สร้างโปรโมชั่น</span> </div>
       <div class="modal-body"> <input type="hidden" id="promoEditId">
         <div class="f-group"><label class="f-label">ชื่อโปรโมชั่น</label><input class="f-input" id="promoName"
             placeholder="เช่น Happy Hour"></div>
@@ -3670,8 +3656,7 @@
   <div class="modal-overlay" id="modal-emp">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
-      <div class="modal-head"> <span class="modal-title" id="empModalTitle">เพิ่มพนักงาน</span> <button
-          class="modal-close" onclick="closeModal('modal-emp')"></button> </div>
+      <div class="modal-head"> <span class="modal-title" id="empModalTitle">เพิ่มพนักงาน</span> </div>
       <div class="modal-body"> <input type="hidden" id="empEditId">
         <div class="f-row">
           <div class="f-group" style="flex:1"><label class="f-label">รหัสพนักงาน</label><input class="f-input"
@@ -4752,7 +4737,8 @@
      */
     let reportDays = 1;
     function switchReportPeriod(btn, days) {
-      btn.closest('.tab-bar').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      const bar = btn.closest('.tab-bar') || btn.closest('.audit-tab-bar') || btn.parentElement;
+      bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active'); reportDays = days; renderReport(days);
     }
     function renderReport(days) {
@@ -4993,7 +4979,8 @@
 
     let auditFilter = 'all';
     function switchAuditFilter(btn, filter) {
-      btn.closest('.tab-bar').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      const bar = btn.closest('.tab-bar') || btn.closest('.audit-tab-bar') || btn.parentElement;
+      bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active'); auditFilter = filter; renderAuditLog(filter);
     }
     function renderAuditLog(filter) {
