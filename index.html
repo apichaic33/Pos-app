@@ -2954,7 +2954,7 @@ function loginSubmit(){
  if(!DB.employees.length){ errEl.textContent='ยังไม่มีพนักงานในระบบ กรุณาติดต่อผู้ดูแลระบบ'; loginPinReset(); return; }
  if(!emp){ errEl.textContent='ไม่พบรหัสพนักงาน'; loginPinReset(); return; }
  // PIN check — default PIN = last 4 digits of empId padded, or use stored pin
- const expectedPin = emp.pin || '1234';
+ const expectedPin = String(emp.pin || '1234');
  if(loginPin!==expectedPin){ errEl.textContent='รหัส PIN ไม่ถูกต้อง'; loginPinReset(); return; }
  // Success
  currentOperator={id:emp.id,name:emp.name,role:emp.role};
@@ -3040,7 +3040,7 @@ function mgrGateSubmit(){
  const emp = DB.employees.find(e=>String(e.id)===String(id));
  if(!emp){ errEl.textContent='ไม่พบรหัสพนักงาน'; shakeGate(); return; }
  if(emp.role!=='manager'){ errEl.textContent=' '+emp.name+'ไม่มีสิทธิ์ผู้จัดการ'; shakeGate(); return; }
- if(pin !== emp.pin){ errEl.textContent='รหัส PIN ไม่ถูกต้อง'; shakeGate(); return; }
+ if(String(pin) !== String(emp.pin)){ errEl.textContent='รหัส PIN ไม่ถูกต้อง'; shakeGate(); return; }
  // success
  mgrSession = {emp, expiry: Date.now()+MGR_TIMEOUT};
  document.getElementById('mgrGateOverlay').classList.remove('open');
