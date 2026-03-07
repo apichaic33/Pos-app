@@ -2041,8 +2041,8 @@ function submitSetup(){
  const numpad = document.getElementById('loginNumpad');
  const dots   = document.getElementById('loginPinDots');
  if(hint)   hint.style.display   = 'none';
- if(numpad) numpad.style.display = '';
- if(dots)   dots.style.display   = '';
+ if(numpad) numpad.style.display = 'grid';
+ if(dots)   dots.style.display   = 'flex';
 
  // pre-fill รหัสพนักงานที่เพิ่งสร้าง
  const empInput = document.getElementById('loginEmpId');
@@ -3122,6 +3122,8 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  if(isOnline && SCRIPT_URL!=='YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'){
    showSyncStatus('กำลังโหลดข้อมูล...');
    await loadFromSheet(); // โหลดทุกอย่างรวม employees
+ } else if(!isOnline){
+   showSyncStatus('ออฟไลน์');
  }
  updateSyncUI();
  document.getElementById('reportDate').textContent='วันนี้';
@@ -3141,8 +3143,8 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
    const numpad = document.getElementById('loginNumpad');
    const dots   = document.getElementById('loginPinDots');
    if(hint)   hint.style.display='none';
-   if(numpad) numpad.style.display='';
-   if(dots)   dots.style.display='';
+   if(numpad) numpad.style.display='grid';
+   if(dots)   dots.style.display='flex';
  }
 })();
 </script>
