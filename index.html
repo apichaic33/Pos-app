@@ -2770,7 +2770,8 @@
           <button class="tab-btn" onclick="switchPromoTab(this,'pct')">% ลด</button> <button class="tab-btn"
             onclick="switchPromoTab(this,'fixed')">ลดราคา</button> <button class="tab-btn"
             onclick="switchPromoTab(this,'buy')">ซื้อ X แถม Y</button> <button class="tab-btn"
-            onclick="switchPromoTab(this,'freeN')">ซื้อ N ฟรี 1</button> </div>
+            onclick="switchPromoTab(this,'freeN')">ซื้อ N ฟรี 1</button>
+        </div>
         <div class="scroll-body" id="promoList" style="padding-bottom:20px"></div>
       </div> <!-- PAGE: MANAGE -->
       <div class="page" id="pg-manage">
@@ -2981,7 +2982,8 @@
               style="font-size:24px">backspace</span></button> <button class="numpad-btn"
             onclick="loginPinKey('0')">0</button> <button class="numpad-btn"
             style="background:var(--cara);color:#fff;box-shadow:0 4px 14px var(--cara-glow)"
-            onclick="loginSubmit()">เข้า</button> </div> <!-- Error -->
+            onclick="loginSubmit()">เข้า</button>
+        </div> <!-- Error -->
         <div id="loginError" style="text-align:center;font-size:12px;color:var(--red);min-height:20px;font-weight:600">
         </div>
         <div style="text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--bg-dk)"><button
@@ -3080,7 +3082,8 @@
       </div>
       <div class="op-action-row"> <button class="btn btn-secondary"
           style="padding:14px 16px;border-radius:var(--r4);font-size:12px" onclick="requestVoidOrder()">ยกเลิก</button>
-        <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button> </div>
+        <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button>
+      </div>
     </div>
   </div> <!-- RECEIPT PAGE -->
   <div class="receipt-page" id="receiptPage">
@@ -3107,7 +3110,8 @@
       <div style="margin:14px 0 6px"> <label class="f-label" style="text-align:center;display:block">รหัสพนักงาน</label>
         <input class="f-input" id="approvalEmpId" placeholder="เช่น MGR01"
           style="text-transform:uppercase;font-size:20px;font-weight:700;text-align:center;letter-spacing:4px"
-          oninput="this.value=this.value.toUpperCase();clearApprovalError()" autocomplete="off"> </div>
+          oninput="this.value=this.value.toUpperCase();clearApprovalError()" autocomplete="off">
+      </div>
       <div id="approvalEmpName"
         style="text-align:center;font-size:13px;font-weight:700;color:var(--green);min-height:20px;margin-bottom:8px">
       </div>
@@ -3189,7 +3193,8 @@
                 style="font-size:12px;font-weight:700;color:var(--t2);font-family:var(--fh)">วัตถุดิบต่อ 1 แก้ว</span>
               <button onclick="addRecipeRow()"
                 style="background:var(--blue-lt);color:var(--blue);border:none;border-radius:var(--rf);padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">+
-                เพิ่ม</button> </div>
+                เพิ่ม</button>
+            </div>
             <div id="menuRecipeRows"></div>
             <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(140,123,107,.2)">
               <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span
@@ -3525,7 +3530,8 @@
         <div style="padding:18px 24px 4px;display:flex;align-items:center;gap:12px">
           <div
             style="width:44px;height:44px;border-radius:var(--r3);background:linear-gradient(135deg,var(--esp),#8B5E3C);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">
-            <span class="mi" style="color:#fff">admin_panel_settings</span></div>
+            <span class="mi" style="color:#fff">admin_panel_settings</span>
+          </div>
           <div>
             <div style="font-size:16px;font-weight:800;color:var(--t1);font-family:var(--fh)">พื้นที่ผู้จัดการ</div>
             <div style="font-size:11px;color:var(--t4);margin-top:2px">ต้องใช้รหัส Manager เพื่อเข้าถึง</div>
@@ -4897,7 +4903,7 @@
         const list = DB.employees;
         document.getElementById('staffMgmtSub').textContent = list.length + 'คน';
 
-        const tabBar = `<div class="tab-bar" style="margin-bottom:14px"> <button class="tab-btn${staffMgmtTab === 'list' ? 'active' : ''}" onclick="renderStaffMgmt('list')">รายชื่อ</button> <button class="tab-btn${staffMgmtTab === 'history' ? 'active' : ''}" onclick="renderStaffMgmt('history')">ประวัติเข้าระบบ</button> </div>`;
+        const tabBar = `<div class="tab-bar" style="margin-bottom:14px"> <button class="tab-btn ${staffMgmtTab === 'list' ? 'active' : ''}" onclick="renderStaffMgmt('list')">รายชื่อ</button> <button class="tab-btn ${staffMgmtTab === 'history' ? 'active' : ''}" onclick="renderStaffMgmt('history')">ประวัติเข้าระบบ</button> </div>`;
 
         if (staffMgmtTab === 'history') {
           document.getElementById('staffMgmtContent').innerHTML = tabBar + renderStaffLoginHistory();
@@ -4924,8 +4930,8 @@
           const lastStr = last ? new Date(last).toLocaleString('th-TH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'ยังไม่เคยเข้า';
           const loginCount = DB.auditLog.filter(a => a.type === 'login' && a.empId === e.id).length;
           return `
- <div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px 14px;margin-bottom:10px"> <div style="display:flex;align-items:center;gap:12px"> <div style="width:40px;height:40px;border-radius:50%;background:${e.role === 'manager' ? 'var(--blue-lt)' : 'var(--bg-dk)'};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0"><span class='mi' style='font-size:20px;color:${e.role === "manager" ? "var(--blue)" : "var(--t3)"}'>${e.role === "manager" ? "manage_accounts" : "person"}</span>
- </div> <div style="flex:1;min-width:0"> <div style="font-size:13px;font-weight:700;color:var(--t1)">${e.name}</div> <div style="font-size:11px;color:var(--t4);margin-top:2px;display:flex;gap:6px;flex-wrap:wrap"> <span style="background:var(--bg-dk);border-radius:var(--rf);padding:1px 7px">${e.id}</span> <span style="color:${roleColor[e.role]};font-weight:600">${roleLabel[e.role] || e.role}</span> </div> </div> <div style="display:flex;gap:5px"> <button class="btn btn-secondary btn-xs" onclick="openStaffModal('${e.id}')"></button> <button class="btn btn-danger btn-xs" onclick="deleteStaff('${e.id}')"></button> </div> </div> <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(176,154,133,.15);display:flex;justify-content:space-between;align-items:center"> <div style="font-size:10px;color:var(--t4)"> <span> เข้าล่าสุด: <strong style="color:var(--t3)">${lastStr}</strong></span> </div> <div style="font-size:10px;color:var(--t4)"> เข้าระบบ <strong style="color:var(--t3)">${loginCount}</strong> ครั้ง
+ <div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px 14px;margin-bottom:10px"> <div style="display:flex;align-items:center;gap:12px"> <div style="width:40px;height:40px;border-radius:50%;background:${e.role === 'manager' ? 'var(--blue-lt)' : 'var(--bg-dk)'};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0"><span style='font-family:"Material Symbols Outlined";font-size:20px;font-weight:normal;color:${e.role === "manager" ? "var(--blue)" : "var(--t3)"}'>${e.role === "manager" ? "manage_accounts" : "person"}</span>
+ </div> <div style="flex:1;min-width:0"> <div style="font-size:13px;font-weight:700;color:var(--t1)">${e.name}</div> <div style="font-size:11px;color:var(--t4);margin-top:2px;display:flex;gap:6px;flex-wrap:wrap"> <span style="background:var(--bg-dk);border-radius:var(--rf);padding:1px 7px">${e.id}</span> <span style="color:${roleColor[e.role]};font-weight:600">${roleLabel[e.role] || e.role}</span> </div> </div> <div style="display:flex;gap:5px"> <button class="btn btn-secondary btn-xs" onclick="openStaffModal('${e.id}')" title="แก้ไข"><span style='font-family:"Material Symbols Outlined";font-size:14px;font-weight:normal'>edit</span></button> <button class="btn btn-danger btn-xs" onclick="deleteStaff('${e.id}')" title="ลบ"><span style='font-family:"Material Symbols Outlined";font-size:14px;font-weight:normal'>delete</span></button> </div> </div> <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(176,154,133,.15);display:flex;justify-content:space-between;align-items:center"> <div style="font-size:10px;color:var(--t4)"> <span> เข้าล่าสุด: <strong style="color:var(--t3)">${lastStr}</strong></span> </div> <div style="font-size:10px;color:var(--t4)"> เข้าระบบ <strong style="color:var(--t3)">${loginCount}</strong> ครั้ง
  <button onclick="viewStaffHistory('${e.id}')" style="margin-left:6px;font-size:9px;background:var(--bg-dk);border:none;border-radius:var(--rf);padding:2px 7px;cursor:pointer;color:var(--blue)">ดูประวัติ</button> </div> </div> </div>`;
         }).join('');
       }
@@ -4944,7 +4950,7 @@
         const rows = loginLogs.map(a => {
           const emp = DB.employees.find(e => String(e.id) === String(a.empId));
           const dt = new Date(a.ts).toLocaleString('th-TH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-          return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(176,154,133,.12)"> <span class='mi' style='font-size:18px;flex-shrink:0;color:${emp?.role === "manager" ? "var(--blue)" : "var(--t4)"}}'>${emp?.role === "manager" ? "manage_accounts" : "person"}</span> <div style="flex:1"> <div style="font-size:12px;font-weight:600;color:var(--t1)">${a.empName || a.empId || '—'}</div> <div style="font-size:10px;color:var(--t4)">${a.empId || ''}</div> </div> <div style="text-align:right;font-size:10px;color:var(--t4)">${dt}</div> </div>`;
+          return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(176,154,133,.12)"> <span style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal;flex-shrink:0;color:${emp?.role === "manager" ? "var(--blue)" : "var(--t4)"}'>${emp?.role === "manager" ? "manage_accounts" : "person"}</span> <div style="flex:1"> <div style="font-size:12px;font-weight:600;color:var(--t1)">${a.empName || a.empId || '—'}</div> <div style="font-size:10px;color:var(--t4)">${a.empId || ''}</div> </div> <div style="text-align:right;font-size:10px;color:var(--t4)">${dt}</div> </div>`;
         }).join('');
 
         return filterBadge + `<div style="padding:0 2px">${rows}</div>`;
@@ -5012,11 +5018,16 @@
           scheduleSync();
         };
 
-        // ถ้าแก้ PIN ต้องยืนยัน manager ก่อน
+        // ถ้าแก้ PIN — Manager ที่ login อยู่ข้าม pinModal ได้เลย
         if (isEdit && pin) {
-          openPinModal('ยืนยันรีเซ็ต PIN', 'ต้องการรีเซ็ต PIN ของ ' + name, 'manager', (ok, mgr) => {
-            if (ok) { addAudit('pin_reset', 'รีเซ็ต PIN', name + ' (' + id + ') โดย ' + mgr.name, '', 'rgba(184,134,11,.08)', 'medium', mgr); doSave(); }
-          });
+          if (currentOperator && currentOperator.role === 'manager') {
+            addAudit('pin_reset', 'รีเซ็ต PIN', name + ' (' + id + ') โดย ' + currentOperator.name, '', 'rgba(184,134,11,.08)', 'medium', currentOperator);
+            doSave();
+          } else {
+            openPinModal('ยืนยันรีเซ็ต PIN', 'ต้องการรีเซ็ต PIN ของ ' + name, 'manager', (ok, mgr) => {
+              if (ok) { addAudit('pin_reset', 'รีเซ็ต PIN', name + ' (' + id + ') โดย ' + mgr.name, '', 'rgba(184,134,11,.08)', 'medium', mgr); doSave(); }
+            });
+          }
         } else {
           doSave();
         }
