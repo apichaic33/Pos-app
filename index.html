@@ -3854,19 +3854,12 @@
             <input class="f-input" id="blendYield" type="number" placeholder="500">
           </div>
           <div class="f-group">
-            <label class="f-label" style="display:flex;align-items:center;justify-content:space-between">
-              ต้นทุน/batch (฿)
-              <span
-                style="font-size:9px;background:rgba(52,168,83,.12);color:var(--green);padding:2px 7px;border-radius:10px;font-weight:600;white-space:nowrap">
-                <span class="mi" style="font-size:11px;vertical-align:-2px">auto_awesome</span> คำนวณอัตโนมัติ
-              </span>
-            </label>
+            <label class="f-label">ต้นทุน/batch (฿)</label>
             <input class="f-input" id="blendCost" type="number" placeholder="0" readonly
               onclick="this.removeAttribute('readonly');this.style.background='';this.style.color='';this.style.fontWeight=''"
-              style="background:var(--bg-dk);color:var(--cara);font-weight:700;font-size:15px;cursor:pointer"
-              title="กดเพื่อแก้ไขเอง">
-            <div style="font-size:10px;color:var(--t4);margin-top:3px;line-height:1.4">
-              คำนวณอัตโนมัติจากวัตถุดิบ · <span style="color:var(--blue)">แตะที่ช่องเพื่อแก้ไขเอง</span>
+              style="background:var(--bg-dk);color:var(--cara);font-weight:700;cursor:pointer">
+            <div style="font-size:10px;color:var(--t4);margin-top:3px;padding:0 2px">
+              กดที่ช่องเพื่อแก้ไขเอง
             </div>
           </div>
         </div>
@@ -5855,7 +5848,7 @@
     function renderBlendIngRow(idx) {
       const existing = blendIngArr[idx] || {};
       const row = document.createElement('div'); row.className = 'recipe-ing-row'; row.id = `bing-${idx}`;
-      row.innerHTML = `<div class="f-group" style="flex:2"><label class="f-label">วัตถุดิบ</label><select class="f-select" id="bing-ing-${idx}" onchange="calcBlendCost()"><option value="">เลือก...</option>${[...DB.ingredients, ...DB.packages].map(i => `<option value="${i.id}"${i.id === existing.ingId ? 'selected' : ''}>${i.name} (฿${i.cost || 0}/${i.unit || 'หน่วย'})</option>`).join('')}</select></div><div class="f-group"><label class="f-label">ปริมาณ</label><input class="f-input" id="bing-qty-${idx}" type="number" value="${existing.qty || ''}" placeholder="0" oninput="calcBlendCost()"></div><button class="btn btn-danger btn-sm btn-icon" onclick="document.getElementById('bing-${idx}')?.remove();calcBlendCost()" style="align-self:flex-end"></button>`;
+      row.innerHTML = `<div class="f-group" style="flex:2"><label class="f-label">วัตถุดิบ</label><select class="f-select" id="bing-ing-${idx}" onchange="calcBlendCost()"><option value="">เลือก...</option>${[...DB.ingredients, ...DB.packages].map(i => `<option value="${i.id}"${i.id === existing.ingId ? 'selected' : ''}>${i.name} (฿${i.cost || 0}/${i.unit || 'หน่วย'})</option>`).join('')}</select></div><div class="f-group"><label class="f-label">ปริมาณ</label><input class="f-input" id="bing-qty-${idx}" type="number" value="${existing.qty || ''}" placeholder="0" oninput="calcBlendCost()"></div><button class="btn btn-danger btn-sm btn-icon" onclick="document.getElementById('bing-${idx}')?.remove();calcBlendCost()" style="align-self:flex-end;font-size:14px">🗑</button>`;
       document.getElementById('blendIngList').appendChild(row);
       calcBlendCost();
     }
