@@ -3114,27 +3114,36 @@ function _goPageDirect(p){
 
 window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
 (async function init(){
+ // 1. โหลด cache ก่อน
  const hasCache = loadLocal();
  if(hasCache){ showSyncStatus('Cache'); }
+
+ // 2. โหลดจาก Sheets (รวม employees) — รอให้เสร็จก่อนแสดง login
  if(isOnline && SCRIPT_URL!=='YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'){
- await loadEmployeesFromSheet();
- await loadFromSheet();
+   showSyncStatus('กำลังโหลดข้อมูล...');
+   await loadFromSheet(); // โหลดทุกอย่างรวม employees
  }
  updateSyncUI();
  document.getElementById('reportDate').textContent='วันนี้';
  updateSalesBadge();
- // First-run: ถ้าไม่มีพนักงานเลย ซ่อน numpad + แสดง Setup button
+
+ // 3. ตรวจสอบพนักงานหลังโหลด Sheets แล้ว
  if(!DB.employees.length){
- const hint=document.getElementById('loginFirstRunHint');
- const numpad=document.getElementById('loginNumpad');
- const dots=document.getElementById('loginPinDots');
- const pinLabel=document.querySelector('.f-label[style*="margin-bottom:8px"]');
- if(hint){ hint.style.display='block'; }
- if(numpad) numpad.style.display='none';
- if(dots) dots.style.display='none';
+   const hint   = document.getElementById('loginFirstRunHint');
+   const numpad = document.getElementById('loginNumpad');
+   const dots   = document.getElementById('loginPinDots');
+   if(hint)   hint.style.display='block';
+   if(numpad) numpad.style.display='none';
+   if(dots)   dots.style.display='none';
+ } else {
+   // มีข้อมูลแล้ว — ซ่อน hint + แสดง numpad
+   const hint   = document.getElementById('loginFirstRunHint');
+   const numpad = document.getElementById('loginNumpad');
+   const dots   = document.getElementById('loginPinDots');
+   if(hint)   hint.style.display='none';
+   if(numpad) numpad.style.display='';
+   if(dots)   dots.style.display='';
  }
- // Show login screen — goPage called after successful login
- // (login screen shown by default via HTML)
 })();
 </script>
 </body>
