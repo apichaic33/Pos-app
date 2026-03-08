@@ -6,7 +6,7 @@
 <title>POS-APP v5</title>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* 
+/*
  POS-APP v5 — Mobile-First Neumorphic Design
  Primary device: Smartphone
  Secondary: Tablet, Desktop
@@ -262,7 +262,7 @@ img{max-width:100%;}
  border:2px solid var(--bg);
 }
 
-/* 
+/*
  PAGE HEADER
  */
 .pg-head{
@@ -273,7 +273,7 @@ img{max-width:100%;}
 .pg-title{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--t1);line-height:1;letter-spacing:-.4px;}
 .pg-sub{font-size:11px;color:var(--t4);margin-top:3px;}
 
-/* 
+/*
  ORDER PAGE
  */
 .cat-scroll{display:flex;gap:7px;padding:8px 16px;overflow-x:auto;flex-shrink:0;}
@@ -335,7 +335,7 @@ img{max-width:100%;}
 }
 .prod-add:active{box-shadow:var(--neu-in-xs);}
 
-/* 
+/*
  ORDER PANEL PAGE (full screen slide-up)
  */
 .order-panel-page{
@@ -436,7 +436,7 @@ img{max-width:100%;}
 }
 .btn-receipt:active{box-shadow:var(--neu-in-sm);}
 
-/* 
+/*
  RECEIPT PAGE (full screen)
  */
 .receipt-page{
@@ -490,7 +490,7 @@ img{max-width:100%;}
 .btn-print:active{box-shadow:var(--neu-in-sm);}
 .btn-new-order:active{background:var(--esp2);}
 
-/* 
+/*
  LOGIN SCREEN
  */
 .pin-dot{
@@ -510,7 +510,7 @@ img{max-width:100%;}
 #loginScreen.hidden{display:none!important;}
 #mgrGateOverlay.open{opacity:1!important;pointer-events:all!important;}
 
-/* 
+/*
  FORM ELEMENTS
  */
 .f-label{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;display:block;font-family:var(--fh);}
@@ -538,7 +538,7 @@ textarea.f-input{resize:none;}
 .f-row{display:flex;gap:10px;}
 .f-row .f-group{flex:1;}
 
-/* 
+/*
  CARD / BADGE / BUTTON
  */
 .card{background:var(--bg);border-radius:var(--r4);box-shadow:var(--neu-out-sm);overflow:hidden;}
@@ -563,7 +563,7 @@ textarea.f-input{resize:none;}
 .btn-full{width:100%;}
 .btn-icon{width:32px;height:32px;padding:0;border-radius:var(--r3);}
 
-/* 
+/*
  MODAL — Glass bottom sheet
  */
 .modal-overlay{position:fixed;inset:0;background:rgba(22,12,6,.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:9500;display:none;align-items:flex-end;}
@@ -579,7 +579,7 @@ textarea.f-input{resize:none;}
 .modal-body::-webkit-scrollbar{display:none;}
 .modal-foot{padding:12px 18px;display:flex;gap:10px;flex-shrink:0;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));}
 
-/* 
+/*
  TOAST
  */
 .toast{
@@ -593,7 +593,7 @@ textarea.f-input{resize:none;}
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* 
+/*
  MANAGE PAGE
  */
 .tab-bar{display:flex;gap:0;padding:3px;background:var(--bg);box-shadow:var(--neu-in-sm);border-radius:var(--rf);margin:0 16px 12px;flex-shrink:0;}
@@ -610,7 +610,7 @@ textarea.f-input{resize:none;}
 .mi-price{font-size:14px;font-weight:700;color:var(--cara);flex-shrink:0;font-family:var(--fh);}
 .mi-actions{display:flex;gap:4px;flex-shrink:0;}
 
-/* 
+/*
  PROMO PAGE
  */
 .promo-card{background:var(--bg);border-radius:var(--r4);margin:0 16px 10px;box-shadow:var(--neu-out-sm);overflow:hidden;}
@@ -628,7 +628,7 @@ textarea.f-input{resize:none;}
 .toggle-slider:before{content:'';position:absolute;width:17px;height:17px;border-radius:50%;left:3px;top:3px;background:var(--bg-dk);transition:.25s;box-shadow:2px 2px 6px rgba(155,138,122,.6),-1px -1px 4px rgba(255,255,255,.85);}
 .toggle input:checked+.toggle-slider:before{transform:translateX(17px);background:var(--green-md);box-shadow:0 0 10px rgba(61,155,96,.5);}
 
-/* 
+/*
  REPORT PAGE
  */
 .stat-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:12px 16px 8px;}
@@ -653,7 +653,7 @@ textarea.f-input{resize:none;}
 .top-sold{font-size:10px;color:var(--t4);}
 .top-rev{font-size:12px;font-weight:800;color:var(--cara);font-family:var(--fh);}
 
-/* 
+/*
  STORES PAGE
  */
 .stores-tabs{display:flex;gap:5px;padding:10px 16px 0;flex-shrink:0;overflow-x:auto;}
@@ -926,7 +926,7 @@ if ('serviceWorker' in navigator) {
     </div>
     <span class="nl">รายการขาย</span>
   </button>
-</div> <!-- CART FAB --> <button class="cart-fab" id="cartFab" onclick="openOrderPanel()"> <div class="cart-fab-count" id="cartFabCount">0</div> </button> <!-- TOAST --> <div class="toast" id="toast"></div> 
+</div> <!-- CART FAB --> <button class="cart-fab" id="cartFab" onclick="openOrderPanel()"> <div class="cart-fab-count" id="cartFabCount">0</div> </button> <!-- TOAST --> <div class="toast" id="toast"></div>
 <!-- BOTTOM ACTION BARS -->
 <div class="bottom-action-bar" id="bab-promo">
   <button class="bab-btn" onclick="openModal('modal-add-promo')">
@@ -987,7 +987,7 @@ if ('serviceWorker' in navigator) {
  style="text-transform:uppercase;font-size:20px;font-weight:700;text-align:center;letter-spacing:4px"
  oninput="this.value=this.value.toUpperCase();clearApprovalError()"
  autocomplete="off"> </div> <div id="approvalEmpName" style="text-align:center;font-size:13px;font-weight:700;color:var(--green);min-height:20px;margin-bottom:8px"></div> <div class="pin-error" id="pinError"></div> <div style="display:flex;gap:10px;margin-top:14px"> <button class="btn btn-secondary" style="flex:1" onclick="closePinModal()">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="submitApproval()"> ยืนยัน</button> </div> </div>
-</div> <!-- 
+</div> <!--
  MODALS
  --> <!-- MODAL: Add/Edit Menu -->
 <div class="modal-overlay" id="modal-add-menu"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title" id="menuModalTitle">เพิ่มเมนูใหม่</span>  </div> <div class="modal-body"> <input type="hidden" id="menuEditId"> <input type="hidden" id="menuRecipeId" value=""> <!-- Tab bar --> <div class="tab-bar" style="margin-bottom:14px"> <button class="tab-btn active" id="menuTab-info" onclick="switchMenuTab('info')">ข้อมูลเมนู</button> <button class="tab-btn" id="menuTab-recipe" onclick="switchMenuTab('recipe')">สูตร/ต้นทุน</button> </div> <!-- TAB: ข้อมูลเมนู --> <div id="menuSection-info"> <div class="f-row"> <div class="f-group" style="flex:2"><label class="f-label">ชื่อเมนู</label><input class="f-input" id="menuName" placeholder="เช่น Cappuccino"></div> <div class="f-group"><label class="f-label">หมวด</label><select class="f-select" id="menuCat" onchange="toggleCustomFields()"><option value="coffee">กาแฟ</option><option value="tea">ชา</option><option value="cocoa">โกโก้</option><option value="custom"> Custom</option><option value="other">อื่นๆ</option></select></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">ราคา (฿)</label><input class="f-input" id="menuPrice" type="number" placeholder="65" oninput="recalcMenuCost()"></div> <div class="f-group"><label class="f-label">ต้นทุน (฿)</label><input class="f-input" id="menuCost" type="number" placeholder="20" readonly style="background:var(--bg-dk);color:var(--t3)"></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">ปริมาณ (ml)</label><input class="f-input" id="menuVol" type="number" placeholder="250"></div> <div class="f-group"><label class="f-label">ตัวย่อ</label><input class="f-input" id="menuIcon" placeholder="C" maxlength="2"></div> </div> <div class="f-group"><label class="f-label">สี</label><div style="display:flex;gap:7px;flex-wrap:wrap" id="colorPicker"><div class="color-dot" style="background:#2C1810" onclick="selectColor('#2C1810',this)"></div><div class="color-dot" style="background:#3D2314" onclick="selectColor('#3D2314',this)"></div><div class="color-dot" style="background:#5C3317" onclick="selectColor('#5C3317',this)"></div><div class="color-dot" style="background:#2D4A3E" onclick="selectColor('#2D4A3E',this)"></div><div class="color-dot" style="background:#2B5EA7" onclick="selectColor('#2B5EA7',this)"></div><div class="color-dot" style="background:#5B3FA0" onclick="selectColor('#5B3FA0',this)"></div><div class="color-dot" style="background:#8B3A3A" onclick="selectColor('#8B3A3A',this)"></div><div class="color-dot" style="background:#3A6B4A" onclick="selectColor('#3A6B4A',this)"></div></div><input type="hidden" id="menuColor" value="#2C1810"></div> <div class="f-group"><label class="f-label">ขนาด</label><div style="display:flex;gap:10px"><label style="display:flex;align-items:center;gap:5px;font-size:13px"><input type="checkbox" id="sizeS"> S</label><label style="display:flex;align-items:center;gap:5px;font-size:13px"><input type="checkbox" id="sizeM" checked> M</label><label style="display:flex;align-items:center;gap:5px;font-size:13px"><input type="checkbox" id="sizeL"> L</label></div></div> <div class="f-group"><label class="f-label">สถานะ</label><select class="f-select" id="menuStatus"><option value="active">เปิดขาย</option><option value="inactive">ปิด</option></select></div> <div class="f-group"><label class="f-label">โปรโมชั่น</label><select class="f-select" id="menuPromo"></select></div> <div class="f-group"><label class="f-label">คำอธิบาย</label><textarea class="f-input" id="menuDesc" rows="2" placeholder="อธิบายรสชาติ..."></textarea></div> </div><!-- end menuSection-info --> <!-- TAB: สูตร/ต้นทุน --> <div id="menuSection-recipe" style="display:none"> <div style="background:var(--bg-dk);border-radius:var(--r3);padding:12px;margin-bottom:10px"> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"> <span style="font-size:12px;font-weight:700;color:var(--t2);font-family:var(--fh)">วัตถุดิบต่อ 1 แก้ว</span> <button onclick="addRecipeRow()" style="background:var(--blue-lt);color:var(--blue);border:none;border-radius:var(--rf);padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">+ เพิ่ม</button> </div> <div id="menuRecipeRows"></div> <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(140,123,107,.2)"> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span style="color:var(--t4)">ต้นทุนจากสูตร</span> <span id="recipeCostCalc" style="font-weight:700;color:var(--cara)">฿0</span> </div> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span style="color:var(--t4)">ราคาขาย</span> <span id="recipePriceRef" style="font-weight:700;color:var(--t1)">฿0</span> </div> <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"> <span style="color:var(--green)">Margin</span> <span id="recipeMarginCalc" style="color:var(--green)">0%</span> </div> </div> </div> <div style="font-size:10px;color:var(--t4);padding:0 2px">* ต้นทุนคำนวณจากราคาวัตถุดิบในคลัง บันทึกเพื่ออัปเดต</div> </div> <!-- Custom options section (always visible) --> <div id="customFieldsSection" style="display:none;background:var(--blue-lt);border-radius:var(--r3);padding:10px 12px"> <div style="font-size:12px;font-weight:700;color:var(--blue);font-family:var(--fh);margin-bottom:8px">ตัวเลือก Custom (+10฿)</div> <label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--t2)"> <input type="checkbox" id="customExtraShot"> เพิ่มช็อตกาแฟ <span style="color:var(--t4);font-size:11px">(เฉพาะกาแฟ)</span> </label> <label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--t2)"> <input type="checkbox" id="customExtraMatcha"> เพิ่มผงมัทฉะ <span style="color:var(--t4);font-size:11px">(เฉพาะมัทฉะ)</span> </label> <label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--t2)"> <input type="checkbox" id="customExtraCocoa"> เพิ่มผงโกโก้ <span style="color:var(--t4);font-size:11px">(เฉพาะโกโก้)</span> </label> <div style="font-size:10px;color:var(--t4);margin-top:6px">* ตัวเลือก Custom จะแสดงในรายละเอียดเมนูเมื่อสั่ง</div> </div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="padding:12px 16px;border-radius:var(--r3)" onclick="closeModal('modal-add-menu')"><span class="mi" style="font-size:16px;vertical-align:-3px">close</span></button> <button class="btn btn-dark" style="flex:2" onclick="saveMenu()">บันทึก</button> </div> </div>
@@ -1163,7 +1163,7 @@ if ('serviceWorker' in navigator) {
 </div> <!-- MODAL: Use Log -->
 <div class="modal-overlay" id="modal-use-log"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"><span class="modal-title">บันทึกการใช้วัตถุดิบ</span></div> <div class="modal-body"> <div class="f-group"><label class="f-label">วัตถุดิบ</label><select class="f-select" id="useLogItem"></select></div> <div class="f-row"> <div class="f-group"><label class="f-label">จำนวน</label><input class="f-input" id="useLogQty" type="number" placeholder="0"></div> <div class="f-group"><label class="f-label">หน่วย</label><input class="f-input" id="useLogUnit" readonly></div> </div> <div class="f-group"><label class="f-label">เหตุผล</label><select class="f-select" id="useLogReason"><option value="staff">เครื่องดื่มพนักงาน</option><option value="test">ทดลองสูตร</option><option value="expired">หมดอายุ/ทิ้ง</option><option value="damaged">เสียหาย</option><option value="other">อื่นๆ</option></select></div> <div class="f-group"><label class="f-label">หมายเหตุ</label><input class="f-input" id="useLogNote" placeholder=""></div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-use-log')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="saveUseLog()">บันทึก</button> </div> </div>
 </div> <script>
-/* 
+/*
  DATA STORE
  */
 let DB = {
@@ -1188,7 +1188,7 @@ let DB = {
  nextId: 1
 };
 
-/* 
+/*
  DRAWER NAV
  */
 function openDrawer(){
@@ -1233,7 +1233,7 @@ function goPage(p){
  }
 }
 
-/* 
+/*
  MODAL
  */
 function openModal(id){document.getElementById(id).classList.add('open');}
@@ -1242,7 +1242,7 @@ document.querySelectorAll('.modal-overlay').forEach(el=>{
  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});
 });
 
-/* 
+/*
  TOAST
  */
 let _tt;
@@ -1252,7 +1252,7 @@ function toast(msg){
  clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2200);
 }
 
-/* 
+/*
  ORDER PAGE
  */
 let orderItems=[];
@@ -1489,7 +1489,7 @@ function updateCartFab(){
  else{fab.classList.remove('show');}
 }
 
-/* 
+/*
  ORDER PANEL PAGE
  */
 function openOrderPanel(){
@@ -1617,7 +1617,7 @@ function confirmOrder(){
  updateSalesBadge();
 }
 
-/* 
+/*
  RECEIPT
  */
 let previewOrder=null;
@@ -1647,13 +1647,13 @@ function renderReceipt(order){
  const pad=n=>String(n).padStart(2,'0');
  const orderRef=pad(d.getDate())+pad(d.getMonth()+1)+String(d.getFullYear()).slice(-2)+pad(d.getHours())+pad(d.getMinutes())+posNum;
 
- // Receipt item row builder 
+ // Receipt item row builder
  // Layout:
  // ชื่อเมนู (size) xN ฿base×N ← ราคาเมนูล้วน (ไม่รวม custom)
  // น้ำแข็ง · หวาน · หมายเหตุ
  // + Custom xN +฿10 ← 1 บรรทัดต่อ option
  // % PromoName -฿disc ← ถ้ามี promo (มีเส้นประคั่น)
- // 
+ //
  // รวม ฿net ← ยอดสุทธิเสมอ
 
  const RC={
@@ -1783,7 +1783,7 @@ function newOrderFromReceipt(){
  toast('พร้อมรับออเดอร์ใหม่');
 }
 
-/* 
+/*
  MANAGE PAGE
  */
 let mgCat='all';
@@ -1847,7 +1847,7 @@ function delMenu(id){
  if(!confirm('ลบเมนูนี้?'))return;
  DB.menus=DB.menus.filter(m=>m.id!==id);renderManage(mgCat);toast('ลบเมนูแล้ว');
 }
-// Menu Recipe helpers 
+// Menu Recipe helpers
 let menuRecipeIngredients = []; // [{ingId, qty}]
 
 function switchMenuTab(tab){
@@ -1962,7 +1962,7 @@ function fillPromoSelect(selId,selectedId){
  sel.innerHTML='<option value="">-- ไม่มี --</option>'+DB.promos.map(p=>`<option value="${p.id}"${p.id==selectedId?'selected':''}>${p.name}</option>`).join('');
 }
 
-/* 
+/*
  PROMO PAGE
  */
 let promoFilterTab='all';
@@ -2059,7 +2059,7 @@ function savePromo(){
  scheduleSync();
 }
 
-/* 
+/*
  REPORT PAGE
  */
 let reportDays=1;
@@ -2156,7 +2156,7 @@ function renderPromoPerf(){
 }
 
 
-/* 
+/*
  EMPLOYEE LOOKUP
  */
 function lookupEmployee(){
@@ -2168,7 +2168,7 @@ function lookupEmployee(){
  else{el.textContent='—';el.style.color='var(--t4)';}
 }
 
-/* 
+/*
  STAFF DRINK TOGGLE
  */
 function togglePromoFields(){
@@ -2263,7 +2263,7 @@ function logStaffDrink(){
  scheduleSync();
 }
 
-/* 
+/*
  AUDIT LOG — MAX DETAIL
  ทุก action บันทึก: type, action, detail, empId, empName,
  severity (low/med/high), ts (ms), sessionId
@@ -2330,7 +2330,7 @@ function renderAuditLog(filter){
  }).join('');
 }
 
-/* 
+/*
  APPROVAL SYSTEM — Employee ID (ไม่ใช่ PIN)
  mode: 'manager' = เฉพาะ role:manager
  'any' = พนักงานคนใดก็ได้
@@ -2387,7 +2387,7 @@ document.addEventListener('keydown', e=>{
  if(e.key==='Escape' && document.getElementById('pinOverlay').classList.contains('open')) closePinModal();
 });
 
-/* 
+/*
  STAFF MANAGEMENT
  */
 /* SETUP MODE */
@@ -2691,7 +2691,7 @@ function deleteStaff(id){
  });
 }
 
-/* 
+/*
  VOID ORDER (ยกเลิกรายการก่อนบันทึก) — ต้องใช้รหัสผู้จัดการ
  */
 function requestVoidOrder(){
@@ -2715,7 +2715,7 @@ function requestVoidOrder(){
  );
 }
 
-/* 
+/*
  BILL MANAGEMENT
  */
 let billFilter='today';
@@ -2822,7 +2822,7 @@ function rejectVoid(voidId){
  );
 }
 
-/* 
+/*
  ORDER DETAIL (view only)
  */
 function openOrderDetail(orderId){
@@ -2860,7 +2860,7 @@ function closeOrderDetail(){ document.getElementById('orderDetailPage').classLis
 
 
 
-/* 
+/*
  STORES PAGE
  */
 let storeTab='ingredient';
@@ -3308,7 +3308,7 @@ function renderAlertTab(){
  section('','ชำรุด/เสียหาย','#8B3A3A',damaged);
 }
 
-/* 
+/*
  SALES TODAY PAGE
  */
 function getTodayOrders(){
@@ -3420,11 +3420,13 @@ function toggleBillDetail(id){
  if(arr) arr.textContent=open?'›':'';
 }
 
-/* 
+/*
  GOOGLE SHEET SYNC
  */
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyZVBte9My3h2KOD0WAUBy_mhZftWu7PFDOI2_Fhq0ONlo0ZkfV9VTnfNRV3Ph3MdpI/exec';
-const APP_SECRET='b5c65e53-5b26-4767-91f4-f98022321c12'; // ⚠️ ต้องตรงกับ Code.gs
+// ชี้ไปที่ Cloudflare Worker แทน GAS โดยตรง (APP_SECRET ถูกซ่อนอยู่ใน Worker)
+// ⚠️ เปลี่ยน URL นี้หลัง deploy Worker เสร็จ: https://pos-app-proxy.<your-subdomain>.workers.dev
+const SCRIPT_URL='https://pos-app-proxy.laboon-pos-app.workers.dev';
+// APP_SECRET ถูกย้ายไปเก็บใน Cloudflare Worker Environment Variables แล้ว ✅
 const LS_KEY='pos_db_v5';const LS_DIRTY='pos_dirty_v5';const LS_LASTSYNC='pos_lastsync_v5';
 let isOnline=navigator.onLine;
 window.addEventListener('online',()=>{isOnline=true;updateSyncUI();syncToSheet();});
@@ -3440,8 +3442,8 @@ function loadLocal(){
  try{const raw=localStorage.getItem(LS_KEY);if(!raw)return false;const saved=JSON.parse(raw);Object.keys(saved).forEach(k=>{if(!(k in DB))return;const v=saved[k];if(Array.isArray(DB[k])&&!Array.isArray(v))return;if(k==='nextId'&&typeof v!=='number')return;DB[k]=v;});return true;}
  catch(e){localStorage.removeItem(LS_KEY);localStorage.removeItem(LS_DIRTY);return false;}
 }
-async function apiFetch(body){if(!isOnline)return null;try{const res=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({...body,token:APP_SECRET})});return await res.json();}catch(e){return null;}}
-async function apiGet(params={}){if(!isOnline)return null;try{const q=new URLSearchParams({...params,token:APP_SECRET}).toString();const res=await fetch(`${SCRIPT_URL}?${q}`);return await res.json();}catch(e){return null;}}
+async function apiFetch(body){if(!isOnline)return null;try{const res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return await res.json();}catch(e){return null;}}
+async function apiGet(params={}){if(!isOnline)return null;try{const q=new URLSearchParams(params).toString();const res=await fetch(`${SCRIPT_URL}?${q}`);return await res.json();}catch(e){return null;}}
 async function syncToSheet(){
  const dirty=localStorage.getItem(LS_DIRTY);if(!dirty||!isOnline)return;
  showSyncStatus('กำลัง sync...');
@@ -3485,10 +3487,10 @@ function showSyncStatus(msg){
 let syncTimer=null;
 function scheduleSync(){saveLocal();clearTimeout(syncTimer);syncTimer=setTimeout(syncToSheet,3000);}
 
-/* 
+/*
  STARTUP
  */
-/* 
+/*
  LOGIN SYSTEM
  */
 let loginPin = '';
@@ -3610,8 +3612,38 @@ async function submitForcePinChange(empId){
  const confirm = document.getElementById('forcePinConfirm').value.trim();
  const errEl = document.getElementById('forcePinError');
  errEl.textContent='';
- if(!newPin || newPin.length !== 4){ errEl.textContent='PIN ต้องมี 4 หลัก'; return; }
- if(newPin !== confirm){ errEl.textContent='PIN ไม่ตรงกัน'; return; }
+ // ─── Brute Force Check ───────────────────────
+ const fpFail = _forcePinFailMap[empId] || {count:0, lockedUntil:0};
+ if(Date.now() < fpFail.lockedUntil){
+   const secsLeft = Math.ceil((fpFail.lockedUntil - Date.now()) / 1000);
+   const mins = Math.floor(secsLeft/60), secs = secsLeft%60;
+   errEl.textContent = `ลองผิดบ่อยเกินไป กรุณารอ ${mins}:${String(secs).padStart(2,'0')} นาที`;
+   return;
+ }
+ if(!newPin || newPin.length !== 4){
+   fpFail.count = (fpFail.count||0) + 1;
+   _forcePinFailMap[empId] = fpFail;
+   if(fpFail.count >= LOGIN_MAX_FAIL){
+     fpFail.lockedUntil = Date.now() + LOGIN_LOCK_MS;
+     errEl.textContent = 'ลองผิดหลายครั้งเกินไป บัญชีถูกล็อค 5 นาที';
+   } else {
+     errEl.textContent = `PIN ต้องมี 4 หลัก (เหลือ ${LOGIN_MAX_FAIL - fpFail.count} ครั้ง)`;
+   }
+   return;
+ }
+ if(newPin !== confirm){
+   fpFail.count = (fpFail.count||0) + 1;
+   _forcePinFailMap[empId] = fpFail;
+   if(fpFail.count >= LOGIN_MAX_FAIL){
+     fpFail.lockedUntil = Date.now() + LOGIN_LOCK_MS;
+     errEl.textContent = 'ลองผิดหลายครั้งเกินไป บัญชีถูกล็อค 5 นาที';
+   } else {
+     errEl.textContent = `PIN ไม่ตรงกัน (เหลือ ${LOGIN_MAX_FAIL - fpFail.count} ครั้ง)`;
+   }
+   return;
+ }
+ // reset fail counter
+ _forcePinFailMap[empId] = {count:0, lockedUntil:0};
  const emp = DB.employees.find(e=>String(e.id)===String(empId));
  if(!emp){ errEl.textContent='ไม่พบพนักงาน'; return; }
  emp.pin = await hashPin(newPin);
@@ -3704,10 +3736,32 @@ async function mgrGateSubmit(){
  const errEl = document.getElementById('mgrGateError');
  const emp = DB.employees.find(e=>String(e.id)===String(id));
  if(!emp){ errEl.textContent='ไม่พบรหัสพนักงาน'; shakeGate(); return; }
- if(emp.role!=='manager'){ errEl.textContent=' '+emp.name+'ไม่มีสิทธิ์ผู้จัดการ'; shakeGate(); return; }
+ if(emp.role!=='manager'){ errEl.textContent=emp.name+' ไม่มีสิทธิ์ผู้จัดการ'; shakeGate(); return; }
+ // ─── Brute Force Check ───────────────────────
+ const mgrFail = _mgrFailMap[id] || {count:0, lockedUntil:0};
+ if(Date.now() < mgrFail.lockedUntil){
+   const secsLeft = Math.ceil((mgrFail.lockedUntil - Date.now()) / 1000);
+   const mins = Math.floor(secsLeft/60), secs = secsLeft%60;
+   errEl.textContent = `บัญชีถูกล็อค กรุณารอ ${mins}:${String(secs).padStart(2,'0')} นาที`;
+   shakeGate(); return;
+ }
  const pinHash = await hashPin(pin);
- if(pinHash !== emp.pin){ errEl.textContent='รหัส PIN ไม่ถูกต้อง'; shakeGate(); return; }
- // success
+ if(pinHash !== emp.pin){
+   mgrFail.count = (mgrFail.count||0) + 1;
+   _mgrFailMap[id] = mgrFail;
+   const remaining = LOGIN_MAX_FAIL - mgrFail.count;
+   if(remaining <= 0){
+     mgrFail.lockedUntil = Date.now() + LOGIN_LOCK_MS;
+     _mgrFailMap[id] = mgrFail;
+     errEl.textContent = 'กรอก PIN ผิดหลายครั้งเกินไป บัญชีถูกล็อค 5 นาที';
+     addAudit('security','Manager Gate ถูกล็อค','กรอก PIN ผิด 5 ครั้ง: '+id,'','rgba(217,79,68,.1)','high',emp);
+   } else {
+     errEl.textContent = `รหัส PIN ไม่ถูกต้อง (เหลือ ${remaining} ครั้ง)`;
+   }
+   shakeGate(); return;
+ }
+ // success — reset fail counter
+ _mgrFailMap[id] = {count:0, lockedUntil:0};
  mgrSession = {emp, expiry: Date.now()+MGR_TIMEOUT};
  document.getElementById('mgrGateOverlay').classList.remove('open');
  const target = document.getElementById('mgrGateTarget').value;
@@ -3822,6 +3876,8 @@ const OTP_MAX_ATTEMPTS = 5;   // ล็อคหลังผิด 5 ครั�
 const _loginFailMap = {};
 const LOGIN_MAX_FAIL  = 5;    // ผิดได้สูงสุด 5 ครั้ง
 const LOGIN_LOCK_MS   = 5 * 60 * 1000; // ล็อค 5 นาที
+const _mgrFailMap = {};       // Brute Force สำหรับ Manager Gate
+const _forcePinFailMap = {};  // Brute Force สำหรับ Force PIN Change
 
 // ════════════════════════════════════════════════
 // PIN HASHING — Web Crypto API (SHA-256)
@@ -3908,12 +3964,12 @@ async function sendRecoveryOTP(){
   try {
     const res = await fetch(SCRIPT_URL+'?action=sendOTP', {
       method:'POST',
+      headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         email: emp.email,
         empName: emp.name,
         otp: otp,
-        shopName: DB.shopName,
-        token: APP_SECRET
+        shopName: DB.shopName
       })
     });
     const data = await res.json();
@@ -3928,17 +3984,38 @@ async function sendRecoveryOTP(){
       errEl.textContent='ส่ง Email ไม่สำเร็จ: '+(data.msg||'ลองใหม่');
     }
   } catch(e){
-    // Fallback: ถ้า GAS ไม่รองรับ action=sendOTP ให้แสดง OTP บนหน้าจอ (debug)
-    errEl.textContent='';
-    document.getElementById('recoveryStep1').style.display='none';
-    document.getElementById('recoveryStep2').style.display='block';
-    document.getElementById('recoveryOtpSentTo').textContent = 'ส่งไปที่ '+maskEmail(emp.email);
-    // DEV MODE: แสดง OTP ใน console
-    console.log('[DEV] Recovery OTP:', otp);
+    // Fallback: GAS ส่ง Email ไม่ได้ — แสดง OTP บนหน้าจอให้ Manager เห็นโดยตรง
+    showOtpFallbackAlert(otp, emp);
   } finally {
     btn.disabled=false;
     btn.innerHTML='<span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">send</span> ส่ง OTP ไปที่ Email';
   }
+}
+
+function showOtpFallbackAlert(otp, emp){
+  // แสดง OTP บนหน้าจอเมื่อ GAS ส่ง Email ไม่ได้
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML = `
+   <div style="background:var(--bg);border-radius:var(--r4);padding:24px;max-width:320px;width:100%;text-align:center">
+    <span class="mi" style="font-size:40px;color:var(--gold)">wifi_off</span>
+    <div style="font-size:14px;font-weight:800;color:var(--red);margin:8px 0 4px;font-family:var(--fh)">⚠️ ส่ง Email ไม่สำเร็จ</div>
+    <div style="font-size:11px;color:var(--t4);margin-bottom:16px">GAS ส่ง Email ไม่ได้ — แสดง OTP ชั่วคราวบนหน้าจอนี้แทน<br>ให้ Manager อ่าน OTP นี้แล้วบอก ${emp.name} โดยตรง</div>
+    <div style="background:var(--bg-dk);border:2px dashed var(--gold);border-radius:var(--r3);padding:14px;margin-bottom:12px">
+     <div style="font-size:11px;color:var(--t4);margin-bottom:4px">OTP ชั่วคราว</div>
+     <div style="font-size:36px;font-weight:900;font-family:monospace;letter-spacing:10px;color:var(--gold)">${otp}</div>
+     <div style="font-size:10px;color:var(--t5);margin-top:4px">หมดอายุใน 10 นาที</div>
+    </div>
+    <div style="font-size:10px;color:var(--red);margin-bottom:16px;font-weight:600">⚠️ ห้ามให้ผู้อื่นเห็น OTP นี้ — ปิดทันทีหลังใช้งาน</div>
+    <button onclick="this.closest('div[style*=fixed]').remove();
+      document.getElementById('recoveryStep1').style.display='none';
+      document.getElementById('recoveryStep2').style.display='block';
+      document.getElementById('recoveryOtpSentTo').textContent='OTP บนหน้าจอ (Email ไม่สำเร็จ)';"
+     style="width:100%;padding:12px;background:var(--esp);color:#fff;border:none;border-radius:var(--r3);font-size:14px;font-weight:700;font-family:var(--fh);cursor:pointer">
+     รับทราบแล้ว ปิด
+    </button>
+   </div>`;
+  document.body.appendChild(overlay);
 }
 
 function verifyRecoveryOTP(){
@@ -3964,7 +4041,7 @@ function verifyRecoveryOTP(){
       errEl.textContent=`OTP ไม่ถูกต้อง (เหลือ ${left} ครั้ง)`;
     }
     inp.style.animation='shake .3s'; setTimeout(()=>inp.style.animation='',300);
-    return; 
+    return;
   }
   // ถูกต้อง → Step 3
   const emp = DB.employees.find(e=>String(e.id)===String(_recoveryTargetId));
