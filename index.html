@@ -1063,17 +1063,19 @@ if ('serviceWorker' in navigator) {
   </div>
   <div class="f-row">
     <div class="f-group" style="flex:1"><label class="f-label">สิทธิ์</label>
-      <select class="f-select" id="empRole">
+      <select class="f-select" id="empRole" onchange="toggleEmpEmailField()">
         <option value="cashier">Cashier (แคชเชียร์)</option>
         <option value="manager">Manager (ผู้จัดการ)</option>
       </select>
     </div>
-    <div class="f-group" style="flex:2">
+    <div id="empEmailGroup" style="flex:2;display:none">
+      <div class="f-group">
       <label class="f-label" style="display:flex;align-items:center;gap:5px">
         Email
-        <span style="font-size:9px;background:rgba(217,79,68,.12);color:var(--red);padding:1px 6px;border-radius:10px;font-weight:600">สำหรับกู้คืน PIN</span>
+        <span style="font-size:9px;background:rgba(217,79,68,.12);color:var(--red);padding:1px 6px;border-radius:10px;font-weight:600">Manager เท่านั้น</span>
       </label>
-      <input class="f-input" id="empEmail" type="email" placeholder="example@email.com" inputmode="email">
+      <input class="f-input" id="empEmail" type="email" placeholder="manager@email.com" inputmode="email">
+      </div>
     </div>
   </div>
 
@@ -2546,13 +2548,26 @@ function openStaffModal(editId){
  document.getElementById('empId').readOnly=true;
  document.getElementById('empName').value=e.name;
  document.getElementById('empRole').value=e.role;
+ document.getElementById('empEmail').value=e.email||'';
  } else {
  document.getElementById('empId').value='';
  document.getElementById('empId').readOnly=false;
  document.getElementById('empName').value='';
  document.getElementById('empRole').value='cashier';
+ document.getElementById('empEmail').value='';
  }
+ toggleEmpEmailField();
  openModal('modal-emp');
+}
+
+function toggleEmpEmailField(){
+  const role = document.getElementById('empRole').value;
+  const emailGroup = document.getElementById('empEmailGroup');
+  if(emailGroup) emailGroup.style.display = role === 'manager' ? 'flex' : 'none';
+  if(role !== 'manager') {
+    const empEmail = document.getElementById('empEmail');
+    if(empEmail) empEmail.value = '';
+  }
 }
 
 function saveStaff(){
@@ -2587,13 +2602,13 @@ function saveStaff(){
  const doSave = async ()=>{
  if(isEdit){
  const e=DB.employees.find(x=>String(x.id)===String(editId));
- const editEmail=document.getElementById('empEmail').value.trim();
+ const editEmail = role==='manager' ? document.getElementById('empEmail').value.trim() : '';
  e.name=name; e.role=role; e.email=editEmail;
  if(pin) e.pin=await hashPin(pin);
  toast('อัพเดตข้อมูล '+name+'แล้ว');
  } else {
  const newPin=document.getElementById('empPin').value.trim();
- const empEmail=document.getElementById('empEmail').value.trim();
+ const empEmail = role==='manager' ? document.getElementById('empEmail').value.trim() : '';
  const hashedNewPin = await hashPin(newPin||'0000');
    DB.employees.push({id,name,role,pin:hashedNewPin,email:empEmail});
  toast('เพิ่ม '+name+'แล้ว');
