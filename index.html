@@ -1089,25 +1089,43 @@ if ('serviceWorker' in navigator) {
 
   <!-- EDIT MODE: ปุ่ม Reset PIN -->
   <div id="empResetSection" style="display:none">
-    <button type="button" onclick="toggleResetPinForm()" id="empResetPinBtn"
-      style="width:100%;padding:10px;margin-bottom:10px;border-radius:var(--r3);
-             background:var(--blue-lt);color:var(--blue);border:1px solid rgba(43,94,167,.25);
-             font-family:var(--fb);font-size:12px;font-weight:700;cursor:pointer;
-             display:flex;align-items:center;justify-content:center;gap:6px">
-      <span class="mi" style="font-size:16px">lock_reset</span>รีเซ็ต PIN
-    </button>
-    <!-- form reset PIN (ซ่อนไว้ก่อน) -->
-    <div id="empResetPinForm" style="display:none;background:rgba(43,94,167,.06);border:1px solid rgba(43,94,167,.18);border-radius:var(--r3);padding:12px;margin-bottom:4px">
-      <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:10px;display:flex;align-items:center;gap:5px">
-        <span class="mi" style="font-size:14px">lock_reset</span>ตั้ง PIN ใหม่
+    <!-- Manager: กรอก PIN ใหม่เอง -->
+    <div id="empResetMgrBlock">
+      <button type="button" onclick="toggleResetPinForm()" id="empResetPinBtn"
+        style="width:100%;padding:10px;margin-bottom:10px;border-radius:var(--r3);
+               background:var(--blue-lt);color:var(--blue);border:1px solid rgba(43,94,167,.25);
+               font-family:var(--fb);font-size:12px;font-weight:700;cursor:pointer;
+               display:flex;align-items:center;justify-content:center;gap:6px">
+        <span class="mi" style="font-size:16px">lock_reset</span>รีเซ็ต PIN
+      </button>
+      <div id="empResetPinForm" style="display:none;background:rgba(43,94,167,.06);border:1px solid rgba(43,94,167,.18);border-radius:var(--r3);padding:12px;margin-bottom:4px">
+        <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:10px;display:flex;align-items:center;gap:5px">
+          <span class="mi" style="font-size:14px">lock_reset</span>ตั้ง PIN ใหม่
+        </div>
+        <div class="f-group" style="margin-bottom:8px">
+          <label class="f-label">PIN ใหม่ (4 หลัก)</label>
+          <input class="f-input" id="empPinNew" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
+        </div>
+        <div class="f-group" style="margin-bottom:0">
+          <label class="f-label">ยืนยัน PIN ใหม่</label>
+          <input class="f-input" id="empPinNewConfirm" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
+        </div>
       </div>
-      <div class="f-group" style="margin-bottom:8px">
-        <label class="f-label">PIN ใหม่ (4 หลัก)</label>
-        <input class="f-input" id="empPinNew" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
-      </div>
-      <div class="f-group" style="margin-bottom:0">
-        <label class="f-label">ยืนยัน PIN ใหม่</label>
-        <input class="f-input" id="empPinNewConfirm" type="password" inputmode="numeric" maxlength="4" placeholder="••••">
+    </div>
+    <!-- Cashier/Staff: Random PIN อัตโนมัติ -->
+    <div id="empResetStaffBlock" style="display:none">
+      <button type="button" onclick="doRandomResetPin()" id="empRandomResetBtn"
+        style="width:100%;padding:10px;border-radius:var(--r3);
+               background:var(--blue-lt);color:var(--blue);border:1px solid rgba(43,94,167,.25);
+               font-family:var(--fb);font-size:12px;font-weight:700;cursor:pointer;
+               display:flex;align-items:center;justify-content:center;gap:6px">
+        <span class="mi" style="font-size:16px">shuffle</span>สุ่ม PIN ใหม่ให้อัตโนมัติ
+      </button>
+      <!-- แสดง random PIN หลังกด -->
+      <div id="empRandomPinResult" style="display:none;margin-top:10px;background:rgba(43,94,167,.06);border:1px solid rgba(43,94,167,.18);border-radius:var(--r3);padding:14px;text-align:center">
+        <div style="font-size:11px;color:var(--t4);margin-bottom:6px">PIN ชั่วคราวสำหรับพนักงาน</div>
+        <div id="empRandomPinDisplay" style="font-size:36px;font-weight:900;font-family:monospace;letter-spacing:10px;color:var(--blue)">----</div>
+        <div style="font-size:10px;color:var(--red);margin-top:8px;font-weight:600">⚠️ แจ้งพนักงานบันทึก PIN นี้ไว้ — จะต้องเปลี่ยนใหม่ตอน Login ครั้งถัดไป</div>
       </div>
     </div>
   </div>
@@ -2542,6 +2560,9 @@ function openStaffModal(editId){
  if(rf) rf.style.display='none';
  const rb = document.getElementById('empResetPinBtn');
  if(rb) rb.style.background='var(--blue-lt)';
+ // toggle reset block ตาม role
+ const rpr = document.getElementById('empRandomPinResult');
+ if(rpr) { rpr.style.display='none'; }
  if(isEdit){
  const e=DB.employees.find(x=>String(x.id)===String(editId));if(!e)return;
  document.getElementById('empId').value=e.id;
@@ -2568,6 +2589,29 @@ function toggleEmpEmailField(){
     const empEmail = document.getElementById('empEmail');
     if(empEmail) empEmail.value = '';
   }
+  // toggle reset PIN block ตาม role (เฉพาะ edit mode)
+  const mgrBlock = document.getElementById('empResetMgrBlock');
+  const staffBlock = document.getElementById('empResetStaffBlock');
+  if(mgrBlock) mgrBlock.style.display = role === 'manager' ? 'block' : 'none';
+  if(staffBlock) staffBlock.style.display = role !== 'manager' ? 'block' : 'none';
+}
+
+async function doRandomResetPin(){
+  const editId = document.getElementById('empEditId').value;
+  const emp = DB.employees.find(e=>String(e.id)===String(editId));
+  if(!emp) return;
+  // สุ่ม PIN 4 หลัก
+  const randomPin = String(Math.floor(1000 + Math.random()*9000));
+  emp.pin = await hashPin(randomPin);
+  emp.mustChangePin = true; // บังคับเปลี่ยน PIN ตอน login ครั้งถัดไป
+  saveLocal();
+  scheduleSync();
+  // แสดง PIN ชั่วคราวบนหน้าจอ
+  document.getElementById('empRandomPinDisplay').textContent = randomPin;
+  document.getElementById('empRandomPinResult').style.display = 'block';
+  document.getElementById('empRandomResetBtn').style.background = 'rgba(43,94,167,.18)';
+  addAudit('staff','Random PIN Reset','Reset PIN (random): '+emp.name+' ('+emp.id+')','','rgba(43,94,167,.08)','medium',emp);
+  toast('สุ่ม PIN ใหม่ให้ '+emp.name+' แล้ว');
 }
 
 function saveStaff(){
@@ -3516,6 +3560,12 @@ async function loginSubmit(){
  }
  // Success — reset fail counter
  _loginFailMap[id] = {count:0, lockedUntil:0};
+ // ตรวจ mustChangePin — บังคับเปลี่ยน PIN ก่อนเข้าระบบ
+ if(emp.mustChangePin){
+   document.getElementById('loginScreen').classList.add('hidden');
+   showForcePinChange(emp);
+   return;
+ }
  // Success
  currentOperator={id:emp.id,name:emp.name,role:emp.role};
  lastOperator=currentOperator;
@@ -3528,6 +3578,60 @@ async function loginSubmit(){
  addAudit('login','เข้าสู่ระบบ','พนักงาน '+emp.id+' / '+emp.name,'','rgba(43,94,167,.1)','low',emp);
  updateDrawerUser();
 }
+function showForcePinChange(emp){
+ // แสดง overlay บังคับเปลี่ยน PIN
+ const overlay = document.createElement('div');
+ overlay.id = 'forcePinOverlay';
+ overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px';
+ overlay.innerHTML = `
+  <div style="background:var(--bg);border-radius:var(--r4);padding:24px;max-width:340px;width:100%;text-align:center">
+   <span class="mi" style="font-size:48px;color:var(--blue)">lock_reset</span>
+   <div style="font-size:16px;font-weight:800;color:var(--t1);margin:10px 0 4px;font-family:var(--fh)">ต้องเปลี่ยน PIN ใหม่</div>
+   <div style="font-size:12px;color:var(--t4);margin-bottom:20px">สวัสดี <b>${emp.name}</b> — PIN ของคุณถูก Reset<br>กรุณาตั้ง PIN ใหม่ก่อนเข้าใช้งาน</div>
+   <div class="f-group" style="margin-bottom:10px;text-align:left">
+    <label class="f-label">PIN ใหม่ (4 หลัก)</label>
+    <input class="f-input" id="forcePinNew" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="text-align:center;font-size:24px;letter-spacing:8px">
+   </div>
+   <div class="f-group" style="margin-bottom:16px;text-align:left">
+    <label class="f-label">ยืนยัน PIN ใหม่</label>
+    <input class="f-input" id="forcePinConfirm" type="password" inputmode="numeric" maxlength="4" placeholder="••••" style="text-align:center;font-size:24px;letter-spacing:8px">
+   </div>
+   <div id="forcePinError" style="font-size:12px;color:var(--red);min-height:18px;font-weight:600;margin-bottom:10px"></div>
+   <button onclick="submitForcePinChange('${emp.id}')"
+    style="width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:var(--r3);font-size:14px;font-weight:700;font-family:var(--fh);cursor:pointer">
+    ยืนยัน PIN ใหม่
+   </button>
+  </div>`;
+ document.body.appendChild(overlay);
+}
+
+async function submitForcePinChange(empId){
+ const newPin = document.getElementById('forcePinNew').value.trim();
+ const confirm = document.getElementById('forcePinConfirm').value.trim();
+ const errEl = document.getElementById('forcePinError');
+ errEl.textContent='';
+ if(!newPin || newPin.length !== 4){ errEl.textContent='PIN ต้องมี 4 หลัก'; return; }
+ if(newPin !== confirm){ errEl.textContent='PIN ไม่ตรงกัน'; return; }
+ const emp = DB.employees.find(e=>String(e.id)===String(empId));
+ if(!emp){ errEl.textContent='ไม่พบพนักงาน'; return; }
+ emp.pin = await hashPin(newPin);
+ emp.mustChangePin = false;
+ saveLocal();
+ scheduleSync();
+ // ลบ overlay
+ const overlay = document.getElementById('forcePinOverlay');
+ if(overlay) overlay.remove();
+ // เข้าระบบ
+ currentOperator={id:emp.id,name:emp.name,role:emp.role};
+ lastOperator=currentOperator;
+ updateDrawerForRole();
+ goPage('order');
+ renderOrder();
+ toast('เปลี่ยน PIN สำเร็จ! ยินดีต้อนรับ '+emp.name);
+ addAudit('login','เปลี่ยน PIN บังคับ','พนักงาน '+emp.id+' / '+emp.name+' เปลี่ยน PIN ใหม่สำเร็จ','','rgba(43,94,167,.1)','medium',emp);
+ updateDrawerUser();
+}
+
 function loginPinReset(){
  loginPin='';
  updateLoginDots();
