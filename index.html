@@ -3484,7 +3484,7 @@ async function loginSubmit(){
    loginPinReset(); return;
  }
  // PIN check — default PIN = last 4 digits of empId padded, or use stored pin
- const expectedPin = emp.pin || await hashPin('1234');
+ const expectedPin = isHashed(String(emp.pin||"")) ? String(emp.pin) : await hashPin(String(emp.pin||"1234"));
  const inputHash = await hashPin(loginPin);
  if(inputHash !== expectedPin){
    failRec.count = (failRec.count||0) + 1;
@@ -3723,8 +3723,9 @@ function isHashed(pin){ return typeof pin === 'string' && /^[0-9a-f]{64}$/.test(
 async function migratePins(){
   let changed = false;
   for(const emp of DB.employees){
-    if(emp.pin && !isHashed(emp.pin)){
-      emp.pin = await hashPin(emp.pin);
+    const pinStr = String(emp.pin ?? "");
+    if(pinStr && !isHashed(pinStr)){
+      emp.pin = await hashPin(pinStr);
       changed = true;
     }
   }
