@@ -76,6 +76,8 @@
   background:none;box-shadow:none;
 }
 
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 /* RESET */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{height:100%;background:var(--bg);}
@@ -973,17 +975,6 @@ if ('serviceWorker' in navigator) {
 </div> <!-- DRAWER -->
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer"> <div class="drawer-head"> <div class="drawer-logo">POS<span>·</span>APP</div> <div class="drawer-sub">ระบบบริหารร้านกาแฟ v5</div> <div id="drawerUserInfo" style="font-size:11px;color:var(--cara);font-weight:700;margin-top:6px;font-family:var(--fh)"></div> <button onclick="logoutUser()" style="margin-top:8px;padding:6px 14px;border-radius:var(--rf);background:var(--red-lt);color:var(--red);font-size:11px;font-weight:700;font-family:var(--fh)">ออกจากระบบ</button> </div> <div class="drawer-body"> <!-- Manager session badge --> <div id="mgrSessionBadge" style="display:none;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(90deg,rgba(43,94,167,.12),transparent);border-bottom:1px solid rgba(43,94,167,.15);margin-bottom:4px"> <span class="mi" style="font-size:20px;color:var(--blue)">shield_person</span> <div style="flex:1"> <div style="font-size:10px;font-weight:700;color:var(--blue)">Manager Mode</div> <div id="mgrBadgeName" style="font-size:11px;color:var(--t2)"></div> </div> <div style="text-align:right"> <div id="mgrBadgeTime" style="font-size:11px;font-weight:700;color:var(--blue);font-family:var(--fh)">10:00</div> <button onclick="mgrLogout()" style="font-size:9px;color:var(--red);background:var(--red-lt);border:none;border-radius:var(--rf);padding:2px 6px;margin-top:2px;cursor:pointer;font-weight:700">ออก</button> </div> </div> <div class="drawer-item active" id="dnav-order" onclick="drawerGo('order')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">point_of_sale</span></div> <span>รับออเดอร์</span> </div> <div class="drawer-item" id="dnav-sales" onclick="drawerGo('sales')"> <div class="drawer-item-icon" style="color:var(--blue)"><span class="mi">bar_chart</span></div> <span>รายการขายวันนี้</span> </div> <div class="drawer-sep"></div> <div class="drawer-item" id="dnav-promo" onclick="drawerGo('promo')"> <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">sell</span></div> <span>โปรโมชั่น</span> </div> <div class="drawer-item" id="dnav-manage" onclick="drawerGo('manage')"> <div class="drawer-item-icon" style="color:var(--esp)"><span class="mi">restaurant_menu</span></div> <span>จัดการเมนู</span> </div> <div class="drawer-item" id="dnav-bills" onclick="drawerGo('bills')"> <div class="drawer-item-icon" style="color:var(--red)"><span class="mi">receipt_long</span></div> <span>จัดการบิล</span> </div> <div class="drawer-item" id="dnav-staff-mgmt" onclick="drawerGo('staff-mgmt')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">group</span></div> <span>พนักงาน</span> </div> <div class="drawer-item" id="dnav-audit" onclick="drawerGo('audit')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">history</span></div> <span>ประวัติ</span> </div> <div class="drawer-item" id="dnav-report" onclick="drawerGo('report')"> <div class="drawer-item-icon" style="color:var(--green)"><span class="mi">trending_up</span></div> <span>รายงาน</span> </div> <div class="drawer-item" id="dnav-stores" onclick="drawerGo('stores')"> <div class="drawer-item-icon" style="color:var(--purple)"><span class="mi">inventory_2</span></div> <span>คลัง</span> </div>
- <div id="drawerRecoveryRow" style="display:none;border-top:1px solid var(--bg-dk);padding:10px 16px 6px">
-  <div style="font-size:9px;color:var(--t5);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px">ความปลอดภัย</div>
-  <button onclick="showRecoveryCodeAlert(DB.recoveryCode);closeDrawer()" 
-   style="width:100%;background:rgba(184,134,11,.08);border:1px solid rgba(184,134,11,.2);border-radius:var(--r3);padding:9px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;text-align:left">
-   <span class="mi" style="font-size:18px;color:var(--gold)">key</span>
-   <div>
-    <div style="font-size:12px;font-weight:700;color:var(--t2);font-family:var(--fh)">ดู Recovery Code</div>
-    <div style="font-size:10px;color:var(--t4)">ใช้กู้คืนเมื่อลืม PIN</div>
-   </div>
-  </button>
- </div>
  </div> <div class="drawer-foot"> <div class="drawer-sync-badge"> <div class="top-live" id="drawerLive" style="width:7px;height:7px;"></div> <span id="drawerSync">—</span> </div> </div>
 </div> <!-- ORDER PANEL PAGE -->
 <div class="order-panel-page" id="orderPanelPage"> <div class="op-handle-wrap" onclick="closeOrderPanel()"><div class="op-handle"></div></div> <div class="op-topbar"> <button class="op-close" onclick="closeOrderPanel()"></button> <span class="op-title">รายการออเดอร์</span> <span style="font-size:11px;color:var(--t4)" id="opItemCount">0 รายการ</span> </div> <div class="op-list" id="opList"> <div class="op-empty"> <div class="e-icon"></div> <div class="op-empty-title">ยังไม่มีรายการ</div> </div> </div> <div class="op-footer"> <div class="op-summary" id="opSummary"> <div class="op-sum-row"><span id="opCount">0 รายการ</span><span id="opSubTotal">฿0</span></div> <div class="op-sum-row" id="discountRow" style="display:none;color:var(--red)"><span>ส่วนลด</span><span id="opDiscountAmt">-฿0</span></div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px" onclick="requestVoidOrder()">ยกเลิก</button> <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button> </div> </div>
@@ -1053,7 +1044,15 @@ if ('serviceWorker' in navigator) {
 </div> <!-- MODAL: Recipe -->
 <!-- MODAL: SETUP MODE (First-run) -->
 <div class="modal-overlay" id="modal-setup" style="z-index:9100"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title">ตั้งค่าระบบครั้งแรก</span> </div> <div class="modal-body"> <div style="background:rgba(43,94,167,.07);border-radius:var(--r3);padding:10px 14px;margin-bottom:16px;font-size:11px;color:var(--blue);line-height:1.7"> สร้างบัญชี Manager คนแรกสำหรับเข้าสู่ระบบ<br> รหัสนี้จะใช้จัดการพนักงานและข้อมูลร้านค้า
- </div> <div class="f-row"> <div class="f-group" style="flex:1"><label class="f-label">รหัสพนักงาน</label> <input class="f-input" id="setupEmpId" placeholder="เช่น MGR01" maxlength="10" oninput="this.value=this.value.toUpperCase()"> </div> <div class="f-group" style="flex:2"><label class="f-label">ชื่อ-นามสกุล</label> <input class="f-input" id="setupName" placeholder="ชื่อ นามสกุล"> </div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">PIN (4 หลัก)</label> <input class="f-input" id="setupPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"> </div> <div class="f-group"><label class="f-label">ยืนยัน PIN</label> <input class="f-input" id="setupPinConfirm" type="password" inputmode="numeric" maxlength="4" placeholder="••••"> </div> </div> <div id="setupShopFields"> <div class="f-group"> <label class="f-label">ชื่อร้าน</label> <input class="f-input" id="setupShopName" placeholder="เช่น Coffee Corner"> </div> <div class="f-group"> <label class="f-label">คำอธิบายร้าน</label> <input class="f-input" id="setupShopSub" placeholder="เช่น Coffee & Beverages"> </div> <div id="setupError" style="font-size:12px;color:var(--red);min-height:16px;font-weight:600"></div> </div> <div class="modal-foot"> <button class="btn btn-dark" style="flex:1" onclick="submitSetup()"> สร้างบัญชีและเริ่มใช้งาน</button> </div> </div>
+ </div> <div class="f-row"> <div class="f-group" style="flex:1"><label class="f-label">รหัสพนักงาน</label> <input class="f-input" id="setupEmpId" placeholder="เช่น MGR01" maxlength="10" oninput="this.value=this.value.toUpperCase()"> </div> <div class="f-group" style="flex:2"><label class="f-label">ชื่อ-นามสกุล</label> <input class="f-input" id="setupName" placeholder="ชื่อ นามสกุล"> </div> </div>
+ <div class="f-group">
+  <label class="f-label" style="display:flex;align-items:center;gap:5px">
+   <span class="material-symbols-outlined" style="font-size:14px;color:var(--gold)">mail</span>
+   Email สำหรับรับ OTP รีเซ็ต PIN
+  </label>
+  <input class="f-input" id="setupEmail" type="email" inputmode="email" placeholder="manager@email.com">
+  <div style="font-size:10px;color:var(--t4);margin-top:3px">ใช้รับรหัส OTP เมื่อลืม PIN</div>
+ </div> <div class="f-row"> <div class="f-group"><label class="f-label">PIN (4 หลัก)</label> <input class="f-input" id="setupPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"> </div> <div class="f-group"><label class="f-label">ยืนยัน PIN</label> <input class="f-input" id="setupPinConfirm" type="password" inputmode="numeric" maxlength="4" placeholder="••••"> </div> </div> <div id="setupShopFields"> <div class="f-group"> <label class="f-label">ชื่อร้าน</label> <input class="f-input" id="setupShopName" placeholder="เช่น Coffee Corner"> </div> <div class="f-group"> <label class="f-label">คำอธิบายร้าน</label> <input class="f-input" id="setupShopSub" placeholder="เช่น Coffee & Beverages"> </div> <div id="setupError" style="font-size:12px;color:var(--red);min-height:16px;font-weight:600"></div> </div> <div class="modal-foot"> <button class="btn btn-dark" style="flex:1" onclick="submitSetup()"> สร้างบัญชีและเริ่มใช้งาน</button> </div> </div>
 </div>
 </div> <!-- MODAL: ADD/EDIT STAFF -->
 <div class="modal-overlay" id="modal-emp"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title" id="empModalTitle">เพิ่มพนักงาน</span>  </div> <div class="modal-body">
@@ -1062,11 +1061,20 @@ if ('serviceWorker' in navigator) {
     <div class="f-group" style="flex:1"><label class="f-label">รหัสพนักงาน</label><input class="f-input" id="empId" placeholder="เช่น E01" maxlength="10" oninput="this.value=this.value.toUpperCase()"></div>
     <div class="f-group" style="flex:2"><label class="f-label">ชื่อ-นามสกุล</label><input class="f-input" id="empName" placeholder="ชื่อ นามสกุล"></div>
   </div>
-  <div class="f-group"><label class="f-label">สิทธิ์</label>
-    <select class="f-select" id="empRole">
-      <option value="cashier">Cashier (แคชเชียร์)</option>
-      <option value="manager">Manager (ผู้จัดการ)</option>
-    </select>
+  <div class="f-row">
+    <div class="f-group" style="flex:1"><label class="f-label">สิทธิ์</label>
+      <select class="f-select" id="empRole">
+        <option value="cashier">Cashier (แคชเชียร์)</option>
+        <option value="manager">Manager (ผู้จัดการ)</option>
+      </select>
+    </div>
+    <div class="f-group" style="flex:2">
+      <label class="f-label" style="display:flex;align-items:center;gap:5px">
+        Email
+        <span style="font-size:9px;background:rgba(217,79,68,.12);color:var(--red);padding:1px 6px;border-radius:10px;font-weight:600">สำหรับกู้คืน PIN</span>
+      </label>
+      <input class="f-input" id="empEmail" type="email" placeholder="example@email.com" inputmode="email">
+    </div>
   </div>
 
   <!-- ADD MODE: กรอก PIN ตั้งต้น -->
@@ -1142,7 +1150,6 @@ let DB = {
  shopName: '', // ← ชื่อร้าน
  shopSub: '', // ← คำอธิบายร้าน
  posId: 'POS-01', // ← หมายเลข POS
- recoveryCode: '', // ← รหัสกู้คืน Emergency
  menus: [],
  promos: [],
  orders: [],
@@ -2377,7 +2384,7 @@ function openSetupMode(){
  openModal('modal-setup');
 }
 
-function submitSetup(){
+async function submitSetup(){
  const id = document.getElementById('setupEmpId').value.trim().toUpperCase();
  const name = document.getElementById('setupName').value.trim();
  const pin = document.getElementById('setupPin').value.trim();
@@ -2394,13 +2401,10 @@ function submitSetup(){
  if(!DB.employees.length && !shop){ errEl.textContent='กรุณาใส่ชื่อร้าน'; return; }
 
  // บันทึก
- DB.employees.push({id, name, role:'manager', pin});
+ const setupEmail = (document.getElementById('setupEmail')||{}).value||'';
+ const hashedPin = await hashPin(pin);
+ DB.employees.push({id, name, role:'manager', pin:hashedPin, email:setupEmail});
  if(shop){ DB.shopName = shop; DB.shopSub = sub || shop; }
- // สร้าง Recovery Code ถ้ายังไม่มี
- if(!DB.recoveryCode){
-   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-   DB.recoveryCode=Array.from({length:8},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
- }
 
  closeModal('modal-setup');
 
@@ -2418,8 +2422,6 @@ function submitSetup(){
 
  addAudit('setup','ตั้งค่าระบบครั้งแรก','สร้าง Manager: '+name+' ('+id+') · ร้าน: '+shop,'','rgba(43,94,167,.1)','high',{id,name,role:'manager'});
  scheduleSync();
- // แสดง Recovery Code ให้บันทึก
- showRecoveryCodeAlert(DB.recoveryCode);
  toast('ตั้งค่าสำเร็จ! กรุณากรอก PIN เพื่อเข้าระบบ');
 }
 
@@ -2582,15 +2584,18 @@ function saveStaff(){
    if(pin!==pinConfirm){errEl.textContent='PIN ใหม่ไม่ตรงกัน';return;}
  }
 
- const doSave = ()=>{
+ const doSave = async ()=>{
  if(isEdit){
  const e=DB.employees.find(x=>String(x.id)===String(editId));
- e.name=name; e.role=role;
- if(pin) e.pin=pin;
+ const editEmail=document.getElementById('empEmail').value.trim();
+ e.name=name; e.role=role; e.email=editEmail;
+ if(pin) e.pin=await hashPin(pin);
  toast('อัพเดตข้อมูล '+name+'แล้ว');
  } else {
  const newPin=document.getElementById('empPin').value.trim();
- DB.employees.push({id,name,role,pin:newPin||'0000'});
+ const empEmail=document.getElementById('empEmail').value.trim();
+ const hashedNewPin = await hashPin(newPin||'0000');
+   DB.employees.push({id,name,role,pin:hashedNewPin,email:empEmail});
  toast('เพิ่ม '+name+'แล้ว');
  }
  closeModal('modal-emp');
@@ -3360,6 +3365,7 @@ function toggleBillDetail(id){
  GOOGLE SHEET SYNC
  */
 const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyZVBte9My3h2KOD0WAUBy_mhZftWu7PFDOI2_Fhq0ONlo0ZkfV9VTnfNRV3Ph3MdpI/exec';
+const APP_SECRET='CHANGE_ME_TO_RANDOM_SECRET_TOKEN'; // ⚠️ ต้องตรงกับ Code.gs
 const LS_KEY='pos_db_v5';const LS_DIRTY='pos_dirty_v5';const LS_LASTSYNC='pos_lastsync_v5';
 let isOnline=navigator.onLine;
 window.addEventListener('online',()=>{isOnline=true;updateSyncUI();syncToSheet();});
@@ -3375,8 +3381,8 @@ function loadLocal(){
  try{const raw=localStorage.getItem(LS_KEY);if(!raw)return false;const saved=JSON.parse(raw);Object.keys(saved).forEach(k=>{if(!(k in DB))return;const v=saved[k];if(Array.isArray(DB[k])&&!Array.isArray(v))return;if(k==='nextId'&&typeof v!=='number')return;DB[k]=v;});return true;}
  catch(e){localStorage.removeItem(LS_KEY);localStorage.removeItem(LS_DIRTY);return false;}
 }
-async function apiFetch(body){if(!isOnline)return null;try{const res=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});return await res.json();}catch(e){return null;}}
-async function apiGet(params={}){if(!isOnline)return null;try{const q=new URLSearchParams(params).toString();const res=await fetch(`${SCRIPT_URL}?${q}`);return await res.json();}catch(e){return null;}}
+async function apiFetch(body){if(!isOnline)return null;try{const res=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({...body,token:APP_SECRET})});return await res.json();}catch(e){return null;}}
+async function apiGet(params={}){if(!isOnline)return null;try{const q=new URLSearchParams({...params,token:APP_SECRET}).toString();const res=await fetch(`${SCRIPT_URL}?${q}`);return await res.json();}catch(e){return null;}}
 async function syncToSheet(){
  const dirty=localStorage.getItem(LS_DIRTY);if(!dirty||!isOnline)return;
  showSyncStatus('กำลัง sync...');
@@ -3463,15 +3469,38 @@ function updateLoginDots(){
  if(dot) dot.classList.toggle('filled', i<loginPin.length);
  }
 }
-function loginSubmit(){
+async function loginSubmit(){
  const id=document.getElementById('loginEmpId').value.trim().toUpperCase();
  const emp=DB.employees.find(e=>String(e.id)===String(id));
  const errEl=document.getElementById('loginError');
  if(!DB.employees.length){ errEl.textContent='ยังไม่มีพนักงานในระบบ กรุณาติดต่อผู้ดูแลระบบ'; loginPinReset(); return; }
  if(!emp){ errEl.textContent='ไม่พบรหัสพนักงาน'; loginPinReset(); return; }
+ // ─── Brute Force Check ───────────────────────
+ const failRec = _loginFailMap[id] || {count:0, lockedUntil:0};
+ if(Date.now() < failRec.lockedUntil){
+   const secsLeft = Math.ceil((failRec.lockedUntil - Date.now()) / 1000);
+   const mins = Math.floor(secsLeft/60), secs = secsLeft%60;
+   errEl.textContent = `บัญชีถูกล็อค กรุณารอ ${mins}:${String(secs).padStart(2,'0')} นาที`;
+   loginPinReset(); return;
+ }
  // PIN check — default PIN = last 4 digits of empId padded, or use stored pin
- const expectedPin = String(emp.pin || '1234');
- if(loginPin!==expectedPin){ errEl.textContent='รหัส PIN ไม่ถูกต้อง'; loginPinReset(); return; }
+ const expectedPin = emp.pin || await hashPin('1234');
+ const inputHash = await hashPin(loginPin);
+ if(inputHash !== expectedPin){
+   failRec.count = (failRec.count||0) + 1;
+   _loginFailMap[id] = failRec;
+   const remaining = LOGIN_MAX_FAIL - failRec.count;
+   if(remaining <= 0){
+     failRec.lockedUntil = Date.now() + LOGIN_LOCK_MS;
+     _loginFailMap[id] = failRec;
+     errEl.textContent = 'กรอก PIN ผิดหลายครั้งเกินไป บัญชีถูกล็อค 5 นาที';
+   } else {
+     errEl.textContent = `รหัส PIN ไม่ถูกต้อง (เหลือ ${remaining} ครั้ง)`;
+   }
+   loginPinReset(); return;
+ }
+ // Success — reset fail counter
+ _loginFailMap[id] = {count:0, lockedUntil:0};
  // Success
  currentOperator={id:emp.id,name:emp.name,role:emp.role};
  lastOperator=currentOperator;
@@ -3550,14 +3579,15 @@ function mgrGateLookup(){
  document.getElementById('mgrGatePin').value='';
 }
 
-function mgrGateSubmit(){
+async function mgrGateSubmit(){
  const id = document.getElementById('mgrGateEmpId').value.trim().toUpperCase();
  const pin = document.getElementById('mgrGatePin').value.trim();
  const errEl = document.getElementById('mgrGateError');
  const emp = DB.employees.find(e=>String(e.id)===String(id));
  if(!emp){ errEl.textContent='ไม่พบรหัสพนักงาน'; shakeGate(); return; }
  if(emp.role!=='manager'){ errEl.textContent=' '+emp.name+'ไม่มีสิทธิ์ผู้จัดการ'; shakeGate(); return; }
- if(String(pin) !== String(emp.pin)){ errEl.textContent='รหัส PIN ไม่ถูกต้อง'; shakeGate(); return; }
+ const pinHash = await hashPin(pin);
+ if(pinHash !== emp.pin){ errEl.textContent='รหัส PIN ไม่ถูกต้อง'; shakeGate(); return; }
  // success
  mgrSession = {emp, expiry: Date.now()+MGR_TIMEOUT};
  document.getElementById('mgrGateOverlay').classList.remove('open');
@@ -3592,7 +3622,6 @@ function updateMgrBadge(){
  if(isMgrActive()){
  badge.style.display='flex';
  badge.querySelector('#mgrBadgeName').textContent = mgrSession.emp.name;
- const rrow=document.getElementById('drawerRecoveryRow'); if(rrow) rrow.style.display='block';
  // countdown
  clearInterval(badge._timer);
  badge._timer = setInterval(()=>{
@@ -3604,7 +3633,6 @@ function updateMgrBadge(){
  }, 1000);
  } else {
  badge.style.display='none';
- const rrow2=document.getElementById('drawerRecoveryRow'); if(rrow2) rrow2.style.display='none';
  clearInterval(badge._timer);
  }
 }
@@ -3664,68 +3692,191 @@ function _goPageDirect(p){
 // ════════════════════════════════════════════════
 // EMERGENCY RECOVERY SYSTEM
 // ════════════════════════════════════════════════
-function showRecoveryCodeAlert(code){
- // สร้าง overlay แสดง recovery code ให้บันทึก
- const overlay = document.createElement('div');
- overlay.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:20px';
- overlay.innerHTML=`
-  <div style="background:var(--bg);border-radius:var(--r4);padding:24px;max-width:320px;width:100%;text-align:center">
-   <span class="material-symbols-outlined" style="font-size:48px;color:var(--gold)">key</span>
-   <div style="font-size:16px;font-weight:800;color:var(--t1);margin:10px 0 4px;font-family:var(--fh)">Recovery Code ของคุณ</div>
-   <div style="font-size:11px;color:var(--t4);margin-bottom:16px">บันทึกไว้ใช้เมื่อลืม PIN — ใช้ได้ครั้งเดียว</div>
-   <div style="background:var(--bg-dk);border:2px dashed var(--gold);border-radius:var(--r3);padding:14px;margin-bottom:16px">
-    <div style="font-size:28px;font-weight:900;font-family:monospace;letter-spacing:6px;color:var(--gold)">${code}</div>
-   </div>
-   <div style="font-size:10px;color:var(--red);margin-bottom:16px;font-weight:600">⚠️ ถ่ายรูปหรือจดไว้ก่อนปิดหน้านี้</div>
-   <button onclick="this.closest('div[style]').remove()" 
-    style="width:100%;padding:12px;background:var(--esp);color:#fff;border:none;border-radius:var(--r3);font-size:14px;font-weight:700;font-family:var(--fh);cursor:pointer">
-    บันทึกแล้ว ปิด
-   </button>
-  </div>`;
- document.body.appendChild(overlay);
+let _recoveryOTP = null;      // OTP 6 หลัก (เก็บใน memory)
+let _recoveryOTPExp = 0;      // expiry timestamp
+let _recoveryTargetId = null; // empId ที่จะ reset
+let _recoveryOTPAttempts = 0; // นับครั้งที่กรอก OTP ผิด
+const OTP_MAX_ATTEMPTS = 5;   // ล็อคหลังผิด 5 ครั้ง
+
+// ─── Brute Force — PIN Login ───────────────────
+// key: empId → { count, lockedUntil }
+const _loginFailMap = {};
+const LOGIN_MAX_FAIL  = 5;    // ผิดได้สูงสุด 5 ครั้ง
+const LOGIN_LOCK_MS   = 5 * 60 * 1000; // ล็อค 5 นาที
+
+// ════════════════════════════════════════════════
+// PIN HASHING — Web Crypto API (SHA-256)
+// ════════════════════════════════════════════════
+const PIN_SALT = 'POS_APP_SALT_2025'; // fixed salt per app instance
+
+async function hashPin(pin){
+  const msgBuffer = new TextEncoder().encode(PIN_SALT + String(pin));
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// Migration helper — ตรวจว่า pin เป็น hash แล้วหรือยัง (hash = 64 hex chars)
+function isHashed(pin){ return typeof pin === 'string' && /^[0-9a-f]{64}$/.test(pin); }
+
+// Migrate existing plain-text PINs → hashed (run once on load)
+async function migratePins(){
+  let changed = false;
+  for(const emp of DB.employees){
+    if(emp.pin && !isHashed(emp.pin)){
+      emp.pin = await hashPin(emp.pin);
+      changed = true;
+    }
+  }
+  if(changed){ saveLocal(); console.log('[POS] PIN migration done'); }
+}
+
+function maskEmail(email){
+  if(!email) return '';
+  const [user, domain] = email.split('@');
+  if(!domain) return email;
+  const masked = user.length <= 2 ? user[0]+'***' : user.slice(0,2)+'***'+user.slice(-1);
+  return masked + '@' + domain;
+}
+
+function updateRecoveryEmailHint(){
+  const empId = document.getElementById('recoveryEmpSel').value;
+  const emp = DB.employees.find(e=>String(e.id)===String(empId));
+  const hint = document.getElementById('recoveryEmailHint');
+  const noEmail = document.getElementById('recoveryNoEmail');
+  const sendBtn = document.getElementById('sendOtpBtn');
+  if(emp && emp.email){
+    hint.style.display='flex';
+    noEmail.style.display='none';
+    document.getElementById('recoveryEmailMasked').textContent = maskEmail(emp.email);
+    sendBtn.disabled=false;
+  } else {
+    hint.style.display='none';
+    noEmail.style.display='block';
+    sendBtn.disabled=true;
+  }
+}
+
+function goRecoveryStep1(){
+  document.getElementById('recoveryStep1').style.display='block';
+  document.getElementById('recoveryStep2').style.display='none';
+  document.getElementById('recoveryStep3').style.display='none';
+  document.getElementById('recoveryOtpInput').value='';
+  document.getElementById('recoveryOtpError').textContent='';
+}
+
+async function sendRecoveryOTP(){
+  const errEl = document.getElementById('recoveryError');
+  errEl.textContent='';
+  const empId = document.getElementById('recoveryEmpSel').value;
+  const emp = DB.employees.find(e=>String(e.id)===String(empId));
+  if(!emp||!emp.email){ errEl.textContent='ไม่พบ Email ของ Manager นี้'; return; }
+
+  // Generate OTP 6 หลัก
+  const otp = String(Math.floor(100000+Math.random()*900000));
+  _recoveryOTP = otp;
+  _recoveryOTPAttempts = 0; // reset นับครั้ง
+  document.getElementById('recoveryOtpInput').disabled = false;
+  _recoveryOTPExp = Date.now() + 10*60*1000; // 10 นาที
+  _recoveryTargetId = empId;
+
+  // ส่งผ่าน GAS
+  const btn = document.getElementById('sendOtpBtn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px;animation:spin 1s linear infinite">progress_activity</span> กำลังส่ง...';
+
+  try {
+    const res = await fetch(SCRIPT_URL+'?action=sendOTP', {
+      method:'POST',
+      body: JSON.stringify({
+        email: emp.email,
+        empName: emp.name,
+        otp: otp,
+        shopName: DB.shopName,
+        token: APP_SECRET
+      })
+    });
+    const data = await res.json();
+    if(data.status==='ok'){
+      // ไป Step 2
+      document.getElementById('recoveryStep1').style.display='none';
+      document.getElementById('recoveryStep2').style.display='block';
+      document.getElementById('recoveryOtpSentTo').textContent = 'ส่งไปที่ '+maskEmail(emp.email);
+    } else if(data.status==='rateLimit'){
+      errEl.textContent='⚠️ ส่ง OTP บ่อยเกินไป กรุณารอ 10 นาที แล้วลองใหม่';
+    } else {
+      errEl.textContent='ส่ง Email ไม่สำเร็จ: '+(data.msg||'ลองใหม่');
+    }
+  } catch(e){
+    // Fallback: ถ้า GAS ไม่รองรับ action=sendOTP ให้แสดง OTP บนหน้าจอ (debug)
+    errEl.textContent='';
+    document.getElementById('recoveryStep1').style.display='none';
+    document.getElementById('recoveryStep2').style.display='block';
+    document.getElementById('recoveryOtpSentTo').textContent = 'ส่งไปที่ '+maskEmail(emp.email);
+    // DEV MODE: แสดง OTP ใน console
+    console.log('[DEV] Recovery OTP:', otp);
+  } finally {
+    btn.disabled=false;
+    btn.innerHTML='<span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">send</span> ส่ง OTP ไปที่ Email';
+  }
+}
+
+function verifyRecoveryOTP(){
+  const errEl = document.getElementById('recoveryOtpError');
+  errEl.textContent='';
+  const input = document.getElementById('recoveryOtpInput').value.trim();
+  if(!input){ errEl.textContent='กรุณากรอก OTP'; return; }
+  // ─── OTP Attempt Limit ────────────────────────
+  if(_recoveryOTPAttempts >= OTP_MAX_ATTEMPTS){
+    errEl.textContent='กรอก OTP ผิดเกินกำหนด กรุณากดส่ง OTP ใหม่';
+    document.getElementById('recoveryOtpInput').disabled = true;
+    return;
+  }
+  if(Date.now() > _recoveryOTPExp){ errEl.textContent='OTP หมดอายุแล้ว กด "ส่ง OTP ใหม่"'; return; }
+  if(input !== _recoveryOTP){
+    _recoveryOTPAttempts++;
+    const left = OTP_MAX_ATTEMPTS - _recoveryOTPAttempts;
+    const inp=document.getElementById('recoveryOtpInput');
+    if(left <= 0){
+      errEl.textContent='OTP ไม่ถูกต้อง — ครบจำนวนครั้ง กรุณาขอ OTP ใหม่';
+      inp.disabled = true;
+    } else {
+      errEl.textContent=`OTP ไม่ถูกต้อง (เหลือ ${left} ครั้ง)`;
+    }
+    inp.style.animation='shake .3s'; setTimeout(()=>inp.style.animation='',300);
+    return; 
+  }
+  // ถูกต้อง → Step 3
+  const emp = DB.employees.find(e=>String(e.id)===String(_recoveryTargetId));
+  document.getElementById('recoveryEmpName').textContent = emp ? emp.name+' ('+emp.id+')' : '';
+  document.getElementById('recoveryStep2').style.display='none';
+  document.getElementById('recoveryStep3').style.display='block';
 }
 
 function openRecoveryModal(){
- // เติม Manager list
  const sel = document.getElementById('recoveryEmpSel');
  const managers = DB.employees.filter(e=>e.role==='manager');
  if(!managers.length){ toast('ไม่มี Manager ในระบบ'); return; }
  sel.innerHTML = managers.map(e=>`<option value="${e.id}">${e.name} (${e.id})</option>`).join('');
- // reset steps
+ // reset all steps
  document.getElementById('recoveryStep1').style.display='block';
  document.getElementById('recoveryStep2').style.display='none';
- document.getElementById('recoveryCode').value='';
+ document.getElementById('recoveryStep3').style.display='none';
  document.getElementById('recoveryError').textContent='';
+ document.getElementById('recoveryOtpInput').value='';
+ document.getElementById('recoveryOtpError').textContent='';
  document.getElementById('recoveryNewPin').value='';
  document.getElementById('recoveryNewPin2').value='';
  document.getElementById('recoveryPinError').textContent='';
+ _recoveryOTP=null; _recoveryOTPExp=0; _recoveryTargetId=null; _recoveryOTPAttempts=0;
+ updateRecoveryEmailHint();
  openModal('modal-recovery');
 }
 
-function verifyRecoveryCode(){
- const code = document.getElementById('recoveryCode').value.trim().toUpperCase();
- const errEl = document.getElementById('recoveryError');
- errEl.textContent='';
- if(!code){ errEl.textContent='กรุณากรอก Recovery Code'; return; }
- if(!DB.recoveryCode){ errEl.textContent='ระบบยังไม่มี Recovery Code (Setup ใหม่)'; return; }
- if(code !== DB.recoveryCode.toUpperCase()){
-   errEl.textContent='Recovery Code ไม่ถูกต้อง';
-   // shake
-   const inp=document.getElementById('recoveryCode');
-   inp.style.animation='shake .3s';
-   setTimeout(()=>inp.style.animation='',300);
-   return;
- }
- // ถูกต้อง → ไป Step 2
- const empId = document.getElementById('recoveryEmpSel').value;
- const emp = DB.employees.find(e=>String(e.id)===String(empId));
- document.getElementById('recoveryEmpName').textContent = emp ? emp.name+' ('+emp.id+')' : '';
- document.getElementById('recoveryStep1').style.display='none';
- document.getElementById('recoveryStep2').style.display='block';
-}
+// verifyRecoveryCode replaced by OTP system
 
-function doRecoveryReset(){
- const empId = document.getElementById('recoveryEmpSel').value;
+async function doRecoveryReset(){
+ const empId = _recoveryTargetId || document.getElementById('recoveryEmpSel').value;
  const newPin = document.getElementById('recoveryNewPin').value.trim();
  const newPin2 = document.getElementById('recoveryNewPin2').value.trim();
  const errEl = document.getElementById('recoveryPinError');
@@ -3734,23 +3885,18 @@ function doRecoveryReset(){
  if(newPin !== newPin2){ errEl.textContent='PIN ไม่ตรงกัน'; return; }
  const emp = DB.employees.find(e=>String(e.id)===String(empId));
  if(!emp){ errEl.textContent='ไม่พบพนักงาน'; return; }
- emp.pin = newPin;
- // สร้าง Recovery Code ใหม่หลัง reset (ใช้ได้ครั้งเดียว)
- const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
- const newCode=Array.from({length:8},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
- DB.recoveryCode = newCode;
+ emp.pin = await hashPin(newPin);
  addAudit('recovery','Emergency PIN Reset','Reset PIN: '+emp.name+' ('+emp.id+')','','rgba(217,79,68,.08)','high',emp);
  scheduleSync();
  closeModal('modal-recovery');
- // แสดง recovery code ใหม่
- showRecoveryCodeAlert(newCode);
- toast('Reset PIN สำเร็จ! บันทึก Recovery Code ใหม่ด้วย');
+ toast('Reset PIN สำเร็จ!');
 }
 
 window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
 (async function init(){
- // 1. โหลด cache ก่อน
+ // 0. Migrate plain-text PINs → SHA-256 hashes (once)
  const hasCache = loadLocal();
+ await migratePins();
  if(hasCache){ showSyncStatus('Cache'); }
 
  // 2. โหลดจาก Sheets (รวม employees) — รอให้เสร็จก่อนแสดง login
@@ -3828,39 +3974,73 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  <div class="modal-sheet">
   <div class="modal-handle"></div>
   <div class="modal-head">
-   <span class="modal-title">🔑 กู้คืนการเข้าถึง</span>
+   <span class="modal-title" style="display:flex;align-items:center;gap:6px">
+    <span class="material-symbols-outlined" style="font-size:20px;color:var(--gold);font-variation-settings:'FILL' 1">key</span>
+    กู้คืนการเข้าถึง
+   </span>
+   <button class="modal-close" onclick="closeModal('modal-recovery')"><span class="material-symbols-outlined" style="font-size:20px">close</span></button>
   </div>
   <div class="modal-body">
    <div style="background:rgba(217,79,68,.07);border-left:3px solid var(--red);border-radius:0 var(--r2) var(--r2) 0;padding:8px 12px;margin-bottom:14px;font-size:11px;color:var(--t3)">
-    ใช้เมื่อ Manager ลืม PIN — ระบบจะ Reset PIN ของ Manager ท่านนั้น
+    ใช้เมื่อ Manager ลืม PIN — ระบบส่ง OTP ไปยัง Email ของ Manager
    </div>
-   <!-- Step 1: เลือก Manager -->
+
+   <!-- Step 1: เลือก Manager + ส่ง OTP -->
    <div id="recoveryStep1">
     <div class="f-group">
      <label class="f-label">เลือก Manager ที่ต้องการ Reset</label>
-     <select class="f-select" id="recoveryEmpSel"></select>
+     <select class="f-select" id="recoveryEmpSel" onchange="updateRecoveryEmailHint()"></select>
     </div>
-    <div class="f-group" style="margin-top:10px">
-     <label class="f-label" style="display:flex;align-items:center;gap:6px">
-      Recovery Code
-      <span style="font-size:9px;background:rgba(217,79,68,.12);color:var(--red);padding:1px 6px;border-radius:10px;font-weight:600">ดูได้ใน Google Sheets</span>
-     </label>
-     <input class="f-input" id="recoveryCode" placeholder="กรอก Recovery Code" 
-      style="font-family:monospace;letter-spacing:2px">
-     <div style="font-size:10px;color:var(--t4);margin-top:3px">
-      เปิด Google Sheets → แถบ <b>Config</b> → ช่อง <b>RECOVERY_CODE</b>
+    <div id="recoveryEmailHint" style="display:none;background:var(--bg-dk);border-radius:var(--r3);padding:10px 12px;margin-top:8px;display:flex;align-items:center;gap:8px">
+     <span class="material-symbols-outlined" style="font-size:18px;color:var(--blue)">mail</span>
+     <div>
+      <div style="font-size:10px;color:var(--t4)">จะส่ง OTP ไปที่</div>
+      <div style="font-size:13px;font-weight:700;color:var(--t1)" id="recoveryEmailMasked">—</div>
      </div>
     </div>
-    <div id="recoveryError" style="font-size:12px;color:var(--red);min-height:16px;font-weight:600;margin-top:4px"></div>
+    <div id="recoveryNoEmail" style="display:none;background:rgba(217,79,68,.07);border-radius:var(--r3);padding:10px 12px;margin-top:8px;font-size:11px;color:var(--red)">
+     <span class="material-symbols-outlined" style="font-size:14px;vertical-align:-2px">warning</span>
+     Manager นี้ยังไม่มี Email — ให้ Manager อื่นไปเพิ่ม Email ในหน้าพนักงานก่อน
+    </div>
+    <div id="recoveryError" style="font-size:12px;color:var(--red);min-height:16px;font-weight:600;margin-top:6px"></div>
     <div class="modal-foot" style="padding:12px 0 0">
-     <button class="btn btn-dark" style="flex:1" onclick="verifyRecoveryCode()">ยืนยัน</button>
+     <button class="btn btn-dark" style="flex:1" id="sendOtpBtn" onclick="sendRecoveryOTP()">
+      <span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">send</span>
+      ส่ง OTP ไปที่ Email
+     </button>
     </div>
    </div>
-   <!-- Step 2: ตั้ง PIN ใหม่ -->
+
+   <!-- Step 2: กรอก OTP -->
    <div id="recoveryStep2" style="display:none">
-    <div style="text-align:center;padding:8px 0 14px">
-     <span class="material-symbols-outlined" style="font-size:40px;color:var(--green)">check_circle</span>
-     <div style="font-size:13px;font-weight:700;color:var(--green);margin-top:4px">ยืนยันตัวตนสำเร็จ</div>
+    <div style="text-align:center;padding:6px 0 12px">
+     <span class="material-symbols-outlined" style="font-size:42px;color:var(--blue)">mark_email_read</span>
+     <div style="font-size:13px;font-weight:700;color:var(--t1);margin-top:6px">ตรวจสอบ Email ของคุณ</div>
+     <div id="recoveryOtpSentTo" style="font-size:11px;color:var(--t4);margin-top:2px"></div>
+     <div style="font-size:10px;color:var(--t5);margin-top:2px">OTP หมดอายุใน 10 นาที</div>
+    </div>
+    <div class="f-group">
+     <label class="f-label">กรอก OTP 6 หลัก</label>
+     <input class="f-input" id="recoveryOtpInput" type="text" inputmode="numeric"
+      maxlength="6" placeholder="_ _ _ _ _ _"
+      style="font-size:22px;font-family:monospace;letter-spacing:8px;text-align:center;font-weight:700">
+    </div>
+    <div id="recoveryOtpError" style="font-size:12px;color:var(--red);min-height:16px;font-weight:600"></div>
+    <div style="text-align:center;margin-top:4px">
+     <button onclick="goRecoveryStep1()" style="font-size:11px;color:var(--t4);background:none;border:none;cursor:pointer;font-family:var(--fb)">
+      ส่ง OTP ใหม่
+     </button>
+    </div>
+    <div class="modal-foot" style="padding:12px 0 0">
+     <button class="btn btn-dark" style="flex:1" onclick="verifyRecoveryOTP()">ยืนยัน OTP</button>
+    </div>
+   </div>
+
+   <!-- Step 3: ตั้ง PIN ใหม่ -->
+   <div id="recoveryStep3" style="display:none">
+    <div style="text-align:center;padding:6px 0 14px">
+     <span class="material-symbols-outlined" style="font-size:42px;color:var(--green)">check_circle</span>
+     <div style="font-size:13px;font-weight:700;color:var(--green);margin-top:6px">ยืนยัน OTP สำเร็จ</div>
      <div id="recoveryEmpName" style="font-size:11px;color:var(--t4);margin-top:2px"></div>
     </div>
     <div class="f-row">
@@ -3875,10 +4055,10 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
     </div>
     <div id="recoveryPinError" style="font-size:12px;color:var(--red);min-height:16px;font-weight:600"></div>
     <div class="modal-foot" style="padding:12px 0 0">
-     <button class="btn btn-secondary" style="padding:12px 16px" onclick="closeModal('modal-recovery')">
-      <span class="mi" style="font-size:16px;vertical-align:-3px">close</span>
+     <button class="btn btn-dark" style="flex:1" onclick="doRecoveryReset()">
+      <span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">lock_reset</span>
+      ตั้ง PIN ใหม่
      </button>
-     <button class="btn btn-dark" style="flex:2" onclick="doRecoveryReset()">Reset PIN</button>
     </div>
    </div>
   </div>
