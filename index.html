@@ -4160,16 +4160,14 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  // 2. โหลดจาก Sheets (รวม employees) — รอให้เสร็จก่อนแสดง login
  if(isOnline && !SCRIPT_URL.includes('YOUR_SUBDOMAIN') && !SCRIPT_URL.includes('YOUR_APPS_SCRIPT')){
    showSyncStatus('กำลังเชื่อมต่อ...');
-   // ─── CORS preflight test ──────────────────────────────────
+   // ─── load data (CORS must be enabled on Worker) ────────────
    try {
-     const testRes = await fetch(SCRIPT_URL+'?action=ping', {method:'GET'});
-     if(!testRes.ok) throw new Error('HTTP '+testRes.status);
-     console.log('[init] Worker ping OK');
+     console.log('[init] Connecting to Worker:', SCRIPT_URL);
      await loadFromSheet();
    } catch(e) {
-     console.error('[init] Worker unreachable:', e.message);
-     showSyncStatus('Worker ไม่ตอบสนอง');
-     toast('⚠️ เชื่อมต่อ Worker ไม่ได้: '+e.message+' — ดู Console (F12)');
+     console.error('[init] loadFromSheet exception:', e.message, e);
+     showSyncStatus('เชื่อมต่อไม่ได้');
+     toast('⚠️ '+e.message);
    }
  } else if(!isOnline){
    showSyncStatus('ออฟไลน์');
