@@ -975,7 +975,7 @@ if ('serviceWorker' in navigator) {
 </div> <!-- DRAWER -->
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer"> <div class="drawer-head"> <div class="drawer-logo">POS<span>·</span>APP</div> <div class="drawer-sub">ระบบบริหารร้านกาแฟ v5</div> <div id="drawerUserInfo" style="font-size:11px;color:var(--cara);font-weight:700;margin-top:6px;font-family:var(--fh)"></div> <button onclick="logoutUser()" style="margin-top:8px;padding:6px 14px;border-radius:var(--rf);background:var(--red-lt);color:var(--red);font-size:11px;font-weight:700;font-family:var(--fh)">ออกจากระบบ</button> </div> <div class="drawer-body"> <!-- Manager session badge --> <div id="mgrSessionBadge" style="display:none;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(90deg,rgba(43,94,167,.12),transparent);border-bottom:1px solid rgba(43,94,167,.15);margin-bottom:4px"> <span class="mi" style="font-size:20px;color:var(--blue)">shield_person</span> <div style="flex:1"> <div style="font-size:10px;font-weight:700;color:var(--blue)">Manager Mode</div> <div id="mgrBadgeName" style="font-size:11px;color:var(--t2)"></div> </div> <div style="text-align:right"> <div id="mgrBadgeTime" style="font-size:11px;font-weight:700;color:var(--blue);font-family:var(--fh)">10:00</div> <button onclick="mgrLogout()" style="font-size:9px;color:var(--red);background:var(--red-lt);border:none;border-radius:var(--rf);padding:2px 6px;margin-top:2px;cursor:pointer;font-weight:700">ออก</button> </div> </div> <div class="drawer-item active" id="dnav-order" onclick="drawerGo('order')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">point_of_sale</span></div> <span>รับออเดอร์</span> </div> <div class="drawer-item" id="dnav-sales" onclick="drawerGo('sales')"> <div class="drawer-item-icon" style="color:var(--blue)"><span class="mi">bar_chart</span></div> <span>รายการขายวันนี้</span> </div> <div class="drawer-sep"></div> <div class="drawer-item" id="dnav-promo" onclick="drawerGo('promo')"> <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">sell</span></div> <span>โปรโมชั่น</span> </div> <div class="drawer-item" id="dnav-manage" onclick="drawerGo('manage')"> <div class="drawer-item-icon" style="color:var(--esp)"><span class="mi">restaurant_menu</span></div> <span>จัดการเมนู</span> </div> <div class="drawer-item" id="dnav-bills" onclick="drawerGo('bills')"> <div class="drawer-item-icon" style="color:var(--red)"><span class="mi">receipt_long</span></div> <span>จัดการบิล</span> </div> <div class="drawer-item" id="dnav-staff-mgmt" onclick="drawerGo('staff-mgmt')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">group</span></div> <span>พนักงาน</span> </div> <div class="drawer-item" id="dnav-audit" onclick="drawerGo('audit')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">history</span></div> <span>ประวัติ</span> </div> <div class="drawer-item" id="dnav-report" onclick="drawerGo('report')"> <div class="drawer-item-icon" style="color:var(--green)"><span class="mi">trending_up</span></div> <span>รายงาน</span> </div> <div class="drawer-item" id="dnav-stores" onclick="drawerGo('stores')"> <div class="drawer-item-icon" style="color:var(--purple)"><span class="mi">inventory_2</span></div> <span>คลัง</span> </div>
- </div> <div class="drawer-foot"> <div class="drawer-sync-badge"> <div class="top-live" id="drawerLive" style="width:7px;height:7px;"></div> <span id="drawerSync">—</span> </div> </div>
+ </div> <div class="drawer-foot"> <div class="drawer-sync-badge"> <div class="top-live" id="drawerLive" style="width:7px;height:7px;"></div> <span id="drawerSync">—</span> </div> <button onclick="closeDrawer();openDebugPanel()" style="margin-top:10px;width:100%;padding:8px;border-radius:var(--r2);background:var(--bg-dk);border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:var(--fh);color:var(--t3);display:flex;align-items:center;justify-content:center;gap:6px"><span class="material-symbols-outlined" style="font-size:14px">terminal</span>Debug Panel</button> </div>
 </div> <!-- ORDER PANEL PAGE -->
 <div class="order-panel-page" id="orderPanelPage"> <div class="op-handle-wrap" onclick="closeOrderPanel()"><div class="op-handle"></div></div> <div class="op-topbar"> <button class="op-close" onclick="closeOrderPanel()"></button> <span class="op-title">รายการออเดอร์</span> <span style="font-size:11px;color:var(--t4)" id="opItemCount">0 รายการ</span> </div> <div class="op-list" id="opList"> <div class="op-empty"> <div class="e-icon"></div> <div class="op-empty-title">ยังไม่มีรายการ</div> </div> </div> <div class="op-footer"> <div class="op-summary" id="opSummary"> <div class="op-sum-row"><span id="opCount">0 รายการ</span><span id="opSubTotal">฿0</span></div> <div class="op-sum-row" id="discountRow" style="display:none;color:var(--red)"><span>ส่วนลด</span><span id="opDiscountAmt">-฿0</span></div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px" onclick="requestVoidOrder()">ยกเลิก</button> <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button> </div> </div>
 </div> <!-- RECEIPT PAGE -->
@@ -4330,6 +4330,185 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
   </div>
  </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     DEBUG PANEL MODAL
+═══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-debug" style="z-index:9999">
+ <div class="modal-sheet" style="max-height:85vh">
+  <div class="modal-handle"></div>
+  <div class="modal-head" style="padding-bottom:8px">
+   <span class="modal-title" style="display:flex;align-items:center;gap:6px">
+    <span class="material-symbols-outlined" style="font-size:18px;color:var(--blue)">terminal</span>
+    Debug Panel
+   </span>
+   <button onclick="closeModal('modal-debug')" style="background:none;border:none;cursor:pointer;padding:4px">
+    <span class="material-symbols-outlined" style="font-size:20px;color:var(--t3)">close</span>
+   </button>
+  </div>
+  <div class="modal-body" style="padding-top:0">
+   <!-- Status row -->
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px">
+     <div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">Network</div>
+     <div id="dbg-network" style="font-size:13px;font-weight:800;font-family:var(--fh);margin-top:2px">—</div>
+    </div>
+    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px">
+     <div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">Worker</div>
+     <div id="dbg-worker" style="font-size:13px;font-weight:800;font-family:var(--fh);margin-top:2px">—</div>
+    </div>
+    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px">
+     <div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">GAS</div>
+     <div id="dbg-gas" style="font-size:13px;font-weight:800;font-family:var(--fh);margin-top:2px">—</div>
+    </div>
+    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px">
+     <div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">DB Items</div>
+     <div id="dbg-db" style="font-size:11px;font-weight:700;font-family:var(--fh);margin-top:2px;color:var(--t2)">—</div>
+    </div>
+   </div>
+   <!-- Action buttons -->
+   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+    <button onclick="dbgPingWorker()" style="flex:1;min-width:100px;padding:9px 12px;border-radius:var(--r2);background:var(--blue-lt);color:var(--blue);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">
+     <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">wifi_tethering</span> Ping Worker
+    </button>
+    <button onclick="dbgTestGetAll()" style="flex:1;min-width:100px;padding:9px 12px;border-radius:var(--r2);background:var(--green-lt);color:var(--green);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">
+     <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">download</span> Test getAll
+    </button>
+    <button onclick="dbgShowDB()" style="flex:1;min-width:100px;padding:9px 12px;border-radius:var(--r2);background:var(--gold-lt);color:var(--gold);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">
+     <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">database</span> Show DB
+    </button>
+    <button onclick="dbgClearLog()" style="padding:9px 12px;border-radius:var(--r2);background:var(--red-lt);color:var(--red);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">
+     <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">delete_sweep</span>
+    </button>
+   </div>
+   <!-- Log output -->
+   <div id="dbg-log" style="background:#1A1008;border-radius:var(--r2);padding:10px 12px;font-family:monospace;font-size:11px;color:#C8B89A;line-height:1.7;min-height:160px;max-height:300px;overflow-y:auto;white-space:pre-wrap;word-break:break-all">
+    <span style="color:#666">// แตะปุ่มเพื่อทดสอบ...</span>
+   </div>
+  </div>
+ </div>
+</div>
+
+<script>
+// ═══ DEBUG PANEL FUNCTIONS ═══════════════════════════════════
+
+function openDebugPanel(){
+ // update status immediately
+ document.getElementById('dbg-network').textContent = navigator.onLine ? '🟢 Online' : '🔴 Offline';
+ document.getElementById('dbg-network').style.color = navigator.onLine ? 'var(--green)' : 'var(--red)';
+ document.getElementById('dbg-worker').textContent = '—';
+ document.getElementById('dbg-gas').textContent = '—';
+ const d = DB;
+ document.getElementById('dbg-db').innerHTML =
+  `ing:${d.ingredients?.length||0} pkg:${d.packages?.length||0}<br>emp:${d.employees?.length||0} menu:${d.menus?.length||0}<br>ord:${d.orders?.length||0}`;
+ openModal('modal-debug');
+}
+
+function dbgLog(msg, color){
+ const el = document.getElementById('dbg-log');
+ const ts = new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+ const line = document.createElement('div');
+ line.style.color = color || '#C8B89A';
+ line.textContent = `[${ts}] ${msg}`;
+ // remove placeholder
+ if(el.children[0]?.style.color === 'rgb(102,102,102)') el.innerHTML = '';
+ el.appendChild(line);
+ el.scrollTop = el.scrollHeight;
+}
+
+function dbgClearLog(){
+ document.getElementById('dbg-log').innerHTML = '<span style="color:#666">// cleared</span>';
+}
+
+async function dbgPingWorker(){
+ dbgLog('→ Ping Worker: ' + SCRIPT_URL, '#88AAFF');
+ document.getElementById('dbg-worker').textContent = '⏳ Testing...';
+ try {
+  const t0 = Date.now();
+  const res = await fetch(SCRIPT_URL + '?action=ping', {mode:'cors'});
+  const ms = Date.now() - t0;
+  const txt = await res.text();
+  dbgLog(`← HTTP ${res.status} (${ms}ms)`, res.ok ? '#88CC88' : '#FF8888');
+  dbgLog(`   Body: ${txt}`, '#DDBB88');
+  if(res.ok){
+   document.getElementById('dbg-worker').textContent = `✅ ${ms}ms`;
+   document.getElementById('dbg-worker').style.color = 'var(--green)';
+  } else {
+   document.getElementById('dbg-worker').textContent = `❌ ${res.status}`;
+   document.getElementById('dbg-worker').style.color = 'var(--red)';
+  }
+ } catch(e) {
+  dbgLog(`✗ Fetch error: ${e.message}`, '#FF6666');
+  document.getElementById('dbg-worker').textContent = '❌ Error';
+  document.getElementById('dbg-worker').style.color = 'var(--red)';
+  dbgLog('  → ตรวจสอบ: Worker URL ถูกต้อง? CORS enabled?', '#FFAA44');
+ }
+}
+
+async function dbgTestGetAll(){
+ dbgLog('→ GET ?action=getAll', '#88AAFF');
+ document.getElementById('dbg-gas').textContent = '⏳ Testing...';
+ try {
+  const t0 = Date.now();
+  const res = await fetch(SCRIPT_URL + '?action=getAll', {mode:'cors'});
+  const ms = Date.now() - t0;
+  dbgLog(`← HTTP ${res.status} (${ms}ms)`, res.ok ? '#88CC88' : '#FF8888');
+  if(!res.ok){
+   dbgLog(`   HTTP Error — Worker or GAS ผิดพลาด`, '#FF8888');
+   document.getElementById('dbg-gas').textContent = `❌ HTTP ${res.status}`;
+   document.getElementById('dbg-gas').style.color = 'var(--red)';
+   return;
+  }
+  const txt = await res.text();
+  dbgLog(`   Raw length: ${txt.length} chars`, '#AAAAAA');
+  try {
+   const data = JSON.parse(txt);
+   if(data.error){
+    dbgLog(`   GAS error: ${data.error}`, '#FF8888');
+    document.getElementById('dbg-gas').textContent = '❌ ' + data.error;
+    document.getElementById('dbg-gas').style.color = 'var(--red)';
+    if(data.error === 'Unauthorized') dbgLog('   → ตรวจสอบ APP_SECRET ใน Worker vs Code.gs', '#FFAA44');
+   } else {
+    const keys = Object.keys(data);
+    dbgLog(`   Keys: ${keys.join(', ')}`, '#88CC88');
+    keys.forEach(k => {
+     if(Array.isArray(data[k])) dbgLog(`   ${k}: ${data[k].length} items`, '#AADDAA');
+    });
+    document.getElementById('dbg-gas').textContent = '✅ OK';
+    document.getElementById('dbg-gas').style.color = 'var(--green)';
+    dbgLog('✅ getAll สำเร็จ! กด Sync ที่ top bar ได้เลย', '#44FF88');
+   }
+  } catch(pe){
+   dbgLog(`   JSON parse error: ${pe.message}`, '#FF8888');
+   dbgLog(`   First 200 chars: ${txt.substring(0,200)}`, '#FFAA44');
+   document.getElementById('dbg-gas').textContent = '❌ JSON Error';
+   document.getElementById('dbg-gas').style.color = 'var(--red)';
+  }
+ } catch(e) {
+  dbgLog(`✗ Fetch error: ${e.message}`, '#FF6666');
+  document.getElementById('dbg-gas').textContent = '❌ Error';
+  document.getElementById('dbg-gas').style.color = 'var(--red)';
+ }
+}
+
+function dbgShowDB(){
+ dbgLog('── DB Snapshot ──────────────────', '#88AAFF');
+ const keys = ['menus','ingredients','packages','equipment','employees','orders','promos','recipes','blends','auditLog'];
+ keys.forEach(k => {
+  const arr = DB[k];
+  if(Array.isArray(arr)){
+   dbgLog(`  ${k}: ${arr.length} items ${arr.length>0?'✅':'⚠️ empty'}`, arr.length>0?'#AADDAA':'#FFAA44');
+  }
+ });
+ dbgLog(`  nextId: ${DB.nextId}`, '#AAAAAA');
+ dbgLog(`  shopName: ${DB.shopName||'(not set)'}`, '#AAAAAA');
+ dbgLog(`  posId: ${DB.posId||'(not set)'}`, '#AAAAAA');
+ const ls = localStorage.getItem('pos_dirty_v5');
+ dbgLog(`  dirty flag: ${ls !== null ? '⚠️ dirty' : '✅ clean'}`, '#AAAAAA');
+ const lastSync = localStorage.getItem('pos_lastsync_v5');
+ dbgLog(`  lastSync: ${lastSync||'(never)'}`, '#AAAAAA');
+}
+</script>
 
 </body>
 </html>
