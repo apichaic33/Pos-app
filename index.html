@@ -853,11 +853,84 @@ textarea.f-input{resize:none;}
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('./sw.js')
-      .then(r => console.log('SW registered:', r.scope))
-      .catch(e => console.log('SW error:', e));
+      .then((reg) => {
+        console.log('[SW] registered:', reg.scope);
+
+        // ตรวจหา SW ใหม่ที่ waiting อยู่ (กรณีเปิดแอพแล้วมีอัปเดต)
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          if (!newWorker) return;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // มี SW ใหม่พร้อมใช้ → แสดง banner แจ้งเตือน
+              showUpdateBanner();
+            }
+          });
+        });
+
+        // ตรวจ SW ที่ waiting อยู่แล้วตอนเปิดแอพ
+        if (reg.waiting) showUpdateBanner();
+      })
+      .catch(e => console.log('[SW] error:', e));
+
+    // เมื่อ SW ใหม่เข้าควบคุม → reload หน้าอัตโนมัติ
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) { refreshing = true; window.location.reload(); }
+    });
+  });
+}
+
+function showUpdateBanner() {
+  // ถ้ามี banner แล้วไม่ต้องสร้างใหม่
+  if (document.getElementById('sw-update-banner')) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'sw-update-banner';
+  banner.style.cssText = `
+    position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
+    z-index:99999; background:var(--esp,#2A1810); color:#fff;
+    border-radius:50px; padding:12px 20px;
+    display:flex; align-items:center; gap:12px;
+    box-shadow:0 8px 32px rgba(0,0,0,.35);
+    font-family:var(--fh,'Kanit'),sans-serif;
+    font-size:13px; font-weight:600;
+    animation:slideUpIn .35s cubic-bezier(.34,1.56,.64,1);
+    white-space:nowrap;
+  `;
+  banner.innerHTML = `
+    <span style="font-size:18px">🆕</span>
+    <span>มีเวอร์ชันใหม่พร้อมใช้</span>
+    <button id="sw-reload-btn" style="
+      background:var(--cara,#C8826A); color:#fff; border:none;
+      border-radius:50px; padding:6px 16px; font-size:12px;
+      font-weight:700; font-family:inherit; cursor:pointer;
+    ">อัปเดตเลย</button>
+    <button onclick="this.closest('#sw-update-banner').remove()" style="
+      background:rgba(255,255,255,.15); color:#fff; border:none;
+      border-radius:50%; width:24px; height:24px; font-size:14px;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+    ">×</button>
+  `;
+  document.body.appendChild(banner);
+
+  document.getElementById('sw-reload-btn').addEventListener('click', () => {
+    navigator.serviceWorker.getRegistration().then((reg) => {
+      if (reg?.waiting) {
+        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+      } else {
+        window.location.reload();
+      }
+    });
   });
 }
 </script>
+<style>
+@keyframes slideUpIn {
+  from { opacity:0; transform:translate(-50%, 20px); }
+  to   { opacity:1; transform:translate(-50%, 0); }
+}
+</style>
 </head>
 <body>
 <div id="app"> <!-- TOP BAR --> <div class="top-bar"> <button class="ham-btn" id="hamBtn" onclick="openDrawer()"> <div class="ham-line"></div> <div class="ham-line" style="width:13px;align-self:flex-end"></div> <div class="ham-line"></div> </button> <div class="top-logo">POS<span>·</span>APP <span style="font-size:11px;font-weight:400;color:var(--t4)">v5</span></div> <span id="syncStatus" class="top-sync">กำลังโหลด...</span> <div class="top-live" id="topLive"></div> <div id="topEmpInfo" style="font-size:9px;font-weight:700;color:var(--cara);font-family:var(--fh);letter-spacing:.3px;display:none;flex-shrink:1;min-width:0;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div><button id="topRefreshBtn" onclick="manualSync()" title="รีเฟรชข้อมูล" style="display:none;min-width:28px;width:28px;height:28px;border-radius:50%;background:var(--bg);box-shadow:var(--neu-out-xs);border:none;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;"><span class="material-symbols-outlined" id="topRefreshIcon" style="font-size:14px;color:var(--t3);">sync</span></button> </div> <!-- PAGES --> <div class="pages" id="pages"> <!-- PAGE: ORDER --> <div class="page active" id="pg-order"> <div class="cat-scroll" id="catRow"></div> <div class="scroll-body"> <div class="prod-grid" id="orderGrid"></div> </div> </div> <!-- PAGE: PROMO --> <div class="page" id="pg-promo"> <div class="pg-head"> <div> <div class="pg-title">โปรโมชั่น</div> <div class="pg-sub" id="promoCount">0 รายการ</div> </div> </div> <div class="tab-bar"> <button class="tab-btn active" onclick="switchPromoTab(this,'all')">ทั้งหมด</button> <button class="tab-btn" onclick="switchPromoTab(this,'pct')">% ลด</button> <button class="tab-btn" onclick="switchPromoTab(this,'fixed')">ลดราคา</button> <button class="tab-btn" onclick="switchPromoTab(this,'buy')">ซื้อ X แถม Y</button> <button class="tab-btn" onclick="switchPromoTab(this,'freeN')">ซื้อ N ฟรี 1</button> <button class="tab-btn" onclick="switchPromoTab(this,'bundle')">Bundle</button> </div> <div class="scroll-body" id="promoList" style="padding-bottom:20px"></div> </div> <!-- PAGE: MANAGE --> <div class="page" id="pg-manage"> <div class="pg-head"> <div> <div class="pg-title">จัดการเมนู</div> <div class="pg-sub" id="mgSub">0 รายการ</div> </div> </div> <div class="tab-bar"> <button class="tab-btn active" onclick="switchMgTab(this,'all')">ทั้งหมด</button> <button class="tab-btn" onclick="switchMgTab(this,'coffee')">กาแฟ</button> <button class="tab-btn" onclick="switchMgTab(this,'tea')">ชา</button> <button class="tab-btn" onclick="switchMgTab(this,'cocoa')">โกโก้</button> <button class="tab-btn" onclick="switchMgTab(this,'custom')">Custom</button> <button class="tab-btn" onclick="switchMgTab(this,'other')">อื่นๆ</button> </div> <div class="scroll-body"> <div id="mgList"></div> </div> </div> <!-- PAGE: REPORT --> <div class="page" id="pg-report"> <div class="pg-head"> <div> <div class="pg-title">รายงาน</div> <div class="pg-sub" id="reportDate"></div> </div> </div> <div class="audit-tab-bar" style="padding:0 16px 12px">
@@ -4401,6 +4474,24 @@ function openDebugPanel(){
  const d = DB;
  document.getElementById('dbg-db').innerHTML =
   `ing:${d.ingredients?.length||0} pkg:${d.packages?.length||0}<br>emp:${d.employees?.length||0} menu:${d.menus?.length||0}<br>ord:${d.orders?.length||0}`;
+ // ตรวจ SW version
+ if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistration().then((reg) => {
+   if (!reg) { dbgLog('⚠️ Service Worker ไม่ได้ register', '#FFAA44'); return; }
+   const sw = reg.active || reg.installing || reg.waiting;
+   const state = reg.active ? '✅ active' : reg.waiting ? '⏳ waiting' : '🔄 installing';
+   dbgLog(`SW: ${state}`, '#88AAFF');
+   if (reg.waiting) dbgLog('⚠️ มี SW ใหม่รอ activate — กด "อัปเดตเลย" ที่ banner', '#FFAA44');
+   // ขอ version จาก SW
+   if (sw) {
+    const mc = new MessageChannel();
+    mc.port1.onmessage = (e) => {
+     if (e.data?.type === 'VERSION') dbgLog(`SW version: ${e.data.version} | cache: ${e.data.cache}`, '#88CC88');
+    };
+    sw.postMessage({ type: 'GET_VERSION' }, [mc.port2]);
+   }
+  });
+ }
  openModal('modal-debug');
 }
 

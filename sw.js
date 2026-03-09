@@ -1,80 +1,95 @@
 /**
- * POS-APP Service Worker v1
- * - Cache-first สำหรับ static assets
- * - Network-first สำหรับ API calls (Worker/GAS)
+ * POS-APP Service Worker
+ * ═══════════════════════════════════════════════════════════
+ * วิธีบังคับให้ iPhone อัปเดต:
+ *   → เปลี่ยน APP_VERSION ทุกครั้งที่ deploy index.html ใหม่
+ *   → SW จะ detect ว่า cache name เปลี่ยน → ลบของเก่า → โหลดใหม่อัตโนมัติ
+ * ═══════════════════════════════════════════════════════════
  */
 
-const CACHE_NAME = 'pos-app-v5';
-const STATIC_ASSETS = [
-  './',
+// ⚠️ เปลี่ยนตัวเลขนี้ทุกครั้งที่ deploy เวอร์ชันใหม่
+const APP_VERSION = '5.1.0';
+const CACHE_NAME  = `pos-app-${APP_VERSION}`;
+
+const PRECACHE = [
   './index.html',
   './manifest.json',
 ];
 
-// ── Install: cache static files ──────────────────────────────
+// ─── INSTALL ─────────────────────────────────────────────────
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS).catch(() => {
-        // ถ้า cache บางไฟล์ไม่ได้ ก็ไม่ crash
-        return cache.add('./index.html');
-      });
-    })
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(PRECACHE))
+      .catch(() => caches.open(CACHE_NAME).then(c => c.add('./index.html')))
   );
   self.skipWaiting();
 });
 
-// ── Activate: clear old caches ───────────────────────────────
+// ─── ACTIVATE — ลบ cache เก่าทันที ───────────────────────────
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((names) =>
-      Promise.all(
+    caches.keys()
+      .then((names) => Promise.all(
         names
-          .filter((n) => n !== CACHE_NAME)
-          .map((n) => caches.delete(n))
-      )
-    )
+          .filter((n) => n.startsWith('pos-app-') && n !== CACHE_NAME)
+          .map((n) => { console.log('[SW] ลบ cache เก่า:', n); return caches.delete(n); })
+      ))
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// ── Fetch: strategy by request type ─────────────────────────
+// ─── FETCH ───────────────────────────────────────────────────
 self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
+  const req = event.request;
+  const url = new URL(req.url);
 
-  // API calls → Network-first (ไม่ cache Worker/GAS responses)
-  if (
-    url.hostname.includes('workers.dev') ||
-    url.hostname.includes('script.google.com') ||
-    url.pathname.includes('exec')
-  ) {
+  // 1) API → Network Only
+  if (url.hostname.includes('workers.dev') ||
+      url.hostname.includes('script.google.com') ||
+      url.searchParams.has('action')) {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        return new Response(
-          JSON.stringify({ error: 'offline' }),
-          { headers: { 'Content-Type': 'application/json' } }
-        );
-      })
+      fetch(req).catch(() =>
+        new Response(JSON.stringify({ error: 'offline' }), {
+          headers: { 'Content-Type': 'application/json' }
+        })
+      )
     );
     return;
   }
 
-  // Static assets → Cache-first
+  // 2) HTML → Network-First (iPhone จะโหลดเวอร์ชันใหม่เสมอ)
+  if (url.pathname === '/' || url.pathname.endsWith('/index.html')) {
+    event.respondWith(
+      fetch(req, { cache: 'no-cache' })
+        .then((res) => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(req, clone));
+          return res;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // 3) Static assets → Cache-First
   event.respondWith(
-    caches.match(event.request).then((cached) => {
+    caches.match(req).then((cached) => {
       if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        // Cache successful GET responses
-        if (
-          response.ok &&
-          event.request.method === 'GET' &&
-          !url.pathname.includes('icon')
-        ) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+      return fetch(req).then((res) => {
+        if (res.ok && req.method === 'GET') {
+          caches.open(CACHE_NAME).then((c) => c.put(req, res.clone()));
         }
-        return response;
-      });
+        return res;
+      }).catch(() => new Response('Not found', { status: 404 }));
     })
   );
+});
+
+// ─── MESSAGE ─────────────────────────────────────────────────
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
+  if (event.data?.type === 'GET_VERSION') {
+    event.source?.postMessage({ type: 'VERSION', version: APP_VERSION, cache: CACHE_NAME });
+  }
 });
