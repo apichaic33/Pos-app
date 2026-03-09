@@ -3442,8 +3442,8 @@ function loadLocal(){
  try{const raw=localStorage.getItem(LS_KEY);if(!raw)return false;const saved=JSON.parse(raw);Object.keys(saved).forEach(k=>{if(!(k in DB))return;const v=saved[k];if(Array.isArray(DB[k])&&!Array.isArray(v))return;if(k==='nextId'&&typeof v!=='number')return;DB[k]=v;});return true;}
  catch(e){localStorage.removeItem(LS_KEY);localStorage.removeItem(LS_DIRTY);return false;}
 }
-async function apiFetch(body){if(!isOnline)return null;try{const res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return await res.json();}catch(e){return null;}}
-async function apiGet(params={}){if(!isOnline)return null;try{const q=new URLSearchParams(params).toString();const res=await fetch(`${SCRIPT_URL}?${q}`);return await res.json();}catch(e){return null;}}
+async function apiFetch(body){if(!isOnline)return null;try{const res=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});return await res.json();}catch(e){console.error('[apiFetch] error:',e.message,body?.action);return null;}}
+async function apiGet(params={}){if(!isOnline)return null;try{const q=new URLSearchParams(params).toString();const res=await fetch(`${SCRIPT_URL}?${q}`);return await res.json();}catch(e){console.error('[apiGet] error:',e.message,params?.action);return null;}}
 async function syncToSheet(){
  const dirty=localStorage.getItem(LS_DIRTY);if(!dirty||!isOnline)return;
  showSyncStatus('กำลัง sync...');
@@ -3457,9 +3457,10 @@ async function loadFromSheet(){
  console.log('[loadFromSheet] result:', result);
  if(result&&!result.error){
  Object.keys(result).forEach(k=>{if(k in DB)DB[k]=result[k];});
+ recalcNextId(); // ✅ sync nextId ให้ใหญ่กว่า ID สูงสุดใน Sheet
  saveLocal();localStorage.setItem(LS_DIRTY,'');
  showSyncStatus('โหลดจาก Sheet');
- console.log('[loadFromSheet] ingredients:', DB.ingredients.length, 'packages:', DB.packages.length);
+ console.log('[loadFromSheet] ingredients:', DB.ingredients.length, 'packages:', DB.packages.length, 'nextId:', DB.nextId);
  renderOrder();
  if(currentPage==='stores') renderStores(storeTab);
  else if(currentPage==='manage') renderManage(mgCat);
@@ -3470,6 +3471,22 @@ async function loadFromSheet(){
  console.error('[loadFromSheet] failed:', result);
  showSyncStatus(isOnline?'โหลดไม่ได้':'ออฟไลน์');
  return false;
+}
+
+/* recalcNextId — ตั้ง DB.nextId ให้มากกว่า ID สูงสุดในทุก collection */
+function recalcNextId(){
+ const allArrays = [DB.menus, DB.ingredients, DB.packages, DB.equipment,
+   DB.orders, DB.promos, DB.recipes, DB.useLogs,
+   DB.purchaseOrders, DB.blends, DB.blendBatches, DB.employees, DB.auditLog];
+ let maxId = DB.nextId || 1;
+ allArrays.forEach(arr => {
+   if(!Array.isArray(arr)) return;
+   arr.forEach(item => {
+     const n = parseInt(item.id);
+     if(!isNaN(n) && n >= maxId) maxId = n + 1;
+   });
+ });
+ DB.nextId = maxId;
 }
 
 /* โหลดข้อมูลพนักงานจาก Google Sheet แยกต่างหาก */
@@ -3697,28 +3714,12 @@ async function manualSync(){
  if(!isOnline){toast('ออฟไลน์ ไม่สามารถรีเฟรชได้');return;}
  if(icon) icon.style.animation='spin 0.8s linear infinite';
  if(btn) btn.style.pointerEvents='none';
- try{
-   const result = await apiGet({action:'getAll'});
-   if(result && !result.error){
-     Object.keys(result).forEach(k=>{if(k in DB)DB[k]=result[k];});
-     saveLocal();localStorage.setItem(LS_DIRTY,'');
-     showSyncStatus('โหลดจาก Sheet');
-     renderOrder();
-     if(currentPage==='stores') renderStores(storeTab);
-     else if(currentPage==='manage') renderManage(mgCat);
-     else if(currentPage==='report') renderReport();
-     else if(currentPage==='sales') renderSalesToday();
-     const ing=DB.ingredients.length, pkg=DB.packages.length, eq=DB.equipment.length;
-     toast('รีเฟรชแล้ว ✓  วัตถุดิบ '+ing+' / บรรจุ '+pkg+' / อุปกรณ์ '+eq);
-   } else {
-     const errMsg = (result&&result.error)||'ไม่มีข้อมูล response';
-     toast('รีเฟรชไม่สำเร็จ: '+errMsg);
-     showSyncStatus('Error: '+errMsg);
-     console.error('[manualSync] API error:', result);
-   }
- } catch(e){
-   toast('รีเฟรชไม่สำเร็จ: '+e.message);
-   console.error('[manualSync] Exception:', e);
+ const ok = await loadFromSheet(); // ✅ delegate ให้ loadFromSheet ทำทั้งหมด
+ if(ok){
+   const ing=DB.ingredients.length, pkg=DB.packages.length, eq=DB.equipment.length;
+   toast('รีเฟรชแล้ว ✓  วัตถุดิบ '+ing+' / บรรจุ '+pkg+' / อุปกรณ์ '+eq);
+ } else {
+   toast('รีเฟรชไม่สำเร็จ ลองใหม่อีกครั้ง');
  }
  if(icon) icon.style.animation='';
  if(btn) btn.style.pointerEvents='auto';
@@ -3894,7 +3895,7 @@ function _goPageDirect(p){
  }
  // render
  if(p==='order') renderOrder();
- if(p==='manage') renderManage('all');
+ if(p==='manage') renderManage(mgCat||'all');
  if(p==='promo') renderPromos('all');
  if(p==='report') renderReport(reportDays||1);
  if(p==='stores') renderStores(storeTab||'ingredient');
@@ -4005,7 +4006,7 @@ async function sendRecoveryOTP(){
   btn.innerHTML='<span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px;animation:spin 1s linear infinite">progress_activity</span> กำลังส่ง...';
 
   try {
-    const res = await fetch(SCRIPT_URL+'?action=sendOTP', {
+    const res = await fetch(SCRIPT_URL, { // POST to worker, action in body
       method:'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
