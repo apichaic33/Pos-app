@@ -850,86 +850,34 @@ textarea.f-input{resize:none;}
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
+(function(){
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const isStandalone=window.navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches;
+  if(!('serviceWorker' in navigator))return;
+  // iOS PWA standalone → ข้าม SW เพราะ Safari บล็อก "non app-bound domain"
+  if(isIOS&&isStandalone){console.log('[SW] iOS PWA → skip');return;}
+  window.addEventListener('load',function(){
     navigator.serviceWorker.register('./sw.js')
-      .then((reg) => {
-        console.log('[SW] registered:', reg.scope);
-
-        // ตรวจหา SW ใหม่ที่ waiting อยู่ (กรณีเปิดแอพแล้วมีอัปเดต)
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          if (!newWorker) return;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // มี SW ใหม่พร้อมใช้ → แสดง banner แจ้งเตือน
-              showUpdateBanner();
-            }
+      .then(reg=>{
+        console.log('[SW] registered:',reg.scope);
+        reg.addEventListener('updatefound',()=>{
+          const nw=reg.installing;if(!nw)return;
+          nw.addEventListener('statechange',()=>{
+            if(nw.state==='installed'&&navigator.serviceWorker.controller)showUpdateBanner();
           });
         });
-
-        // ตรวจ SW ที่ waiting อยู่แล้วตอนเปิดแอพ
-        if (reg.waiting) showUpdateBanner();
+        if(reg.waiting)showUpdateBanner();
       })
-      .catch(e => console.log('[SW] error:', e));
-
-    // เมื่อ SW ใหม่เข้าควบคุม → reload หน้าอัตโนมัติ
-    let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!refreshing) { refreshing = true; window.location.reload(); }
+      .catch(e=>console.log('[SW] skip:',e.message));
+    let refreshing=false;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{
+      if(!refreshing){refreshing=true;window.location.reload();}
     });
   });
-}
-
-function showUpdateBanner() {
-  // ถ้ามี banner แล้วไม่ต้องสร้างใหม่
-  if (document.getElementById('sw-update-banner')) return;
-
-  const banner = document.createElement('div');
-  banner.id = 'sw-update-banner';
-  banner.style.cssText = `
-    position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
-    z-index:99999; background:var(--esp,#2A1810); color:#fff;
-    border-radius:50px; padding:12px 20px;
-    display:flex; align-items:center; gap:12px;
-    box-shadow:0 8px 32px rgba(0,0,0,.35);
-    font-family:var(--fh,'Kanit'),sans-serif;
-    font-size:13px; font-weight:600;
-    animation:slideUpIn .35s cubic-bezier(.34,1.56,.64,1);
-    white-space:nowrap;
-  `;
-  banner.innerHTML = `
-    <span style="font-size:18px">🆕</span>
-    <span>มีเวอร์ชันใหม่พร้อมใช้</span>
-    <button id="sw-reload-btn" style="
-      background:var(--cara,#C8826A); color:#fff; border:none;
-      border-radius:50px; padding:6px 16px; font-size:12px;
-      font-weight:700; font-family:inherit; cursor:pointer;
-    ">อัปเดตเลย</button>
-    <button onclick="this.closest('#sw-update-banner').remove()" style="
-      background:rgba(255,255,255,.15); color:#fff; border:none;
-      border-radius:50%; width:24px; height:24px; font-size:14px;
-      cursor:pointer; display:flex; align-items:center; justify-content:center;
-    ">×</button>
-  `;
-  document.body.appendChild(banner);
-
-  document.getElementById('sw-reload-btn').addEventListener('click', () => {
-    navigator.serviceWorker.getRegistration().then((reg) => {
-      if (reg?.waiting) {
-        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-      } else {
-        window.location.reload();
-      }
-    });
-  });
-}
+})();
 </script>
 <style>
-@keyframes slideUpIn {
-  from { opacity:0; transform:translate(-50%, 20px); }
-  to   { opacity:1; transform:translate(-50%, 0); }
-}
+@keyframes slideUpIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
 </style>
 </head>
 <body>
@@ -1027,8 +975,9 @@ function showUpdateBanner() {
  background:var(--bg);
  display:flex;flex-direction:column;align-items:center;justify-content:center;
  padding:24px;
-"> <div style="width:100%;max-width:340px"> <!-- Logo --> <div style="text-align:center;margin-bottom:32px"> <div style="font-family:var(--fh);font-size:28px;font-weight:800;color:var(--esp);letter-spacing:-1px">POS<span style="color:var(--cara)">·</span>APP</div> <div style="font-size:12px;color:var(--t4);margin-top:4px">กรุณาล็อกอินเพื่อใช้งาน</div> </div> <!-- Card --> <div style="background:var(--bg);border-radius:var(--r5);box-shadow:var(--neu-out);padding:24px"> <!-- Employee ID --> <div class="f-group"> <label class="f-label">รหัสพนักงาน</label> <input class="f-input" id="loginEmpId" placeholder="E01" oninput="loginLookup()"
- style="text-transform:uppercase;text-align:center;font-size:18px;font-weight:700;letter-spacing:3px"> </div> <!-- Name preview --> <div id="loginNamePreview" style="
+"> <div style="width:100%;max-width:340px"> <!-- Logo --> <div style="text-align:center;margin-bottom:32px"> <div style="font-family:var(--fh);font-size:28px;font-weight:800;color:var(--esp);letter-spacing:-1px">POS<span style="color:var(--cara)">·</span>APP</div> <div style="font-size:12px;color:var(--t4);margin-top:4px">กรุณาล็อกอินเพื่อใช้งาน</div> </div> <!-- Card --> <div style="background:var(--bg);border-radius:var(--r5);box-shadow:var(--neu-out);padding:24px"> <!-- Employee ID --> <div class="f-group"> <label class="f-label">รหัสพนักงาน</label> <input class="f-input" id="loginEmpId" placeholder="690001" oninput="loginLookup()"
+ type="tel" inputmode="numeric" pattern="[0-9]*" autocomplete="off"
+ style="text-transform:uppercase;text-align:center;font-size:22px;font-weight:800;letter-spacing:4px;font-family:var(--fh)"> </div> <!-- Name preview --> <div id="loginNamePreview" style="
  min-height:38px;border-radius:var(--r3);
  background:var(--bg-dk);box-shadow:var(--neu-in-sm);
  display:flex;align-items:center;justify-content:center;
@@ -1216,21 +1165,57 @@ function showUpdateBanner() {
   </div>
   <div class="f-row"> <div class="f-group" style="flex:2"><label class="f-label">ชื่อสูตร</label><input class="f-input" id="recipeName" placeholder="ชื่อสูตร"></div> <div class="f-group"><label class="f-label">จำนวนแก้ว</label><input class="f-input" id="recipeCups" type="number" value="1" min="1" oninput="calcRecipe()"></div> </div> <div id="recipeIngList"></div> <button class="btn btn-secondary btn-sm btn-full" style="margin-bottom:12px" onclick="addRecipeIng()">+ เพิ่มวัตถุดิบ</button> <div id="recipeResult" class="recipe-result" style="display:none"><div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:6px">ผลลัพธ์ต้นทุน</div><div id="recipeResultRows"></div></div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-recipe')">ปิด</button> <button class="btn btn-dark" style="flex:2" onclick="saveRecipe()">บันทึกสูตร</button> </div> </div>
 </div> <!-- MODAL: Blend -->
-<div class="modal-overlay" id="modal-blend"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"><span class="modal-title" id="blendModalTitle">สร้างสูตรเบลนด์</span></div> <div class="modal-body">
-  <div style="background:rgba(52,168,83,.07);border-left:3px solid var(--green);border-radius:0 var(--r2) var(--r2) 0;padding:7px 10px;margin-bottom:12px;font-size:10px;color:var(--t3)">
-    <span style="font-weight:700;color:var(--green)">สูตรเบลนด์</span> — ผลิตไซรัป/ซอส/เบสเป็น Batch แล้วเก็บลงคลัง หักวัตถุดิบจริง
+<div class="modal-overlay" id="modal-blend"> <div class="modal-sheet" style="max-height:92vh"> <div class="modal-handle"></div> <div class="modal-head"><span class="modal-title" id="blendModalTitle">สร้างสูตรเบลนด์</span></div> <div class="modal-body">
+
+  <!-- 📖 คำอธิบายการใช้งาน -->
+  <div style="background:rgba(43,94,167,.07);border-radius:var(--r3);padding:10px 12px;margin-bottom:14px;">
+    <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:6px;display:flex;align-items:center;gap:5px">
+      <span class="material-symbols-outlined" style="font-size:14px">info</span> วิธีใช้สูตรเบลนด์
+    </div>
+    <div style="font-size:10px;color:var(--t3);line-height:1.8">
+      1️⃣ <b>สร้างสูตร</b> — กรอกชื่อ, เลือกวัตถุดิบ + ปริมาณที่ใช้ต่อ 1 Batch<br>
+      2️⃣ <b>ได้ปริมาณ/Batch</b> — ผลผลิตที่ได้จากการทำ 1 ครั้ง เช่น ทำไซรัป 500 ml<br>
+      3️⃣ <b>ผลิต Batch</b> — กดปุ่ม <b>ผลิต</b> ในการ์ด → ระบบหักวัตถุดิบ + เพิ่มสต็อก<br>
+      4️⃣ <b>ต้นทุน/Batch</b> — คำนวณอัตโนมัติจากวัตถุดิบที่เลือก ไม่ต้องกรอกเอง
+    </div>
   </div>
-  <input type="hidden" id="blendEditId"> <div class="f-row"> <div class="f-group" style="flex:2"><label class="f-label">ชื่อ</label><input class="f-input" id="blendName" placeholder="เช่น ไซรัปวานิลลา"></div> <div class="f-group"><label class="f-label">ประเภท</label><select class="f-select" id="blendType"><option value="syrup">ไซรัป</option><option value="base_ingredient">วัตถุดิบหลัก</option><option value="sauce">ซอส</option><option value="other">อื่นๆ</option></select></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">หน่วย</label><input class="f-input" id="blendUnit" placeholder="ml"></div> <div class="f-group"><label class="f-label">อายุ (วัน)</label><input class="f-input" id="blendShelf" type="number" placeholder="14"></div> </div> <div class="f-group"><label class="f-label">วิธีทำ</label><textarea class="f-input" id="blendMethod" rows="3" placeholder="ขั้นตอนการทำ..."></textarea></div> <div class="f-group"><label class="f-label" style="margin-bottom:8px">วัตถุดิบ</label><div id="blendIngList"></div><button class="btn btn-secondary btn-sm" onclick="addBlendIng()">+ เพิ่มวัตถุดิบ</button></div> <div class="f-row"> <div class="f-group">
-  <label class="f-label">ได้ปริมาณ (หน่วย/batch)</label>
-  <input class="f-input" id="blendYield" type="number" placeholder="500">
-</div>
-<div class="f-group">
-  <label class="f-label">ต้นทุน/batch (฿)</label>
-  <input class="f-input" id="blendCost" type="number" placeholder="คำนวณอัตโนมัติ" style="color:var(--cara);font-weight:700">
-  <div style="font-size:10px;color:var(--t4);margin-top:3px;padding:0 2px">
-    กดที่ช่องเพื่อแก้ไขเอง
+
+  <input type="hidden" id="blendEditId">
+  <div class="f-row">
+    <div class="f-group" style="flex:2"><label class="f-label">ชื่อสูตร</label><input class="f-input" id="blendName" placeholder="เช่น ไซรัปวานิลลา"></div>
+    <div class="f-group"><label class="f-label">ประเภท</label><select class="f-select" id="blendType"><option value="syrup">ไซรัป</option><option value="base_ingredient">วัตถุดิบหลัก</option><option value="sauce">ซอส</option><option value="other">อื่นๆ</option></select></div>
   </div>
-</div> </div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-blend')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="saveBlendFormula()">บันทึก</button> </div> </div>
+  <div class="f-row">
+    <div class="f-group"><label class="f-label">หน่วย</label><input class="f-input" id="blendUnit" placeholder="ml, g, ขวด"></div>
+    <div class="f-group"><label class="f-label">อายุ (วัน)</label><input class="f-input" id="blendShelf" type="number" placeholder="14"></div>
+  </div>
+  <div class="f-group"><label class="f-label">วิธีทำ / หมายเหตุ</label><textarea class="f-input" id="blendMethod" rows="2" placeholder="ขั้นตอนการทำ..."></textarea></div>
+
+  <!-- วัตถุดิบ -->
+  <div class="f-group">
+    <label class="f-label" style="margin-bottom:8px">วัตถุดิบที่ใช้ต่อ 1 Batch</label>
+    <div id="blendIngList"></div>
+    <button class="btn btn-secondary btn-sm" style="margin-top:6px" onclick="addBlendIng()">
+      <span class="material-symbols-outlined" style="font-size:14px;vertical-align:-2px">add</span> เพิ่มวัตถุดิบ
+    </button>
+  </div>
+
+  <!-- ผลผลิต + ต้นทุน -->
+  <div class="f-row">
+    <div class="f-group">
+      <label class="f-label">ได้ปริมาณ/Batch</label>
+      <input class="f-input" id="blendYield" type="number" placeholder="500">
+      <div style="font-size:10px;color:var(--t4);margin-top:3px">ปริมาณที่ผลิตได้ต่อ 1 ครั้ง</div>
+    </div>
+    <div class="f-group">
+      <label class="f-label">ต้นทุน/Batch (฿)</label>
+      <input class="f-input" id="blendCost" type="number" readonly
+        style="color:var(--cara);font-weight:700;background:var(--bg-dk);cursor:not-allowed">
+      <div style="font-size:10px;color:var(--t4);margin-top:3px">คำนวณอัตโนมัติ</div>
+    </div>
+  </div>
+
+</div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-blend')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="saveBlendFormula()">บันทึกสูตร</button> </div> </div>
 </div> <!-- MODAL: Batch Produce -->
 <div class="modal-overlay" id="modal-batch"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"><span class="modal-title" id="batchModalTitle">ผลิต Batch</span><button class="modal-close" onclick="closeModal('modal-batch')"></button></div> <div class="modal-body"> <input type="hidden" id="batchBlendId"> <div class="f-group"><label class="f-label">จำนวน Batch</label><input class="f-input" id="batchMultiplier" type="number" value="1" min="1" oninput="updateBatchPreview()"></div> <div id="batchPreview"></div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-batch')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="confirmBatch()">ยืนยันผลิต</button> </div> </div>
 </div> <!-- MODAL: Use Log -->
@@ -3170,83 +3155,190 @@ function saveUseLog(){
 let blendIngArr=[];
 function openBlendModal(id){
  blendIngArr=[];
+ document.getElementById('blendIngList').innerHTML='';
  document.getElementById('blendModalTitle').textContent=id?'แก้ไขสูตรเบลนด์':'สร้างสูตรเบลนด์';
  document.getElementById('blendEditId').value=id||'';
- document.getElementById('blendIngList').innerHTML='';
  if(id){
- const b=DB.blends.find(x=>x.id===id);if(!b)return;
- document.getElementById('blendName').value=b.name;
- document.getElementById('blendType').value=b.type;
- document.getElementById('blendUnit').value=b.unit;
- document.getElementById('blendShelf').value=b.shelfDays;
- document.getElementById('blendMethod').value=b.method;
- document.getElementById('blendYield').value=b.yieldPerBatch;
- document.getElementById('blendCost').value=b.totalCostPerBatch;
- blendIngArr=[...b.ings];
- blendIngArr.forEach((_,i)=>renderBlendIngRow(i));
+  const b=DB.blends.find(x=>x.id===id);if(!b)return;
+  document.getElementById('blendName').value=b.name||'';
+  document.getElementById('blendType').value=b.type||'syrup';
+  document.getElementById('blendUnit').value=b.unit||'';
+  document.getElementById('blendShelf').value=b.shelfDays||'';
+  document.getElementById('blendMethod').value=b.method||'';
+  document.getElementById('blendYield').value=b.yieldPerBatch||'';
+  document.getElementById('blendCost').value=b.totalCostPerBatch||'';
+  // โหลดวัตถุดิบที่มีอยู่ — clone เพื่อไม่กระทบ DB โดยตรง
+  blendIngArr=(b.ings||[]).map(x=>({...x}));
+  blendIngArr.forEach((_,i)=>renderBlendIngRow(i));
  } else {
- ['blendName','blendUnit','blendShelf','blendMethod','blendYield','blendCost'].forEach(i=>document.getElementById(i).value='');
+  ['blendName','blendUnit','blendShelf','blendMethod','blendYield','blendCost']
+   .forEach(id=>document.getElementById(id).value='');
  }
  openModal('modal-blend');
 }
 function addBlendIng(){const idx=blendIngArr.length;blendIngArr.push({ingId:'',qty:0,note:''});renderBlendIngRow(idx);}
 function calcBlendCost(){
- // คำนวณต้นทุนรวมจากวัตถุดิบทุกแถว
  const costEl=document.getElementById('blendCost');
  if(!costEl) return;
  let total=0;
- blendIngArr.forEach((_,idx)=>{
-   const ingId=parseInt(document.getElementById(`bing-ing-${idx}`)?.value);
-   const qty=parseFloat(document.getElementById(`bing-qty-${idx}`)?.value)||0;
+ // อ่านจาก DOM ที่แสดงอยู่จริง
+ document.querySelectorAll('#blendIngList .blend-ing-row').forEach(row=>{
+   const ingId=parseInt(row.querySelector('.bing-ing-sel')?.value);
+   const qty=parseFloat(row.querySelector('.bing-qty-inp')?.value)||0;
    if(!ingId||!qty) return;
    const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ingId);
-   if(ing&&ing.cost) total+=ing.cost*qty;
+   if(ing&&ing.cost&&ing.qty) total+=(ing.cost/ing.qty)*qty;
+   else if(ing&&ing.cost) total+=ing.cost*qty;
  });
  costEl.value=total>0?Math.round(total*100)/100:'';
 }
 function renderBlendIngRow(idx){
  const existing=blendIngArr[idx]||{};
- const row=document.createElement('div');row.className='recipe-ing-row';row.id=`bing-${idx}`;
- row.innerHTML=`<div class="f-group" style="flex:2"><label class="f-label">วัตถุดิบ</label><select class="f-select" id="bing-ing-${idx}" onchange="calcBlendCost()"><option value="">เลือก...</option>${[...DB.ingredients,...DB.packages].map(i=>`<option value="${i.id}"${i.id===existing.ingId?'selected':''}>${i.name} (฿${i.cost||0}/${i.unit||'หน่วย'})</option>`).join('')}</select></div><div class="f-group"><label class="f-label">ปริมาณ</label><input class="f-input" id="bing-qty-${idx}" type="number" value="${existing.qty||''}" placeholder="0" oninput="calcBlendCost()"></div><button class="btn btn-danger btn-sm btn-icon" onclick="document.getElementById('bing-${idx}')?.remove();calcBlendCost()" style="align-self:flex-end;padding:8px"><span class="material-symbols-outlined" style="font-size:18px;font-variation-settings:'FILL' 1">delete</span></button>`;
+ const row=document.createElement('div');
+ row.className='blend-ing-row';
+ row.id=`bing-${idx}`;
+ row.style.cssText='display:flex;gap:8px;align-items:flex-end;margin-bottom:8px;';
+ // dropdown เฉพาะชื่อ ไม่มีราคา
+ const opts=[...DB.ingredients,...DB.packages].map(i=>
+  `<option value="${i.id}"${i.id===existing.ingId?'selected':''}>${i.name}</option>`
+ ).join('');
+ row.innerHTML=`
+  <div class="f-group" style="flex:2;margin:0">
+   <label class="f-label" style="font-size:10px">วัตถุดิบ</label>
+   <select class="f-select bing-ing-sel" onchange="calcBlendCost()">
+    <option value="">— เลือก —</option>${opts}
+   </select>
+  </div>
+  <div class="f-group" style="flex:1;margin:0">
+   <label class="f-label" style="font-size:10px">ปริมาณ</label>
+   <input class="f-input bing-qty-inp" type="number" value="${existing.qty||''}" placeholder="0" oninput="calcBlendCost()">
+  </div>
+  <button onclick="removeBlendIngRow(${idx})" style="flex-shrink:0;padding:8px 10px;border-radius:var(--r2);background:var(--red-lt);border:none;cursor:pointer;align-self:flex-end;margin-bottom:0">
+   <span class="material-symbols-outlined" style="font-size:16px;color:var(--red);display:block">delete</span>
+  </button>`;
  document.getElementById('blendIngList').appendChild(row);
  calcBlendCost();
 }
+function removeBlendIngRow(idx){
+ // ลบ row แล้ว re-render ใหม่เพื่อ sync index
+ const rows=document.querySelectorAll('#blendIngList .blend-ing-row');
+ // เก็บข้อมูลปัจจุบันก่อนลบ
+ const current=[];
+ rows.forEach((r,i)=>{
+  if(i===idx)return;
+  current.push({
+   ingId:parseInt(r.querySelector('.bing-ing-sel')?.value)||'',
+   qty:parseFloat(r.querySelector('.bing-qty-inp')?.value)||0,
+   note:''
+  });
+ });
+ blendIngArr=current;
+ document.getElementById('blendIngList').innerHTML='';
+ blendIngArr.forEach((_,i)=>renderBlendIngRow(i));
+}
 function saveBlendFormula(){
  const id=parseInt(document.getElementById('blendEditId').value)||null;
+ // อ่านวัตถุดิบจาก DOM โดยตรง (ไม่พึ่ง blendIngArr index ที่อาจ out-of-sync)
  const ings=[];
- blendIngArr.forEach((_,idx)=>{
- const ingId=parseInt(document.getElementById(`bing-ing-${idx}`)?.value);
- const qty=parseFloat(document.getElementById(`bing-qty-${idx}`)?.value)||0;
- if(ingId&&qty)ings.push({ingId,qty});
+ document.querySelectorAll('#blendIngList .blend-ing-row').forEach(row=>{
+  const ingId=parseInt(row.querySelector('.bing-ing-sel')?.value);
+  const qty=parseFloat(row.querySelector('.bing-qty-inp')?.value)||0;
+  if(ingId&&qty) ings.push({ingId,qty,note:''});
  });
+ const name=document.getElementById('blendName').value.trim();
+ if(!name){toast('⚠️ กรุณาใส่ชื่อสูตร');return;}
+ if(!ings.length){toast('⚠️ กรุณาเพิ่มวัตถุดิบอย่างน้อย 1 รายการ');return;}
  const data={
- name:document.getElementById('blendName').value.trim(),
- type:document.getElementById('blendType').value,
- unit:document.getElementById('blendUnit').value||'ml',
- shelfDays:parseInt(document.getElementById('blendShelf').value)||14,
- method:document.getElementById('blendMethod').value,
- yieldPerBatch:parseFloat(document.getElementById('blendYield').value)||0,
- totalCostPerBatch:parseFloat(document.getElementById('blendCost').value)||0,
- ings
+  name,
+  type:document.getElementById('blendType').value,
+  unit:document.getElementById('blendUnit').value||'ml',
+  shelfDays:parseInt(document.getElementById('blendShelf').value)||14,
+  method:document.getElementById('blendMethod').value,
+  yieldPerBatch:parseFloat(document.getElementById('blendYield').value)||0,
+  totalCostPerBatch:parseFloat(document.getElementById('blendCost').value)||0,
+  ings
  };
- if(!data.name){toast('กรุณาใส่ชื่อ');return;}
- if(id){const b=DB.blends.find(x=>x.id===id);Object.assign(b,data);toast('อัพเดตแล้ว');}
- else{DB.blends.push({...data,id:DB.nextId++,stock:[]});toast('สร้างสูตรเบลนด์แล้ว');}
+ if(id){
+  const b=DB.blends.find(x=>x.id===id);
+  if(b){Object.assign(b,data);toast('✅ อัปเดตสูตรแล้ว');}
+ } else {
+  DB.blends.push({...data,id:DB.nextId++,stock:[]});
+  toast('✅ สร้างสูตรเบลนด์แล้ว');
+ }
  closeModal('modal-blend');renderStores('blend');scheduleSync();
 }
 function renderBlendTab(){
- if(!DB.blends.length)return`<div class="empty-state"><div class="e-icon">[ ]</div><div class="e-title">ยังไม่มีสูตร</div><div class="e-sub">กดปุ่ม + เพื่อสร้างสูตรเบลนด์</div></div>`;
+ if(!DB.blends.length)return`<div class="empty-state"><div class="e-icon">🧪</div><div class="e-title">ยังไม่มีสูตรเบลนด์</div><div class="e-sub">กดปุ่ม + เพื่อสร้างสูตรแรก</div></div>`;
  const today=new Date().toISOString().split('T')[0];
  const soon=new Date();soon.setDate(soon.getDate()+3);const soonStr=soon.toISOString().split('T')[0];
- return DB.blends.map(b=>{
- const totalStock=b.stock.reduce((s,x)=>s+x.qty,0);
- const typeLabel={syrup:'ไซรัป',tea_base:'ฐานชา',sauce:'ซอส',other:'อื่นๆ'}[b.type]||b.type;
- return`<div class="blend-card"> <div class="bc-head"> <div class="bc-type-icon">${typeLabel.slice(0,2)}</div> <div class="bc-info"><div class="bc-name">${b.name}</div><div class="bc-meta">${typeLabel} · อายุ ${b.shelfDays} วัน · ได้ ${b.yieldPerBatch}${b.unit}/batch</div></div> <div class="bc-stock"><div class="bc-stock-val">${totalStock}</div><div class="bc-stock-unit">${b.unit} คงเหลือ</div></div> </div> ${b.stock.length?b.stock.map(s=>{
- const exp=s.expiry<today;const sn=s.expiry>=today&&s.expiry<=soonStr;
- return`<div class="blend-batch-row"><div class="bbl-dot${exp?'expired':sn?'soon':''}"></div><span style="flex:1">Batch ${s.batchId} · ${s.qty}${b.unit}</span><span style="font-size:10px;color:var(--t4)">หมด ${s.expiry}</span></div>`;
- }).join(''):''}
- <div class="bc-foot"> <div class="bc-ing-chips">${b.ings.map(ig=>{const ing=DB.ingredients.find(x=>x.id===ig.ingId);return ing?`<span class="bc-ing-chip">${ing.name}</span>`:''}).join('')}</div> <div class="bc-actions"> <button class="btn btn-success btn-xs" onclick="openBatchModal(${b.id})">+ ผลิต</button> <button class="btn btn-secondary btn-xs" onclick="openBlendModal(${b.id})"></button> </div> </div> </div>`;
- }).join('');
+ const typeEmoji={syrup:'🍬',base_ingredient:'🧂',sauce:'🍫',tea_base:'🍵',other:'🫙'};
+ const typeLabelMap={syrup:'ไซรัป',base_ingredient:'วัตถุดิบหลัก',sauce:'ซอส',tea_base:'ฐานชา',other:'อื่นๆ'};
+ let html='<div style="padding:12px 16px 0">';
+ DB.blends.forEach(b=>{
+  const totalStock=(b.stock||[]).reduce((s,x)=>s+x.qty,0);
+  const tLabel=typeLabelMap[b.type]||b.type;
+  const tEmoji=typeEmoji[b.type]||'🫙';
+  const stockColor=totalStock===0?'var(--red)':totalStock<b.yieldPerBatch?'var(--gold)':'var(--green)';
+  const ingNames=(b.ings||[]).map(ig=>{
+   const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ig.ingId);
+   return ing?`<span class="bc-ing-chip">${ing.name}</span>`:'';
+  }).join('');
+  const batchRows=(b.stock||[]).map(s=>{
+   const exp=s.expiry<today;const sn=s.expiry>=today&&s.expiry<=soonStr;
+   const dotCls=exp?' expired':sn?' soon':'';
+   return`<div class="blend-batch-row"><div class="bbl-dot${dotCls}"></div><span style="flex:1">Batch #${s.batchId} · ${s.qty} ${b.unit}</span><span style="font-size:10px;color:${exp?'var(--red)':sn?'var(--gold)':'var(--t4)'}">หมด ${s.expiry}</span></div>`;
+  }).join('');
+  const ingDetail=(b.ings||[]).map(ig=>{
+   const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ig.ingId);
+   if(!ing)return'';
+   return`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t2);padding:3px 0;border-bottom:1px dashed rgba(176,154,133,.15)"><span>${ing.name}</span><span style="font-weight:700">${ig.qty} ${ing.unit}</span></div>`;
+  }).join('');
+  html+=`<div class="blend-card" style="margin-bottom:12px">
+   <div class="bc-head" onclick="toggleBlendDetail(${b.id})" style="cursor:pointer">
+    <div class="bc-type-icon" style="font-size:20px;background:var(--bg-lt)">${tEmoji}</div>
+    <div class="bc-info">
+     <div class="bc-name">${b.name}</div>
+     <div class="bc-meta">${tLabel} · อายุ ${b.shelfDays} วัน · ได้ ${b.yieldPerBatch} ${b.unit}/batch</div>
+     <div class="bc-meta" style="margin-top:2px;color:var(--cara)">฿${b.totalCostPerBatch||0}/batch · แตะเพื่อดูรายละเอียด</div>
+    </div>
+    <div class="bc-stock">
+     <div class="bc-stock-val" style="color:${stockColor}">${totalStock}</div>
+     <div class="bc-stock-unit">${b.unit} คงเหลือ</div>
+     <span class="material-symbols-outlined" style="font-size:14px;color:var(--t4);margin-top:4px" id="blend-chev-${b.id}">expand_more</span>
+    </div>
+   </div>
+   ${batchRows}
+   <div id="blend-detail-${b.id}" style="display:none;padding:10px 14px;border-top:1px solid rgba(176,154,133,.12)">
+    <div style="font-size:10px;font-weight:700;color:var(--t4);margin-bottom:6px">📦 วัตถุดิบต่อ 1 Batch</div>
+    ${ingDetail}
+    ${b.method?`<div style="margin-top:8px;font-size:10px;color:var(--t3);background:var(--bg-dk);border-radius:var(--r2);padding:8px;line-height:1.7">📋 ${b.method}</div>`:''}
+   </div>
+   <div class="bc-foot">
+    <div class="bc-ing-chips">${ingNames}</div>
+    <div class="bc-actions">
+     <button class="btn btn-success btn-xs" onclick="event.stopPropagation();openBatchModal(${b.id})">⚗️ ผลิต</button>
+     <button class="btn btn-secondary btn-xs" onclick="event.stopPropagation();openBlendModal(${b.id})"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">edit</span> แก้ไข</button>
+     <button class="btn btn-xs" style="background:var(--red-lt);color:var(--red)" onclick="event.stopPropagation();delBlend(${b.id})"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">delete</span></button>
+    </div>
+   </div>
+  </div>`;
+ });
+ html+='</div>';
+ return html;
+}
+function toggleBlendDetail(id){
+ const el=document.getElementById(`blend-detail-${id}`);
+ const chev=document.getElementById(`blend-chev-${id}`);
+ if(!el)return;
+ const open=el.style.display==='none';
+ el.style.display=open?'block':'none';
+ if(chev)chev.textContent=open?'expand_less':'expand_more';
+}
+function delBlend(id){
+ if(!confirm('ลบสูตรนี้?'))return;
+ DB.blends=DB.blends.filter(x=>x.id!==id);
+ renderStores('blend');scheduleSync();toast('ลบสูตรแล้ว');
+}
 }
 function openBatchModal(blendId){
  document.getElementById('batchBlendId').value=blendId;
@@ -4404,202 +4496,127 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
-     DEBUG PANEL MODAL
-═══════════════════════════════════════════════════════════ -->
+<!-- ═══ UPDATE BANNER + DEBUG PANEL ══════════════════════ -->
+<script>
+function showUpdateBanner(){
+ if(document.getElementById('sw-update-banner'))return;
+ const b=document.createElement('div');
+ b.id='sw-update-banner';
+ b.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:99999;background:var(--esp,#2A1810);color:#fff;border-radius:50px;padding:12px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,.35);font-family:var(--fh,Kanit),sans-serif;font-size:13px;font-weight:600;animation:slideUpIn .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;';
+ b.innerHTML='<span style="font-size:18px">🆕</span><span>มีเวอร์ชันใหม่พร้อมใช้</span><button id="sw-reload-btn" style="background:var(--cara,#C8826A);color:#fff;border:none;border-radius:50px;padding:6px 16px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer">อัปเดตเลย</button><button onclick="this.closest(\'#sw-update-banner\').remove()" style="background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:14px;cursor:pointer">×</button>';
+ document.body.appendChild(b);
+ document.getElementById('sw-reload-btn').addEventListener('click',()=>{
+  navigator.serviceWorker.getRegistration().then(reg=>{
+   if(reg?.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'});
+   else window.location.reload();
+  });
+ });
+}
+
+// ─── Debug Panel ─────────────────────────────────────────────
+function openDebugPanel(){
+ document.getElementById('dbg-network').textContent=navigator.onLine?'🟢 Online':'🔴 Offline';
+ document.getElementById('dbg-network').style.color=navigator.onLine?'var(--green)':'var(--red)';
+ document.getElementById('dbg-worker').textContent='—';
+ document.getElementById('dbg-gas').textContent='—';
+ const d=DB;
+ document.getElementById('dbg-db').innerHTML=`ing:${d.ingredients?.length||0} pkg:${d.packages?.length||0}<br>emp:${d.employees?.length||0} menu:${d.menus?.length||0}<br>ord:${d.orders?.length||0}`;
+ if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistration().then(reg=>{
+   if(!reg){dbgLog('⚠️ SW ไม่ได้ register (iOS PWA หรือ SW ถูกปิด)','#FFAA44');return;}
+   const state=reg.active?'✅ active':reg.waiting?'⏳ waiting':'🔄 installing';
+   dbgLog(`SW: ${state}`,'#88AAFF');
+   if(reg.waiting)dbgLog('⚠️ มี SW ใหม่รอ activate','#FFAA44');
+   const sw=reg.active||reg.installing||reg.waiting;
+   if(sw){const mc=new MessageChannel();mc.port1.onmessage=e=>{if(e.data?.type==='VERSION')dbgLog(`SW version: ${e.data.version} | cache: ${e.data.cache}`,'#88CC88');};sw.postMessage({type:'GET_VERSION'},[mc.port2]);}
+  });
+ } else {
+  dbgLog('ℹ️ iOS PWA standalone — SW ถูกข้ามเพื่อหลีกเลี่ยง error','#FFAA44');
+ }
+ openModal('modal-debug');
+}
+function dbgLog(msg,color){
+ const el=document.getElementById('dbg-log');if(!el)return;
+ const ts=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+ const line=document.createElement('div');line.style.color=color||'#C8B89A';line.textContent=`[${ts}] ${msg}`;
+ if(el.children[0]?.style.color==='rgb(102, 102, 102)')el.innerHTML='';
+ el.appendChild(line);el.scrollTop=el.scrollHeight;
+}
+function dbgClearLog(){document.getElementById('dbg-log').innerHTML='<span style="color:#666">// cleared</span>';}
+async function dbgPingWorker(){
+ dbgLog('→ Ping Worker: '+SCRIPT_URL,'#88AAFF');
+ document.getElementById('dbg-worker').textContent='⏳...';
+ try{
+  const t0=Date.now();const res=await fetch(SCRIPT_URL+'?action=ping',{mode:'cors'});const ms=Date.now()-t0;
+  const txt=await res.text();
+  dbgLog(`← HTTP ${res.status} (${ms}ms)`,res.ok?'#88CC88':'#FF8888');
+  dbgLog(`   Body: ${txt}`,'#DDBB88');
+  document.getElementById('dbg-worker').textContent=res.ok?`✅ ${ms}ms`:`❌ ${res.status}`;
+  document.getElementById('dbg-worker').style.color=res.ok?'var(--green)':'var(--red)';
+ }catch(e){
+  dbgLog(`✗ ${e.message}`,'#FF6666');
+  document.getElementById('dbg-worker').textContent='❌ Error';
+  document.getElementById('dbg-worker').style.color='var(--red)';
+ }
+}
+async function dbgTestGetAll(){
+ dbgLog('→ GET ?action=getAll','#88AAFF');
+ document.getElementById('dbg-gas').textContent='⏳...';
+ try{
+  const t0=Date.now();const res=await fetch(SCRIPT_URL+'?action=getAll',{mode:'cors'});const ms=Date.now()-t0;
+  dbgLog(`← HTTP ${res.status} (${ms}ms)`,res.ok?'#88CC88':'#FF8888');
+  if(!res.ok){document.getElementById('dbg-gas').textContent=`❌ ${res.status}`;document.getElementById('dbg-gas').style.color='var(--red)';return;}
+  const txt=await res.text();dbgLog(`   length: ${txt.length} chars`,'#AAAAAA');
+  try{
+   const data=JSON.parse(txt);
+   if(data.error){dbgLog(`   GAS error: ${data.error}`,'#FF8888');document.getElementById('dbg-gas').textContent='❌ '+data.error;document.getElementById('dbg-gas').style.color='var(--red)';}
+   else{Object.keys(data).forEach(k=>{if(Array.isArray(data[k]))dbgLog(`   ${k}: ${data[k].length}`,'#AADDAA');});document.getElementById('dbg-gas').textContent='✅ OK';document.getElementById('dbg-gas').style.color='var(--green)';dbgLog('✅ getAll สำเร็จ!','#44FF88');}
+  }catch(pe){dbgLog(`   JSON error: ${pe.message}`,'#FF8888');dbgLog(`   First 200: ${txt.substring(0,200)}`,'#FFAA44');}
+ }catch(e){dbgLog(`✗ ${e.message}`,'#FF6666');document.getElementById('dbg-gas').textContent='❌ Error';document.getElementById('dbg-gas').style.color='var(--red)';}
+}
+function dbgShowDB(){
+ dbgLog('── DB Snapshot ──────────','#88AAFF');
+ ['menus','ingredients','packages','equipment','employees','orders','promos','recipes','blends','auditLog'].forEach(k=>{
+  const arr=DB[k];if(Array.isArray(arr))dbgLog(`  ${k}: ${arr.length} ${arr.length>0?'✅':'⚠️'}`,arr.length>0?'#AADDAA':'#FFAA44');
+ });
+ dbgLog(`  nextId: ${DB.nextId}`,'#AAAAAA');
+ dbgLog(`  shopName: ${DB.shopName||'(not set)'}`,'#AAAAAA');
+ const ls=localStorage.getItem('pos_dirty_v5');
+ dbgLog(`  dirty: ${ls!==null?'⚠️ dirty':'✅ clean'}`,'#AAAAAA');
+}
+</script>
+
+<!-- Debug Panel Modal -->
 <div class="modal-overlay" id="modal-debug" style="z-index:9999">
  <div class="modal-sheet" style="max-height:85vh">
   <div class="modal-handle"></div>
   <div class="modal-head" style="padding-bottom:8px">
    <span class="modal-title" style="display:flex;align-items:center;gap:6px">
-    <span class="material-symbols-outlined" style="font-size:18px;color:var(--blue)">terminal</span>
-    Debug Panel
+    <span class="material-symbols-outlined" style="font-size:18px;color:var(--blue)">terminal</span>Debug Panel
    </span>
    <button onclick="closeModal('modal-debug')" style="background:none;border:none;cursor:pointer;padding:4px">
     <span class="material-symbols-outlined" style="font-size:20px;color:var(--t3)">close</span>
    </button>
   </div>
   <div class="modal-body" style="padding-top:0">
-   <!-- Status row -->
    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px">
-     <div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">Network</div>
-     <div id="dbg-network" style="font-size:13px;font-weight:800;font-family:var(--fh);margin-top:2px">—</div>
-    </div>
-    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px">
-     <div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">Worker</div>
-     <div id="dbg-worker" style="font-size:13px;font-weight:800;font-family:var(--fh);margin-top:2px">—</div>
-    </div>
-    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px">
-     <div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">GAS</div>
-     <div id="dbg-gas" style="font-size:13px;font-weight:800;font-family:var(--fh);margin-top:2px">—</div>
-    </div>
-    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px">
-     <div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">DB Items</div>
-     <div id="dbg-db" style="font-size:11px;font-weight:700;font-family:var(--fh);margin-top:2px;color:var(--t2)">—</div>
-    </div>
+    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px"><div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">Network</div><div id="dbg-network" style="font-size:13px;font-weight:800;font-family:var(--fh);margin-top:2px">—</div></div>
+    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px"><div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">Worker</div><div id="dbg-worker" style="font-size:13px;font-weight:800;font-family:var(--fh);margin-top:2px">—</div></div>
+    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px"><div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">GAS</div><div id="dbg-gas" style="font-size:13px;font-weight:800;font-family:var(--fh);margin-top:2px">—</div></div>
+    <div style="background:var(--bg-dk);border-radius:var(--r2);padding:10px 12px"><div style="font-size:9px;color:var(--t4);font-weight:700;letter-spacing:.5px;text-transform:uppercase">DB Items</div><div id="dbg-db" style="font-size:11px;font-weight:700;font-family:var(--fh);margin-top:2px;color:var(--t2)">—</div></div>
    </div>
-   <!-- Action buttons -->
    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-    <button onclick="dbgPingWorker()" style="flex:1;min-width:100px;padding:9px 12px;border-radius:var(--r2);background:var(--blue-lt);color:var(--blue);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">
-     <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">wifi_tethering</span> Ping Worker
-    </button>
-    <button onclick="dbgTestGetAll()" style="flex:1;min-width:100px;padding:9px 12px;border-radius:var(--r2);background:var(--green-lt);color:var(--green);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">
-     <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">download</span> Test getAll
-    </button>
-    <button onclick="dbgShowDB()" style="flex:1;min-width:100px;padding:9px 12px;border-radius:var(--r2);background:var(--gold-lt);color:var(--gold);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">
-     <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">database</span> Show DB
-    </button>
-    <button onclick="dbgClearLog()" style="padding:9px 12px;border-radius:var(--r2);background:var(--red-lt);color:var(--red);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">
-     <span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">delete_sweep</span>
-    </button>
+    <button onclick="dbgPingWorker()" style="flex:1;min-width:100px;padding:9px 12px;border-radius:var(--r2);background:var(--blue-lt);color:var(--blue);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">📡 Ping</button>
+    <button onclick="dbgTestGetAll()" style="flex:1;min-width:100px;padding:9px 12px;border-radius:var(--r2);background:var(--green-lt);color:var(--green);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">⬇️ getAll</button>
+    <button onclick="dbgShowDB()" style="flex:1;min-width:100px;padding:9px 12px;border-radius:var(--r2);background:var(--gold-lt);color:var(--gold);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">🗄️ DB</button>
+    <button onclick="dbgClearLog()" style="padding:9px 12px;border-radius:var(--r2);background:var(--red-lt);color:var(--red);border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:var(--fh)">🗑️</button>
    </div>
-   <!-- Log output -->
    <div id="dbg-log" style="background:#1A1008;border-radius:var(--r2);padding:10px 12px;font-family:monospace;font-size:11px;color:#C8B89A;line-height:1.7;min-height:160px;max-height:300px;overflow-y:auto;white-space:pre-wrap;word-break:break-all">
     <span style="color:#666">// แตะปุ่มเพื่อทดสอบ...</span>
    </div>
   </div>
  </div>
 </div>
-
-<script>
-// ═══ DEBUG PANEL FUNCTIONS ═══════════════════════════════════
-
-function openDebugPanel(){
- // update status immediately
- document.getElementById('dbg-network').textContent = navigator.onLine ? '🟢 Online' : '🔴 Offline';
- document.getElementById('dbg-network').style.color = navigator.onLine ? 'var(--green)' : 'var(--red)';
- document.getElementById('dbg-worker').textContent = '—';
- document.getElementById('dbg-gas').textContent = '—';
- const d = DB;
- document.getElementById('dbg-db').innerHTML =
-  `ing:${d.ingredients?.length||0} pkg:${d.packages?.length||0}<br>emp:${d.employees?.length||0} menu:${d.menus?.length||0}<br>ord:${d.orders?.length||0}`;
- // ตรวจ SW version
- if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistration().then((reg) => {
-   if (!reg) { dbgLog('⚠️ Service Worker ไม่ได้ register', '#FFAA44'); return; }
-   const sw = reg.active || reg.installing || reg.waiting;
-   const state = reg.active ? '✅ active' : reg.waiting ? '⏳ waiting' : '🔄 installing';
-   dbgLog(`SW: ${state}`, '#88AAFF');
-   if (reg.waiting) dbgLog('⚠️ มี SW ใหม่รอ activate — กด "อัปเดตเลย" ที่ banner', '#FFAA44');
-   // ขอ version จาก SW
-   if (sw) {
-    const mc = new MessageChannel();
-    mc.port1.onmessage = (e) => {
-     if (e.data?.type === 'VERSION') dbgLog(`SW version: ${e.data.version} | cache: ${e.data.cache}`, '#88CC88');
-    };
-    sw.postMessage({ type: 'GET_VERSION' }, [mc.port2]);
-   }
-  });
- }
- openModal('modal-debug');
-}
-
-function dbgLog(msg, color){
- const el = document.getElementById('dbg-log');
- const ts = new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
- const line = document.createElement('div');
- line.style.color = color || '#C8B89A';
- line.textContent = `[${ts}] ${msg}`;
- // remove placeholder
- if(el.children[0]?.style.color === 'rgb(102,102,102)') el.innerHTML = '';
- el.appendChild(line);
- el.scrollTop = el.scrollHeight;
-}
-
-function dbgClearLog(){
- document.getElementById('dbg-log').innerHTML = '<span style="color:#666">// cleared</span>';
-}
-
-async function dbgPingWorker(){
- dbgLog('→ Ping Worker: ' + SCRIPT_URL, '#88AAFF');
- document.getElementById('dbg-worker').textContent = '⏳ Testing...';
- try {
-  const t0 = Date.now();
-  const res = await fetch(SCRIPT_URL + '?action=ping', {mode:'cors'});
-  const ms = Date.now() - t0;
-  const txt = await res.text();
-  dbgLog(`← HTTP ${res.status} (${ms}ms)`, res.ok ? '#88CC88' : '#FF8888');
-  dbgLog(`   Body: ${txt}`, '#DDBB88');
-  if(res.ok){
-   document.getElementById('dbg-worker').textContent = `✅ ${ms}ms`;
-   document.getElementById('dbg-worker').style.color = 'var(--green)';
-  } else {
-   document.getElementById('dbg-worker').textContent = `❌ ${res.status}`;
-   document.getElementById('dbg-worker').style.color = 'var(--red)';
-  }
- } catch(e) {
-  dbgLog(`✗ Fetch error: ${e.message}`, '#FF6666');
-  document.getElementById('dbg-worker').textContent = '❌ Error';
-  document.getElementById('dbg-worker').style.color = 'var(--red)';
-  dbgLog('  → ตรวจสอบ: Worker URL ถูกต้อง? CORS enabled?', '#FFAA44');
- }
-}
-
-async function dbgTestGetAll(){
- dbgLog('→ GET ?action=getAll', '#88AAFF');
- document.getElementById('dbg-gas').textContent = '⏳ Testing...';
- try {
-  const t0 = Date.now();
-  const res = await fetch(SCRIPT_URL + '?action=getAll', {mode:'cors'});
-  const ms = Date.now() - t0;
-  dbgLog(`← HTTP ${res.status} (${ms}ms)`, res.ok ? '#88CC88' : '#FF8888');
-  if(!res.ok){
-   dbgLog(`   HTTP Error — Worker or GAS ผิดพลาด`, '#FF8888');
-   document.getElementById('dbg-gas').textContent = `❌ HTTP ${res.status}`;
-   document.getElementById('dbg-gas').style.color = 'var(--red)';
-   return;
-  }
-  const txt = await res.text();
-  dbgLog(`   Raw length: ${txt.length} chars`, '#AAAAAA');
-  try {
-   const data = JSON.parse(txt);
-   if(data.error){
-    dbgLog(`   GAS error: ${data.error}`, '#FF8888');
-    document.getElementById('dbg-gas').textContent = '❌ ' + data.error;
-    document.getElementById('dbg-gas').style.color = 'var(--red)';
-    if(data.error === 'Unauthorized') dbgLog('   → ตรวจสอบ APP_SECRET ใน Worker vs Code.gs', '#FFAA44');
-   } else {
-    const keys = Object.keys(data);
-    dbgLog(`   Keys: ${keys.join(', ')}`, '#88CC88');
-    keys.forEach(k => {
-     if(Array.isArray(data[k])) dbgLog(`   ${k}: ${data[k].length} items`, '#AADDAA');
-    });
-    document.getElementById('dbg-gas').textContent = '✅ OK';
-    document.getElementById('dbg-gas').style.color = 'var(--green)';
-    dbgLog('✅ getAll สำเร็จ! กด Sync ที่ top bar ได้เลย', '#44FF88');
-   }
-  } catch(pe){
-   dbgLog(`   JSON parse error: ${pe.message}`, '#FF8888');
-   dbgLog(`   First 200 chars: ${txt.substring(0,200)}`, '#FFAA44');
-   document.getElementById('dbg-gas').textContent = '❌ JSON Error';
-   document.getElementById('dbg-gas').style.color = 'var(--red)';
-  }
- } catch(e) {
-  dbgLog(`✗ Fetch error: ${e.message}`, '#FF6666');
-  document.getElementById('dbg-gas').textContent = '❌ Error';
-  document.getElementById('dbg-gas').style.color = 'var(--red)';
- }
-}
-
-function dbgShowDB(){
- dbgLog('── DB Snapshot ──────────────────', '#88AAFF');
- const keys = ['menus','ingredients','packages','equipment','employees','orders','promos','recipes','blends','auditLog'];
- keys.forEach(k => {
-  const arr = DB[k];
-  if(Array.isArray(arr)){
-   dbgLog(`  ${k}: ${arr.length} items ${arr.length>0?'✅':'⚠️ empty'}`, arr.length>0?'#AADDAA':'#FFAA44');
-  }
- });
- dbgLog(`  nextId: ${DB.nextId}`, '#AAAAAA');
- dbgLog(`  shopName: ${DB.shopName||'(not set)'}`, '#AAAAAA');
- dbgLog(`  posId: ${DB.posId||'(not set)'}`, '#AAAAAA');
- const ls = localStorage.getItem('pos_dirty_v5');
- dbgLog(`  dirty flag: ${ls !== null ? '⚠️ dirty' : '✅ clean'}`, '#AAAAAA');
- const lastSync = localStorage.getItem('pos_lastsync_v5');
- dbgLog(`  lastSync: ${lastSync||'(never)'}`, '#AAAAAA');
-}
-</script>
 
 </body>
 </html>
