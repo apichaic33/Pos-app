@@ -3705,17 +3705,22 @@ function loginLookup(){
  const emp = DB.employees.find(e=>String(e.id)===String(id));
  const preview = document.getElementById('loginNamePreview');
  if(emp){
- preview.textContent = emp.name;
- preview.style.color = 'var(--t1)';
- preview.style.fontWeight = '700';
+   preview.textContent = emp.name;
+   preview.style.color = 'var(--t1)';
+   preview.style.fontWeight = '700';
+ } else if(id.length>0 && DB.employees.length===0){
+   // ยังไม่โหลดข้อมูล — แสดง ID ที่กรอกไว้ก่อน
+   preview.textContent = 'รหัส: '+id+' (กำลังโหลด...)';
+   preview.style.color = 'var(--gold)';
+   preview.style.fontWeight = '600';
  } else if(id.length>0) {
- preview.textContent = 'ไม่พบรหัสพนักงาน';
- preview.style.color = 'var(--red)';
- preview.style.fontWeight = '400';
+   preview.textContent = 'ไม่พบรหัสพนักงาน "'+id+'"';
+   preview.style.color = 'var(--red)';
+   preview.style.fontWeight = '400';
  } else {
- preview.textContent = '—';
- preview.style.color = 'var(--t4)';
- preview.style.fontWeight = '400';
+   preview.textContent = '—';
+   preview.style.color = 'var(--t4)';
+   preview.style.fontWeight = '400';
  }
  loginPin='';
  updateLoginDots();
@@ -3738,10 +3743,15 @@ function updateLoginDots(){
 }
 async function loginSubmit(){
  const id=document.getElementById('loginEmpId').value.trim().toUpperCase();
- const emp=DB.employees.find(e=>String(e.id)===String(id));
  const errEl=document.getElementById('loginError');
- if(!DB.employees.length){ errEl.textContent='ยังไม่มีพนักงานในระบบ กรุณาติดต่อผู้ดูแลระบบ'; loginPinReset(); return; }
- if(!emp){ errEl.textContent='ไม่พบรหัสพนักงาน'; loginPinReset(); return; }
+ // ถ้ายังไม่มีพนักงาน → ลอง reload จาก Sheets ก่อน (1 ครั้ง)
+ if(!DB.employees.length && isOnline){
+   errEl.textContent='กำลังโหลดข้อมูลพนักงาน...';
+   await loadFromSheet();
+ }
+ const emp=DB.employees.find(e=>String(e.id)===String(id));
+ if(!DB.employees.length){ errEl.textContent='ไม่มีข้อมูลพนักงาน — ตรวจสอบการเชื่อมต่อ'; loginPinReset(); return; }
+ if(!emp){ errEl.textContent='ไม่พบรหัสพนักงาน "'+id+'"'; loginPinReset(); return; }
  // ─── Brute Force Check ───────────────────────
  const failRec = _loginFailMap[id] || {count:0, lockedUntil:0};
  if(Date.now() < failRec.lockedUntil){
@@ -4341,22 +4351,20 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  document.getElementById('reportDate').textContent='วันนี้';
  updateSalesBadge();
 
- // 3. ตรวจสอบพนักงานหลังโหลด Sheets แล้ว
+ // 3. แสดง/ซ่อน UI ตามสถานะพนักงาน
+ const _hint   = document.getElementById('loginFirstRunHint');
+ const _numpad = document.getElementById('loginNumpad');
+ const _dots   = document.getElementById('loginPinDots');
  if(!DB.employees.length){
-   const hint   = document.getElementById('loginFirstRunHint');
-   const numpad = document.getElementById('loginNumpad');
-   const dots   = document.getElementById('loginPinDots');
-   if(hint)   hint.style.display='block';
-   if(numpad) numpad.style.display='none';
-   if(dots)   dots.style.display='none';
+   // ไม่มีพนักงานเลย — แสดง first-run hint แต่ยัง show numpad ไว้
+   if(_hint)   _hint.style.display='block';
+   if(_numpad) _numpad.style.display='grid';   // ← แสดงเสมอ
+   if(_dots)   _dots.style.display='flex';     // ← แสดงเสมอ
  } else {
-   // มีข้อมูลแล้ว — ซ่อน hint + แสดง numpad
-   const hint   = document.getElementById('loginFirstRunHint');
-   const numpad = document.getElementById('loginNumpad');
-   const dots   = document.getElementById('loginPinDots');
-   if(hint)   hint.style.display='none';
-   if(numpad) numpad.style.display='grid';
-   if(dots)   dots.style.display='flex';
+   // มีพนักงานแล้ว — ซ่อน hint + แสดง numpad
+   if(_hint)   _hint.style.display='none';
+   if(_numpad) _numpad.style.display='grid';
+   if(_dots)   _dots.style.display='flex';
  }
 })();
 </script>
