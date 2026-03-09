@@ -3454,17 +3454,20 @@ async function syncToSheet(){
 async function loadFromSheet(){
  showSyncStatus('กำลังโหลด...');
  const result=await apiGet({action:'getAll'});
+ console.log('[loadFromSheet] result:', result);
  if(result&&!result.error){
  Object.keys(result).forEach(k=>{if(k in DB)DB[k]=result[k];});
  saveLocal();localStorage.setItem(LS_DIRTY,'');
  showSyncStatus('โหลดจาก Sheet');
+ console.log('[loadFromSheet] ingredients:', DB.ingredients.length, 'packages:', DB.packages.length);
  renderOrder();
  if(currentPage==='stores') renderStores(storeTab);
- else if(currentPage==='manage') renderManage();
+ else if(currentPage==='manage') renderManage(mgCat);
  else if(currentPage==='report') renderReport();
  else if(currentPage==='sales') renderSalesToday();
  return true;
  }
+ console.error('[loadFromSheet] failed:', result);
  showSyncStatus(isOnline?'โหลดไม่ได้':'ออฟไลน์');
  return false;
 }
@@ -3692,13 +3695,33 @@ async function manualSync(){
  const icon=document.getElementById('topRefreshIcon');
  const btn=document.getElementById('topRefreshBtn');
  if(!isOnline){toast('ออฟไลน์ ไม่สามารถรีเฟรชได้');return;}
- // spin animation
  if(icon) icon.style.animation='spin 0.8s linear infinite';
  if(btn) btn.style.pointerEvents='none';
- const ok = await loadFromSheet();
+ try{
+   const result = await apiGet({action:'getAll'});
+   if(result && !result.error){
+     Object.keys(result).forEach(k=>{if(k in DB)DB[k]=result[k];});
+     saveLocal();localStorage.setItem(LS_DIRTY,'');
+     showSyncStatus('โหลดจาก Sheet');
+     renderOrder();
+     if(currentPage==='stores') renderStores(storeTab);
+     else if(currentPage==='manage') renderManage(mgCat);
+     else if(currentPage==='report') renderReport();
+     else if(currentPage==='sales') renderSalesToday();
+     const ing=DB.ingredients.length, pkg=DB.packages.length, eq=DB.equipment.length;
+     toast('รีเฟรชแล้ว ✓  วัตถุดิบ '+ing+' / บรรจุ '+pkg+' / อุปกรณ์ '+eq);
+   } else {
+     const errMsg = (result&&result.error)||'ไม่มีข้อมูล response';
+     toast('รีเฟรชไม่สำเร็จ: '+errMsg);
+     showSyncStatus('Error: '+errMsg);
+     console.error('[manualSync] API error:', result);
+   }
+ } catch(e){
+   toast('รีเฟรชไม่สำเร็จ: '+e.message);
+   console.error('[manualSync] Exception:', e);
+ }
  if(icon) icon.style.animation='';
  if(btn) btn.style.pointerEvents='auto';
- toast(ok?'รีเฟรชข้อมูลแล้ว ✓':'รีเฟรชไม่สำเร็จ ลองใหม่อีกครั้ง');
 }
 function logoutUser(){
  currentOperator=null;
