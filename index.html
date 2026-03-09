@@ -103,18 +103,18 @@ img{max-width:100%;}
 .top-bar{
  height:var(--top-h);
  display:flex;align-items:center;
- padding:0 16px;gap:10px;
+ padding:0 12px;gap:8px;
  background:var(--bg);
  border-bottom:1px solid var(--bg-dk);
  flex-shrink:0;z-index:100;
- position:relative;
+ position:relative;overflow:hidden;
 }
 .top-logo{
  font-family:var(--fh);font-size:16px;font-weight:800;color:var(--t1);letter-spacing:-.3px;
- flex:1;
+ flex-shrink:0;
 }
 .top-logo span{color:var(--cara);}
-.top-sync{font-size:10px;color:var(--t4);font-weight:600;max-width:130px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;}
+.top-sync{font-size:10px;color:var(--t4);font-weight:600;flex:1;min-width:0;max-width:140px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;}
 .top-live{width:6px;height:6px;border-radius:50%;background:var(--cara);box-shadow:0 0 8px var(--cara-glow);animation:livePulse 2s infinite;flex-shrink:0;}
 @keyframes livePulse{0%,100%{box-shadow:0 0 6px var(--cara-glow);}50%{box-shadow:0 0 14px var(--cara-glow);}}
 
@@ -860,7 +860,7 @@ if ('serviceWorker' in navigator) {
 </script>
 </head>
 <body>
-<div id="app"> <!-- TOP BAR --> <div class="top-bar"> <button class="ham-btn" id="hamBtn" onclick="openDrawer()"> <div class="ham-line"></div> <div class="ham-line" style="width:13px;align-self:flex-end"></div> <div class="ham-line"></div> </button> <div class="top-logo">POS<span>·</span>APP <span style="font-size:11px;font-weight:400;color:var(--t4)">v5</span></div> <span id="syncStatus" class="top-sync">กำลังโหลด...</span> <div class="top-live" id="topLive"></div> <div id="topEmpInfo" style="font-size:9px;font-weight:700;color:var(--cara);font-family:var(--fh);letter-spacing:.3px;display:none;flex-shrink:0"></div><button id="topRefreshBtn" onclick="manualSync()" title="รีเฟรชข้อมูล" style="display:none;width:26px;height:26px;border-radius:50%;background:var(--bg);box-shadow:var(--neu-out-xs);border:none;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;"><span class="material-symbols-outlined" id="topRefreshIcon" style="font-size:14px;color:var(--t3);">sync</span></button> </div> <!-- PAGES --> <div class="pages" id="pages"> <!-- PAGE: ORDER --> <div class="page active" id="pg-order"> <div class="cat-scroll" id="catRow"></div> <div class="scroll-body"> <div class="prod-grid" id="orderGrid"></div> </div> </div> <!-- PAGE: PROMO --> <div class="page" id="pg-promo"> <div class="pg-head"> <div> <div class="pg-title">โปรโมชั่น</div> <div class="pg-sub" id="promoCount">0 รายการ</div> </div> </div> <div class="tab-bar"> <button class="tab-btn active" onclick="switchPromoTab(this,'all')">ทั้งหมด</button> <button class="tab-btn" onclick="switchPromoTab(this,'pct')">% ลด</button> <button class="tab-btn" onclick="switchPromoTab(this,'fixed')">ลดราคา</button> <button class="tab-btn" onclick="switchPromoTab(this,'buy')">ซื้อ X แถม Y</button> <button class="tab-btn" onclick="switchPromoTab(this,'freeN')">ซื้อ N ฟรี 1</button> <button class="tab-btn" onclick="switchPromoTab(this,'bundle')">Bundle</button> </div> <div class="scroll-body" id="promoList" style="padding-bottom:20px"></div> </div> <!-- PAGE: MANAGE --> <div class="page" id="pg-manage"> <div class="pg-head"> <div> <div class="pg-title">จัดการเมนู</div> <div class="pg-sub" id="mgSub">0 รายการ</div> </div> </div> <div class="tab-bar"> <button class="tab-btn active" onclick="switchMgTab(this,'all')">ทั้งหมด</button> <button class="tab-btn" onclick="switchMgTab(this,'coffee')">กาแฟ</button> <button class="tab-btn" onclick="switchMgTab(this,'tea')">ชา</button> <button class="tab-btn" onclick="switchMgTab(this,'cocoa')">โกโก้</button> <button class="tab-btn" onclick="switchMgTab(this,'custom')">Custom</button> <button class="tab-btn" onclick="switchMgTab(this,'other')">อื่นๆ</button> </div> <div class="scroll-body"> <div id="mgList"></div> </div> </div> <!-- PAGE: REPORT --> <div class="page" id="pg-report"> <div class="pg-head"> <div> <div class="pg-title">รายงาน</div> <div class="pg-sub" id="reportDate"></div> </div> </div> <div class="audit-tab-bar" style="padding:0 16px 12px">
+<div id="app"> <!-- TOP BAR --> <div class="top-bar"> <button class="ham-btn" id="hamBtn" onclick="openDrawer()"> <div class="ham-line"></div> <div class="ham-line" style="width:13px;align-self:flex-end"></div> <div class="ham-line"></div> </button> <div class="top-logo">POS<span>·</span>APP <span style="font-size:11px;font-weight:400;color:var(--t4)">v5</span></div> <span id="syncStatus" class="top-sync">กำลังโหลด...</span> <div class="top-live" id="topLive"></div> <div id="topEmpInfo" style="font-size:9px;font-weight:700;color:var(--cara);font-family:var(--fh);letter-spacing:.3px;display:none;flex-shrink:1;min-width:0;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div><button id="topRefreshBtn" onclick="manualSync()" title="รีเฟรชข้อมูล" style="display:none;min-width:28px;width:28px;height:28px;border-radius:50%;background:var(--bg);box-shadow:var(--neu-out-xs);border:none;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;"><span class="material-symbols-outlined" id="topRefreshIcon" style="font-size:14px;color:var(--t3);">sync</span></button> </div> <!-- PAGES --> <div class="pages" id="pages"> <!-- PAGE: ORDER --> <div class="page active" id="pg-order"> <div class="cat-scroll" id="catRow"></div> <div class="scroll-body"> <div class="prod-grid" id="orderGrid"></div> </div> </div> <!-- PAGE: PROMO --> <div class="page" id="pg-promo"> <div class="pg-head"> <div> <div class="pg-title">โปรโมชั่น</div> <div class="pg-sub" id="promoCount">0 รายการ</div> </div> </div> <div class="tab-bar"> <button class="tab-btn active" onclick="switchPromoTab(this,'all')">ทั้งหมด</button> <button class="tab-btn" onclick="switchPromoTab(this,'pct')">% ลด</button> <button class="tab-btn" onclick="switchPromoTab(this,'fixed')">ลดราคา</button> <button class="tab-btn" onclick="switchPromoTab(this,'buy')">ซื้อ X แถม Y</button> <button class="tab-btn" onclick="switchPromoTab(this,'freeN')">ซื้อ N ฟรี 1</button> <button class="tab-btn" onclick="switchPromoTab(this,'bundle')">Bundle</button> </div> <div class="scroll-body" id="promoList" style="padding-bottom:20px"></div> </div> <!-- PAGE: MANAGE --> <div class="page" id="pg-manage"> <div class="pg-head"> <div> <div class="pg-title">จัดการเมนู</div> <div class="pg-sub" id="mgSub">0 รายการ</div> </div> </div> <div class="tab-bar"> <button class="tab-btn active" onclick="switchMgTab(this,'all')">ทั้งหมด</button> <button class="tab-btn" onclick="switchMgTab(this,'coffee')">กาแฟ</button> <button class="tab-btn" onclick="switchMgTab(this,'tea')">ชา</button> <button class="tab-btn" onclick="switchMgTab(this,'cocoa')">โกโก้</button> <button class="tab-btn" onclick="switchMgTab(this,'custom')">Custom</button> <button class="tab-btn" onclick="switchMgTab(this,'other')">อื่นๆ</button> </div> <div class="scroll-body"> <div id="mgList"></div> </div> </div> <!-- PAGE: REPORT --> <div class="page" id="pg-report"> <div class="pg-head"> <div> <div class="pg-title">รายงาน</div> <div class="pg-sub" id="reportDate"></div> </div> </div> <div class="audit-tab-bar" style="padding:0 16px 12px">
   <button class="tab-btn active" onclick="switchReportPeriod(this,1)">
     <span class="mi" style="font-size:16px;display:block;margin:0 auto 2px">today</span>วันนี้
   </button>
@@ -3453,24 +3453,41 @@ async function syncToSheet(){
 }
 async function loadFromSheet(){
  showSyncStatus('กำลังโหลด...');
- const result=await apiGet({action:'getAll'});
+ let result = null;
+ try {
+   result = await apiGet({action:'getAll'});
+ } catch(e) {
+   console.error('[loadFromSheet] fetch exception:', e);
+ }
  console.log('[loadFromSheet] result:', result);
- if(result&&!result.error){
+
+ // ─── ตรวจสอบ error detail ───────────────────────────────
+ if(!result){
+   showSyncStatus('ไม่มี response (network?)');
+   console.error('[loadFromSheet] result is null — Worker URL หรือ network ผิดพลาด');
+   toast('⚠️ โหลดไม่ได้ — เปิด DevTools > Console ดู error');
+   return false;
+ }
+ if(result.error){
+   showSyncStatus('Error: '+result.error);
+   console.error('[loadFromSheet] GAS error:', result.error);
+   if(result.error==='Unauthorized') toast('⚠️ Token ผิด — ตรวจ Worker secret');
+   else toast('⚠️ GAS error: '+result.error);
+   return false;
+ }
+
+ // ─── โหลดสำเร็จ ─────────────────────────────────────────
  Object.keys(result).forEach(k=>{if(k in DB)DB[k]=result[k];});
  recalcNextId(); // ✅ sync nextId ให้ใหญ่กว่า ID สูงสุดใน Sheet
  saveLocal();localStorage.setItem(LS_DIRTY,'');
- showSyncStatus('โหลดจาก Sheet');
- console.log('[loadFromSheet] ingredients:', DB.ingredients.length, 'packages:', DB.packages.length, 'nextId:', DB.nextId);
+ showSyncStatus('✓ '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}));
+ console.log('[loadFromSheet] ✅ ing:',DB.ingredients.length,'pkg:',DB.packages.length,'emp:',DB.employees.length,'nextId:',DB.nextId);
  renderOrder();
  if(currentPage==='stores') renderStores(storeTab);
  else if(currentPage==='manage') renderManage(mgCat);
  else if(currentPage==='report') renderReport();
  else if(currentPage==='sales') renderSalesToday();
  return true;
- }
- console.error('[loadFromSheet] failed:', result);
- showSyncStatus(isOnline?'โหลดไม่ได้':'ออฟไลน์');
- return false;
 }
 
 /* recalcNextId — ตั้ง DB.nextId ให้มากกว่า ID สูงสุดในทุก collection */
