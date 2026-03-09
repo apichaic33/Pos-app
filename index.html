@@ -3425,7 +3425,7 @@ function toggleBillDetail(id){
  */
 // ชี้ไปที่ Cloudflare Worker แทน GAS โดยตรง (APP_SECRET ถูกซ่อนอยู่ใน Worker)
 // ⚠️ เปลี่ยน URL นี้หลัง deploy Worker เสร็จ: https://pos-app-proxy.<your-subdomain>.workers.dev
-const SCRIPT_URL='https://pos-app-proxy.YOUR_SUBDOMAIN.workers.dev';
+const SCRIPT_URL='https://pos-app-proxy.laboon-pos-app.workers.dev';
 // APP_SECRET ถูกย้ายไปเก็บใน Cloudflare Worker Environment Variables แล้ว ✅
 const LS_KEY='pos_db_v5';const LS_DIRTY='pos_dirty_v5';const LS_LASTSYNC='pos_lastsync_v5';
 let isOnline=navigator.onLine;
@@ -4140,7 +4140,7 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  if(hasCache){ showSyncStatus('Cache'); }
 
  // 2. โหลดจาก Sheets (รวม employees) — รอให้เสร็จก่อนแสดง login
- if(isOnline && SCRIPT_URL!=='YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'){
+ if(isOnline && !SCRIPT_URL.includes('YOUR_SUBDOMAIN') && !SCRIPT_URL.includes('YOUR_APPS_SCRIPT')){
    showSyncStatus('กำลังโหลดข้อมูล...');
    await loadFromSheet(); // โหลดทุกอย่างรวม employees
  } else if(!isOnline){
