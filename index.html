@@ -3339,7 +3339,6 @@ function delBlend(id){
  DB.blends=DB.blends.filter(x=>x.id!==id);
  renderStores('blend');scheduleSync();toast('ลบสูตรแล้ว');
 }
-}
 function openBatchModal(blendId){
  document.getElementById('batchBlendId').value=blendId;
  document.getElementById('batchMultiplier').value='1';
