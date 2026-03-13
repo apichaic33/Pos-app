@@ -3700,30 +3700,54 @@ function scheduleSync(){saveLocal();clearTimeout(syncTimer);syncTimer=setTimeout
  LOGIN SYSTEM
  */
 let loginPin = '';
+let _loginLookupLoading = false;
 function loginLookup(){
  const id = document.getElementById('loginEmpId').value.trim().toUpperCase();
- const emp = DB.employees.find(e=>String(e.id)===String(id));
  const preview = document.getElementById('loginNamePreview');
- if(emp){
-   preview.textContent = emp.name;
-   preview.style.color = 'var(--t1)';
-   preview.style.fontWeight = '700';
- } else if(id.length>0 && DB.employees.length===0){
-   // ยังไม่โหลดข้อมูล — แสดง ID ที่กรอกไว้ก่อน
-   preview.textContent = 'รหัส: '+id+' (กำลังโหลด...)';
-   preview.style.color = 'var(--gold)';
-   preview.style.fontWeight = '600';
- } else if(id.length>0) {
-   preview.textContent = 'ไม่พบรหัสพนักงาน "'+id+'"';
-   preview.style.color = 'var(--red)';
-   preview.style.fontWeight = '400';
- } else {
+ loginPin = ''; updateLoginDots();
+ document.getElementById('loginError').textContent = '';
+ if(!id){
    preview.textContent = '—';
    preview.style.color = 'var(--t4)';
    preview.style.fontWeight = '400';
+   return;
  }
- loginPin='';
- updateLoginDots();
+ // ถ้า DB ยังว่างอยู่ — auto-retry โหลดจาก Sheets
+ if(!DB.employees || DB.employees.length === 0){
+   if(isOnline && !_loginLookupLoading){
+     _loginLookupLoading = true;
+     preview.textContent = '⏳ กำลังโหลดข้อมูลพนักงาน...';
+     preview.style.color = 'var(--gold)';
+     preview.style.fontWeight = '600';
+     loadFromSheet().then(()=>{
+       _loginLookupLoading = false;
+       loginLookup(); // retry
+     }).catch(()=>{
+       _loginLookupLoading = false;
+       preview.textContent = '⚠️ โหลดไม่ได้ ลองใหม่';
+       preview.style.color = 'var(--red)';
+     });
+   } else if(!isOnline){
+     preview.textContent = '⚠️ ออฟไลน์ — ไม่สามารถโหลดข้อมูลได้';
+     preview.style.color = 'var(--red)';
+     preview.style.fontWeight = '400';
+   } else {
+     preview.textContent = '⏳ กำลังโหลด...';
+     preview.style.color = 'var(--gold)';
+   }
+   return;
+ }
+ const emp = DB.employees.find(e=>String(e.id)===String(id));
+ if(emp){
+   const roleLabel = emp.role==='manager' ? ' 👑 ผู้จัดการ' : ' · แคชเชียร์';
+   preview.textContent = emp.name + roleLabel;
+   preview.style.color = 'var(--t1)';
+   preview.style.fontWeight = '700';
+ } else {
+   preview.textContent = 'ไม่พบรหัสพนักงาน "'+id+'"';
+   preview.style.color = 'var(--red)';
+   preview.style.fontWeight = '400';
+ }
 }
 function loginPinKey(k){
  if(loginPin.length>=4) return;
@@ -4152,20 +4176,24 @@ function maskEmail(email){
 }
 
 function updateRecoveryEmailHint(){
-  const empId = document.getElementById('recoveryEmpSel').value;
-  const emp = DB.employees.find(e=>String(e.id)===String(empId));
-  const hint = document.getElementById('recoveryEmailHint');
-  const noEmail = document.getElementById('recoveryNoEmail');
+  const selEl   = document.getElementById('recoveryEmpSel');
+  const hintEl  = document.getElementById('recoveryEmailHint');
+  const noEmailEl = document.getElementById('recoveryNoEmail');
   const sendBtn = document.getElementById('sendOtpBtn');
+  // null guard — modal อาจยังไม่ถูก render
+  if(!selEl || !hintEl || !noEmailEl || !sendBtn) return;
+  const empId = selEl.value;
+  const emp = DB.employees.find(e=>String(e.id)===String(empId));
   if(emp && emp.email){
-    hint.style.display='flex';
-    noEmail.style.display='none';
-    document.getElementById('recoveryEmailMasked').textContent = maskEmail(emp.email);
-    sendBtn.disabled=false;
+    hintEl.style.display  = 'flex';
+    noEmailEl.style.display = 'none';
+    const maskedEl = document.getElementById('recoveryEmailMasked');
+    if(maskedEl) maskedEl.textContent = maskEmail(emp.email);
+    sendBtn.disabled = false;
   } else {
-    hint.style.display='none';
-    noEmail.style.display='block';
-    sendBtn.disabled=true;
+    hintEl.style.display  = 'none';
+    noEmailEl.style.display = 'block';
+    sendBtn.disabled = true;
   }
 }
 
@@ -4200,8 +4228,10 @@ async function sendRecoveryOTP(){
   try {
     const res = await fetch(SCRIPT_URL, { // POST to worker, action in body
       method:'POST',
+      mode:'cors',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
+        action: 'sendOTP',
         email: emp.email,
         empName: emp.name,
         otp: otp,
@@ -4355,17 +4385,11 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  const _hint   = document.getElementById('loginFirstRunHint');
  const _numpad = document.getElementById('loginNumpad');
  const _dots   = document.getElementById('loginPinDots');
- if(!DB.employees.length){
-   // ไม่มีพนักงานเลย — แสดง first-run hint แต่ยัง show numpad ไว้
-   if(_hint)   _hint.style.display='block';
-   if(_numpad) _numpad.style.display='grid';   // ← แสดงเสมอ
-   if(_dots)   _dots.style.display='flex';     // ← แสดงเสมอ
- } else {
-   // มีพนักงานแล้ว — ซ่อน hint + แสดง numpad
-   if(_hint)   _hint.style.display='none';
-   if(_numpad) _numpad.style.display='grid';
-   if(_dots)   _dots.style.display='flex';
- }
+ // numpad & dots แสดงเสมอ — ไม่มี race condition
+ if(_numpad) _numpad.style.display = 'grid';
+ if(_dots)   _dots.style.display   = 'flex';
+ // hint แสดงเฉพาะเมื่อไม่มีพนักงานในระบบ
+ if(_hint)   _hint.style.display   = (!DB.employees || DB.employees.length === 0) ? 'block' : 'none';
 })();
 </script>
 
