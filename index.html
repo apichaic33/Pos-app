@@ -3738,8 +3738,7 @@ function loginLookup(){
  }
  const emp = DB.employees.find(e=>String(e.id)===String(id));
  if(emp){
-   const roleLabel = emp.role==='manager' ? ' 👑 ผู้จัดการ' : ' · แคชเชียร์';
-   preview.textContent = emp.name + roleLabel;
+   preview.textContent = emp.name;
    preview.style.color = 'var(--t1)';
    preview.style.fontWeight = '700';
  } else {
