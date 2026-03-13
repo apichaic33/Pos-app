@@ -1923,8 +1923,19 @@ function renderMenuRecipeRows(){
   ...DB.ingredients.map(i=>({id:'ing_'+i.id, label:i.name+' (฿'+i.cost+'/'+i.unit+')', type:'ing', ref:i})),
   ...(DB.blends||[]).map(b=>{
    const stock=(b.stock||[]).reduce((s,x)=>s+x.qty,0);
-   const costPerUnit = b.yieldPerBatch>0 ? (b.totalCostPerBatch||0)/b.yieldPerBatch : 0;
-   return {id:'blend_'+b.id, label:'[เบลนด์] '+b.name+' (฿'+costPerUnit.toFixed(2)+'/'+b.unit+') คงเหลือ '+stock+b.unit, type:'blend', ref:b};
+   // คำนวณ cost จริงจากวัตถุดิบ ถ้า totalCostPerBatch = 0
+   let realCost = b.totalCostPerBatch||0;
+   if(!realCost && b.ings && b.ings.length){
+    realCost = b.ings.reduce((sum,ig)=>{
+     const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ig.ingId);
+     if(!ing) return sum;
+     return sum + (ing.cost&&ing.qty ? (ing.cost/ing.qty)*ig.qty : (ing.cost||0)*ig.qty);
+    },0);
+   }
+   // yield จริง = ผลรวม qty วัตถุดิบ ถ้า yieldPerBatch = 0
+   const realYield = b.yieldPerBatch || (b.ings||[]).reduce((s,ig)=>s+(ig.qty||0),0) || 1;
+   const costPerUnit = realYield>0 ? realCost/realYield : 0;
+   return {id:'blend_'+b.id, label:'[เบลนด์] '+b.name+' (฿'+costPerUnit.toFixed(2)+'/'+b.unit+') คงเหลือ '+stock+b.unit, type:'blend', ref:b, costPerUnit};
   })
  ];
  const html = menuRecipeIngredients.map((row,i)=>{
@@ -1959,11 +1970,21 @@ function recalcMenuCost(){
   if(!row.qty) return;
   const key = row.itemKey || ('ing_'+(row.ingId||''));
   if(key.startsWith('blend_')){
-   // ต้นทุนจาก blend = (totalCostPerBatch / yieldPerBatch) × qty
+   // ต้นทุนจาก blend — คำนวณ real cost จากวัตถุดิบ (fallback ถ้า totalCostPerBatch=0)
    const blendId = parseInt(key.replace('blend_',''));
    const blend = (DB.blends||[]).find(x=>x.id===blendId);
-   if(blend && blend.yieldPerBatch>0)
-    cost += (blend.totalCostPerBatch||0) / blend.yieldPerBatch * row.qty;
+   if(blend){
+    let realCost = blend.totalCostPerBatch||0;
+    if(!realCost && blend.ings && blend.ings.length){
+     realCost = blend.ings.reduce((sum,ig)=>{
+      const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ig.ingId);
+      if(!ing) return sum;
+      return sum + (ing.cost&&ing.qty ? (ing.cost/ing.qty)*ig.qty : (ing.cost||0)*ig.qty);
+     },0);
+    }
+    const realYield = blend.yieldPerBatch || (blend.ings||[]).reduce((s,ig)=>s+(ig.qty||0),0) || 1;
+    if(realYield>0) cost += (realCost/realYield) * row.qty;
+   }
   } else {
    const ingId = parseInt(key.replace('ing_','')) || row.ingId;
    const ing = DB.ingredients.find(x=>x.id===ingId);
