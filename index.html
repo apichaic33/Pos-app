@@ -1917,6 +1917,25 @@ function switchMenuTab(tab){
  if(tab==='recipe') renderMenuRecipeRows();
 }
 
+
+// ─── normalize blend: ถ้า ings เป็น null ให้ fallback จาก method ───
+function getBlendIngs(b){
+ const raw = b.ings || b.method || [];
+ if(!Array.isArray(raw)) return [];
+ return raw;
+}
+function getBlendYield(b){
+ if(b.yieldPerBatch) return b.yieldPerBatch;
+ return getBlendIngs(b).reduce((s,ig)=>s+(ig.qty||0),0) || 1;
+}
+function getBlendCost(b){
+ if(b.totalCostPerBatch) return b.totalCostPerBatch;
+ return getBlendIngs(b).reduce((sum,ig)=>{
+  const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ig.ingId);
+  if(!ing) return sum;
+  return sum + (ing.cost&&ing.qty ? (ing.cost/ing.qty)*ig.qty : (ing.cost||0)*ig.qty);
+ },0);
+}
 function renderMenuRecipeRows(){
  // รวม ingredients + blends เป็นตัวเลือกเดียวกัน
  const allItems = [
@@ -1924,16 +1943,8 @@ function renderMenuRecipeRows(){
   ...(DB.blends||[]).map(b=>{
    const stock=(b.stock||[]).reduce((s,x)=>s+x.qty,0);
    // คำนวณ cost จริงจากวัตถุดิบ ถ้า totalCostPerBatch = 0
-   let realCost = b.totalCostPerBatch||0;
-   if(!realCost && b.ings && b.ings.length){
-    realCost = b.ings.reduce((sum,ig)=>{
-     const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ig.ingId);
-     if(!ing) return sum;
-     return sum + (ing.cost&&ing.qty ? (ing.cost/ing.qty)*ig.qty : (ing.cost||0)*ig.qty);
-    },0);
-   }
-   // yield จริง = ผลรวม qty วัตถุดิบ ถ้า yieldPerBatch = 0
-   const realYield = b.yieldPerBatch || (b.ings||[]).reduce((s,ig)=>s+(ig.qty||0),0) || 1;
+   const realCost = getBlendCost(b);
+   const realYield = getBlendYield(b);
    const costPerUnit = realYield>0 ? realCost/realYield : 0;
    return {id:'blend_'+b.id, label:'[เบลนด์] '+b.name+' (฿'+costPerUnit.toFixed(2)+'/'+b.unit+') คงเหลือ '+stock+b.unit, type:'blend', ref:b, costPerUnit};
   })
@@ -1974,15 +1985,8 @@ function recalcMenuCost(){
    const blendId = parseInt(key.replace('blend_',''));
    const blend = (DB.blends||[]).find(x=>x.id===blendId);
    if(blend){
-    let realCost = blend.totalCostPerBatch||0;
-    if(!realCost && blend.ings && blend.ings.length){
-     realCost = blend.ings.reduce((sum,ig)=>{
-      const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ig.ingId);
-      if(!ing) return sum;
-      return sum + (ing.cost&&ing.qty ? (ing.cost/ing.qty)*ig.qty : (ing.cost||0)*ig.qty);
-     },0);
-    }
-    const realYield = blend.yieldPerBatch || (blend.ings||[]).reduce((s,ig)=>s+(ig.qty||0),0) || 1;
+    const realCost = getBlendCost(blend);
+    const realYield = getBlendYield(blend);
     if(realYield>0) cost += (realCost/realYield) * row.qty;
    }
   } else {
@@ -3216,7 +3220,7 @@ function openBlendModal(id){
   document.getElementById('blendYield').value=b.yieldPerBatch||'';
   document.getElementById('blendCost').value=b.totalCostPerBatch||'';
   // โหลดวัตถุดิบที่มีอยู่ — clone เพื่อไม่กระทบ DB โดยตรง
-  blendIngArr=(b.ings||[]).map(x=>({...x}));
+  blendIngArr=getBlendIngs(b).map(x=>({...x}));
   blendIngArr.forEach((_,i)=>renderBlendIngRow(i));
  } else {
   ['blendName','blendUnit','blendShelf','blendMethod','blendYield','blendCost']
@@ -3330,7 +3334,7 @@ function renderBlendTab(){
   const tLabel=typeLabelMap[b.type]||b.type;
   const tEmoji=typeEmoji[b.type]||'<span class="mi">category</span>';
   const stockColor=totalStock===0?'var(--red)':totalStock<b.yieldPerBatch?'var(--gold)':'var(--green)';
-  const ingNames=(b.ings||[]).map(ig=>{
+  const ingNames=getBlendIngs(b).map(ig=>{
    const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ig.ingId);
    return ing?`<span class="bc-ing-chip">${ing.name}</span>`:'';
   }).join('');
@@ -3339,7 +3343,7 @@ function renderBlendTab(){
    const dotCls=exp?' expired':sn?' soon':'';
    return`<div class="blend-batch-row"><div class="bbl-dot${dotCls}"></div><span style="flex:1">Batch #${s.batchId} · ${s.qty} ${b.unit}</span><span style="font-size:10px;color:${exp?'var(--red)':sn?'var(--gold)':'var(--t4)'}">หมด ${s.expiry}</span></div>`;
   }).join('');
-  const ingDetail=(b.ings||[]).map(ig=>{
+  const ingDetail=getBlendIngs(b).map(ig=>{
    const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ig.ingId);
    if(!ing)return'';
    return`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t2);padding:3px 0;border-bottom:1px dashed rgba(176,154,133,.15)"><span>${ing.name}</span><span style="font-weight:700">${ig.qty} ${ing.unit}</span></div>`;
@@ -3402,7 +3406,7 @@ function updateBatchPreview(){
  const b=DB.blends.find(x=>x.id===blendId);if(!b)return;
  const mult=parseFloat(document.getElementById('batchMultiplier').value)||1;
  const expDate=new Date();expDate.setDate(expDate.getDate()+b.shelfDays);
- const canMake=b.ings.map(ig=>{const ing=DB.ingredients.find(x=>x.id===ig.ingId);if(!ing)return{name:'?',ok:false,need:ig.qty*mult,have:0,unit:''};const need=ig.qty*mult;return{name:ing.name,ok:ing.qty>=need,need,have:ing.qty,unit:ing.unit};});
+ const canMake=getBlendIngs(b).map(ig=>{const ing=DB.ingredients.find(x=>x.id===ig.ingId);if(!ing)return{name:'?',ok:false,need:ig.qty*mult,have:0,unit:''};const need=ig.qty*mult;return{name:ing.name,ok:ing.qty>=need,need,have:ing.qty,unit:ing.unit};});
  document.getElementById('batchPreview').innerHTML=`
  <div style="background:var(--bg);border-radius:var(--r3);padding:12px;box-shadow:var(--neu-in-sm);margin-top:10px"> <div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px">ตรวจสอบวัตถุดิบ x${mult} batch</div> ${canMake.map(r=>`<div class="batch-ing-row"><span>${r.name}</span><span class="${r.ok?'ok':'no'}">${r.ok?'พอ':'ขาด'} (ต้องการ ${r.need} ${r.unit})</span></div>`).join('')}
  <div style="margin-top:8px;font-size:11px;color:var(--t3)">จะได้ <strong>${b.yieldPerBatch*mult} ${b.unit}</strong> · หมดอายุ ${expDate.toLocaleDateString('th-TH')} · ต้นทุน ฿${b.totalCostPerBatch*mult}</div> </div>`;
@@ -3411,7 +3415,7 @@ function confirmBatch(){
  const blendId=parseInt(document.getElementById('batchBlendId').value);
  const b=DB.blends.find(x=>x.id===blendId);if(!b)return;
  const mult=parseFloat(document.getElementById('batchMultiplier').value)||1;
- b.ings.forEach(ig=>{const ing=DB.ingredients.find(x=>x.id===ig.ingId);if(ing)ing.qty=Math.max(0,ing.qty-ig.qty*mult);});
+ getBlendIngs(b).forEach(ig=>{const ing=DB.ingredients.find(x=>x.id===ig.ingId);if(ing)ing.qty=Math.max(0,ing.qty-ig.qty*mult);});
  const expDate=new Date();expDate.setDate(expDate.getDate()+b.shelfDays);
  const batchId=DB.nextId++;
  b.stock.push({batchId,qty:b.yieldPerBatch*mult,produced:new Date().toISOString().split('T')[0],expiry:expDate.toISOString().split('T')[0],cost:b.totalCostPerBatch*mult});
