@@ -681,21 +681,57 @@ textarea.f-input{resize:none;}
 .option-chip{padding:7px 13px;border:none;border-radius:var(--rf);font-size:12px;font-weight:600;color:var(--t2);background:var(--bg);cursor:pointer;transition:all .2s;box-shadow:var(--neu-out-xs);font-family:var(--fh);}
 .option-chip.active{background:var(--cara);color:#fff;box-shadow:0 5px 14px var(--cara-glow);}
 
-/* TRIGGER PILL — 2-col option layout */
-.trig-group{display:flex;flex-direction:column;gap:4px;}
-.trig-label{font-size:9px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.7px;font-family:var(--fh);margin-bottom:2px;}
-.trig-pill{
- display:flex;align-items:center;justify-content:space-between;
- padding:9px 13px;border:none;border-radius:var(--r3);
- background:var(--bg);box-shadow:var(--neu-out-xs);
- cursor:pointer;transition:all .18s;width:100%;
- font-family:var(--fh);font-size:12px;font-weight:600;color:var(--t2);
+/* TOGGLE SWITCH OPTION — ON เข้ม OFF จาง */
+.opt-col{display:flex;flex-direction:column;gap:5px;}
+.opt-label{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;font-family:var(--fh);margin-bottom:3px;padding-left:2px;}
+.opt-sw{
+ display:flex;align-items:center;gap:10px;
+ padding:10px 14px;border:none;border-radius:var(--r3);
+ background:var(--bg);
+ cursor:pointer;transition:all .2s;width:100%;text-align:left;
+ font-family:var(--fh);
+ /* OFF state: จาง */
+ opacity:.45;
+ box-shadow:none;
 }
-.trig-pill:active{transform:scale(.97);}
-.trig-pill.active{background:var(--esp);color:#fff;box-shadow:3px 3px 10px rgba(42,24,16,.35),-1px -1px 4px rgba(255,255,255,.06);}
-.trig-pill.active .trig-dot{background:#fff;}
-.trig-dot{width:7px;height:7px;border-radius:50%;background:var(--t5);transition:background .18s;flex-shrink:0;}
-.pd-options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.opt-sw:active{transform:scale(.97);}
+/* ON state: เข้มชัด */
+.opt-sw.on{
+ opacity:1;
+ background:var(--esp);
+ box-shadow:3px 3px 12px rgba(42,24,16,.32),-1px -1px 4px rgba(255,255,255,.06);
+}
+.opt-sw-label{
+ flex:1;font-size:13px;font-weight:700;
+ color:var(--t2);transition:color .18s;
+}
+.opt-sw.on .opt-sw-label{color:#fff;}
+/* Toggle track */
+.opt-sw-track{
+ position:relative;width:34px;height:20px;
+ border-radius:10px;flex-shrink:0;
+ background:var(--bg-dk);
+ box-shadow:inset 2px 2px 5px rgba(155,138,122,.4),inset -1px -1px 4px rgba(255,255,255,.7);
+ transition:background .22s;
+}
+.opt-sw.on .opt-sw-track{
+ background:rgba(255,255,255,.25);
+ box-shadow:inset 2px 2px 5px rgba(0,0,0,.2),inset -1px -1px 3px rgba(255,255,255,.1);
+}
+/* Toggle knob */
+.opt-sw-knob{
+ position:absolute;top:2px;left:2px;
+ width:16px;height:16px;border-radius:50%;
+ background:var(--t5);
+ box-shadow:1px 1px 4px rgba(155,138,122,.5);
+ transition:transform .22s cubic-bezier(.4,0,.2,1),background .22s;
+}
+.opt-sw.on .opt-sw-knob{
+ transform:translateX(14px);
+ background:#fff;
+ box-shadow:1px 1px 5px rgba(0,0,0,.2);
+}
+.pd-options-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
 .color-dot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;box-shadow:var(--neu-out-xs);}
 .color-dot.selected{border-color:#fff;box-shadow:0 0 0 3px var(--cara),var(--neu-out-xs);transform:scale(1.15);}
 .recipe-ing-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:10px;}
@@ -1051,25 +1087,25 @@ textarea.f-input{resize:none;}
 
  <!-- 2-COLUMN OPTIONS GRID -->
  <div class="pd-options-grid">
-  <!-- COL LEFT: ขนาด + น้ำแข็ง -->
-  <div>
-   <div class="trig-label">ขนาด</div>
-   <div class="trig-group" id="pdSizes"></div>
-   <div class="trig-label" style="margin-top:10px">น้ำแข็ง</div>
-   <div class="trig-group" id="pdIce"></div>
+  <!-- COL LEFT: ขนาด + ความเข้ม -->
+  <div class="opt-col">
+   <div class="opt-label">ขนาด</div>
+   <div id="pdSizes"></div>
+   <div class="opt-label" style="margin-top:8px">ความเข้ม</div>
+   <div id="pdStrength"></div>
   </div>
-  <!-- COL RIGHT: ความหวาน + ความเข้ม -->
-  <div>
-   <div class="trig-label">ความหวาน</div>
-   <div class="trig-group" id="pdSweet"></div>
-   <div class="trig-label" style="margin-top:10px">ความเข้ม</div>
-   <div class="trig-group" id="pdStrength"></div>
+  <!-- COL RIGHT: น้ำแข็ง + ความหวาน -->
+  <div class="opt-col">
+   <div class="opt-label">น้ำแข็ง</div>
+   <div id="pdIce"></div>
+   <div class="opt-label" style="margin-top:8px">ความหวาน</div>
+   <div id="pdSweet"></div>
   </div>
  </div>
 
  <!-- Custom options -->
  <div id="pdCustomSection" style="margin-bottom:10px">
-  <div class="trig-label" style="margin-bottom:6px">Custom (+10฿ ต่อตัวเลือก)</div>
+  <div class="opt-label" style="margin-bottom:6px">Custom (+10฿ ต่อตัวเลือก)</div>
   <div id="pdCustomOptions" style="background:var(--bg-dk);border-radius:var(--r3);padding:6px 12px"></div>
  </div>
 
@@ -1473,8 +1509,8 @@ function renderProductGrid(cat){
 
 /* Product Detail Modal */
 let pdItem=null,pdQtyVal=1,pdSize='',pdSweet='50%',pdIce='มีน้ำแข็ง',pdStrength='50%',pdCustom={};
-function _trigHtml(items, type, defaultVal){
- return items.map((v,i)=>`<button class="trig-pill${v===defaultVal?' active':''}" onclick="selectPdOpt(this,'${type}','${v}')"><span>${v}</span><span class="trig-dot"></span></button>`).join('');
+function _optSwHtml(items, type, defaultVal){
+ return items.map(v=>`<button class="opt-sw${v===defaultVal?' on':''}" onclick="selectPdOpt(this,'${type}','${v}')"><span class="opt-sw-label">${v}</span><span class="opt-sw-track"><span class="opt-sw-knob"></span></span></button>`).join('');
 }
 function openProductModal(id){
  pdItem=DB.menus.find(m=>m.id===id);if(!pdItem)return;
@@ -1515,11 +1551,11 @@ function openProductModal(id){
  if(document.getElementById('empLookupResult')) {document.getElementById('empLookupResult').textContent='—';document.getElementById('empLookupResult').style.color='var(--t4)';}
  const slider=document.getElementById('pdStaffSlider');
  if(slider) slider.style.background='';
- // ── Render trig-pills ──
- document.getElementById('pdSizes').innerHTML = _trigHtml(pdItem.sizes.length?pdItem.sizes:['M'], 'size', pdSize);
- document.getElementById('pdSweet').innerHTML  = _trigHtml(['0%','25%','50%','75%','100%'], 'sweet', '50%');
- document.getElementById('pdIce').innerHTML    = _trigHtml(['มีน้ำแข็ง','ไม่มีน้ำแข็ง'], 'ice', 'มีน้ำแข็ง');
- document.getElementById('pdStrength').innerHTML = _trigHtml(['25%','50%','75%','100%'], 'strength', '50%');
+ // ── Render toggle-switch options ──
+ document.getElementById('pdSizes').innerHTML = _optSwHtml(pdItem.sizes.length?pdItem.sizes:['M'], 'size', pdSize);
+ document.getElementById('pdSweet').innerHTML  = _optSwHtml(['0%','25%','50%','75%','100%'], 'sweet', '50%');
+ document.getElementById('pdIce').innerHTML    = _optSwHtml(['มีน้ำแข็ง','ไม่มีน้ำแข็ง'], 'ice', 'มีน้ำแข็ง');
+ document.getElementById('pdStrength').innerHTML = _optSwHtml(['25%','50%','75%','100%'], 'strength', '50%');
  // Custom options
  pdCustom={};
  const custEl=document.getElementById('pdCustomSection');
@@ -1543,10 +1579,12 @@ function openProductModal(id){
  openModal('modal-product');
 }
 function selectPdOpt(btn,type,val){
- // trig-pill: ใช้ parent .trig-group
- const group = btn.closest('.trig-group') || btn.closest('.f-group');
- if(group) group.querySelectorAll('.trig-pill,.option-chip').forEach(b=>b.classList.remove('active'));
- btn.classList.add('active');
+ // หา container — opt-col ที่ครอบ id ของ group นั้น
+ const group = btn.parentElement;
+ if(group) group.querySelectorAll('.opt-sw,.trig-pill,.option-chip').forEach(b=>{
+  b.classList.remove('on','active');
+ });
+ btn.classList.add('on');
  if(type==='size'){pdSize=val;updatePdPrice();}
  if(type==='sweet')pdSweet=val;
  if(type==='ice')pdIce=val;
