@@ -681,56 +681,41 @@ textarea.f-input{resize:none;}
 .option-chip{padding:7px 13px;border:none;border-radius:var(--rf);font-size:12px;font-weight:600;color:var(--t2);background:var(--bg);cursor:pointer;transition:all .2s;box-shadow:var(--neu-out-xs);font-family:var(--fh);}
 .option-chip.active{background:var(--cara);color:#fff;box-shadow:0 5px 14px var(--cara-glow);}
 
-/* TOGGLE SWITCH OPTION — ON เข้ม OFF จาง */
+/* NEU-RADIO TOGGLE — Neumorphic radio toggle (single-select, same style as Custom) */
 .opt-col{display:flex;flex-direction:column;gap:5px;}
 .opt-label{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;font-family:var(--fh);margin-bottom:3px;padding-left:2px;}
-.opt-sw{
- display:flex;align-items:center;gap:10px;
- padding:10px 14px;border:none;border-radius:var(--r3);
+.neu-tog-row{
+ display:flex;align-items:center;gap:10px;cursor:pointer;
+ padding:7px 10px;border-radius:var(--r3);
+ transition:background .18s;
+ user-select:none;
+}
+.neu-tog-row:active{background:rgba(165,148,132,.12);}
+.neu-tog-track{
+ position:relative;width:40px;height:23px;flex-shrink:0;
+ border-radius:23px;
  background:var(--bg);
- cursor:pointer;transition:all .2s;width:100%;text-align:left;
- font-family:var(--fh);
- /* OFF state: จาง */
- opacity:.45;
- box-shadow:none;
+ box-shadow:var(--neu-in-sm);
+ transition:background .3s;
 }
-.opt-sw:active{transform:scale(.97);}
-/* ON state: เข้มชัด */
-.opt-sw.on{
- opacity:1;
- background:var(--esp);
- box-shadow:3px 3px 12px rgba(42,24,16,.32),-1px -1px 4px rgba(255,255,255,.06);
-}
-.opt-sw-label{
- flex:1;font-size:13px;font-weight:700;
- color:var(--t2);transition:color .18s;
-}
-.opt-sw.on .opt-sw-label{color:#fff;}
-/* Toggle track */
-.opt-sw-track{
- position:relative;width:34px;height:20px;
- border-radius:10px;flex-shrink:0;
+.neu-tog-thumb{
+ position:absolute;width:17px;height:17px;border-radius:50%;
+ left:3px;top:3px;
  background:var(--bg-dk);
- box-shadow:inset 2px 2px 5px rgba(155,138,122,.4),inset -1px -1px 4px rgba(255,255,255,.7);
- transition:background .22s;
+ box-shadow:2px 2px 6px rgba(155,138,122,.55),-1px -1px 4px rgba(255,255,255,.88);
+ transition:transform .35s cubic-bezier(.4,0,.2,1),background .3s,box-shadow .3s;
 }
-.opt-sw.on .opt-sw-track{
- background:rgba(255,255,255,.25);
- box-shadow:inset 2px 2px 5px rgba(0,0,0,.2),inset -1px -1px 3px rgba(255,255,255,.1);
+/* ON state */
+.neu-tog-row.on .neu-tog-thumb{
+ transform:translateX(17px);
+ background:var(--esp);
+ box-shadow:2px 2px 8px rgba(42,24,16,.45),-1px -1px 3px rgba(255,255,255,.15);
 }
-/* Toggle knob */
-.opt-sw-knob{
- position:absolute;top:2px;left:2px;
- width:16px;height:16px;border-radius:50%;
- background:var(--t5);
- box-shadow:1px 1px 4px rgba(155,138,122,.5);
- transition:transform .22s cubic-bezier(.4,0,.2,1),background .22s;
+.neu-tog-name{
+ flex:1;font-size:13px;font-weight:600;color:var(--t3);
+ font-family:var(--fh);transition:color .2s,font-weight .2s;
 }
-.opt-sw.on .opt-sw-knob{
- transform:translateX(14px);
- background:#fff;
- box-shadow:1px 1px 5px rgba(0,0,0,.2);
-}
+.neu-tog-row.on .neu-tog-name{color:var(--esp);font-weight:800;}
 .pd-options-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
 .color-dot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;box-shadow:var(--neu-out-xs);}
 .color-dot.selected{border-color:#fff;box-shadow:0 0 0 3px var(--cara),var(--neu-out-xs);transform:scale(1.15);}
@@ -1509,8 +1494,13 @@ function renderProductGrid(cat){
 
 /* Product Detail Modal */
 let pdItem=null,pdQtyVal=1,pdSize='',pdSweet='50%',pdIce='มีน้ำแข็ง',pdStrength='50%',pdCustom={};
-function _optSwHtml(items, type, defaultVal){
- return items.map(v=>`<button class="opt-sw${v===defaultVal?' on':''}" onclick="selectPdOpt(this,'${type}','${v}')"><span class="opt-sw-label">${v}</span><span class="opt-sw-track"><span class="opt-sw-knob"></span></span></button>`).join('');
+
+function _neuToggleHtml(items, type, defaultVal){
+ return items.map(v=>`
+  <label class="neu-tog-row${v===defaultVal?' on':''}" id="neut_${type}_${v.replace(/[^a-z0-9]/gi,'_')}" onclick="selectNeuOpt(this,'${type}','${v}')">
+   <div class="neu-tog-track"><div class="neu-tog-thumb"></div></div>
+   <span class="neu-tog-name">${v}</span>
+  </label>`).join('');
 }
 function openProductModal(id){
  pdItem=DB.menus.find(m=>m.id===id);if(!pdItem)return;
@@ -1551,11 +1541,11 @@ function openProductModal(id){
  if(document.getElementById('empLookupResult')) {document.getElementById('empLookupResult').textContent='—';document.getElementById('empLookupResult').style.color='var(--t4)';}
  const slider=document.getElementById('pdStaffSlider');
  if(slider) slider.style.background='';
- // ── Render toggle-switch options ──
- document.getElementById('pdSizes').innerHTML = _optSwHtml(pdItem.sizes.length?pdItem.sizes:['M'], 'size', pdSize);
- document.getElementById('pdSweet').innerHTML  = _optSwHtml(['0%','25%','50%','75%','100%'], 'sweet', '50%');
- document.getElementById('pdIce').innerHTML    = _optSwHtml(['มีน้ำแข็ง','ไม่มีน้ำแข็ง'], 'ice', 'มีน้ำแข็ง');
- document.getElementById('pdStrength').innerHTML = _optSwHtml(['25%','50%','75%','100%'], 'strength', '50%');
+ // ── Render Neumorphic radio toggles ──
+ document.getElementById('pdSizes').innerHTML    = _neuToggleHtml(pdItem.sizes.length?pdItem.sizes:['M'], 'size', pdSize);
+ document.getElementById('pdSweet').innerHTML    = _neuToggleHtml(['0%','25%','50%','75%','100%'], 'sweet', '50%');
+ document.getElementById('pdIce').innerHTML      = _neuToggleHtml(['มีน้ำแข็ง','ไม่มีน้ำแข็ง'], 'ice', 'มีน้ำแข็ง');
+ document.getElementById('pdStrength').innerHTML = _neuToggleHtml(['25%','50%','75%','100%'], 'strength', '50%');
  // Custom options
  pdCustom={};
  const custEl=document.getElementById('pdCustomSection');
@@ -1578,13 +1568,15 @@ function openProductModal(id){
   </label>`).join('');
  openModal('modal-product');
 }
-function selectPdOpt(btn,type,val){
- // หา container — opt-col ที่ครอบ id ของ group นั้น
- const group = btn.parentElement;
- if(group) group.querySelectorAll('.opt-sw,.trig-pill,.option-chip').forEach(b=>{
-  b.classList.remove('on','active');
+function selectNeuOpt(label, type, val){
+ // OFF ทุก row ใน group เดียวกัน
+ const group = label.parentElement;
+ group.querySelectorAll('.neu-tog-row').forEach(row=>{
+  if(row === label) return;
+  row.classList.remove('on');
  });
- btn.classList.add('on');
+ // ON row ที่กด
+ label.classList.add('on');
  if(type==='size'){pdSize=val;updatePdPrice();}
  if(type==='sweet')pdSweet=val;
  if(type==='ice')pdIce=val;
