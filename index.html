@@ -684,21 +684,28 @@ textarea.f-input{resize:none;}
 /* NEU-RADIO TOGGLE — Neumorphic radio toggle (single-select, same style as Custom) */
 .opt-col{display:flex;flex-direction:column;gap:5px;}
 .opt-label{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;font-family:var(--fh);margin-bottom:3px;padding-left:2px;}
+/* card พื้นหลังของแต่ละกลุ่ม */
+.opt-group-card{
+ background:var(--bg);
+ border-radius:var(--r4);
+ box-shadow:var(--neu-out-sm);
+ padding:8px 6px;
+ display:flex;flex-direction:column;gap:2px;
+ margin-bottom:8px;
+}
 .neu-tog-row{
  display:flex;align-items:center;gap:10px;cursor:pointer;
  padding:7px 10px;border-radius:var(--r3);
  transition:background .18s, opacity .22s;
  user-select:none;
- /* OFF: จาง */
  opacity:.38;
 }
 .neu-tog-row:active{background:rgba(165,148,132,.12);}
-/* ON: เข้มชัด */
 .neu-tog-row.on{opacity:1;}
 .neu-tog-track{
  position:relative;width:40px;height:23px;flex-shrink:0;
  border-radius:23px;
- background:var(--bg);
+ background:var(--bg-dk);
  box-shadow:var(--neu-in-sm);
  transition:background .3s;
 }
@@ -707,12 +714,10 @@ textarea.f-input{resize:none;}
  left:3px;top:3px;
  background:var(--esp);
  box-shadow:2px 2px 8px rgba(42,24,16,.45),-1px -1px 3px rgba(255,255,255,.15);
- /* OFF: ซ่อน thumb */
  opacity:0;
  transform:translateX(0);
  transition:transform .32s cubic-bezier(.4,0,.2,1),opacity .22s;
 }
-/* ON: thumb โผล่ขวา */
 .neu-tog-row.on .neu-tog-thumb{
  opacity:1;
  transform:translateX(17px);
@@ -1081,16 +1086,16 @@ textarea.f-input{resize:none;}
   <!-- COL LEFT: ขนาด + ความเข้ม -->
   <div class="opt-col">
    <div class="opt-label">ขนาด</div>
-   <div id="pdSizes"></div>
+   <div class="opt-group-card" id="pdSizes"></div>
    <div class="opt-label" style="margin-top:8px">ความเข้ม</div>
-   <div id="pdStrength"></div>
+   <div class="opt-group-card" id="pdStrength"></div>
   </div>
   <!-- COL RIGHT: น้ำแข็ง + ความหวาน -->
   <div class="opt-col">
    <div class="opt-label">น้ำแข็ง</div>
-   <div id="pdIce"></div>
+   <div class="opt-group-card" id="pdIce"></div>
    <div class="opt-label" style="margin-top:8px">ความหวาน</div>
-   <div id="pdSweet"></div>
+   <div class="opt-group-card" id="pdSweet"></div>
   </div>
  </div>
 
