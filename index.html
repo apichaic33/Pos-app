@@ -1015,7 +1015,13 @@ textarea.f-input{resize:none;}
 <div class="drawer" id="drawer"> <div class="drawer-head"> <div class="drawer-logo">POS<span>·</span>APP</div> <div class="drawer-sub">ระบบบริหารร้านกาแฟ v5</div> <div id="drawerUserInfo" style="font-size:11px;color:var(--cara);font-weight:700;margin-top:6px;font-family:var(--fh)"></div> <button onclick="logoutUser()" style="margin-top:8px;padding:6px 14px;border-radius:var(--rf);background:var(--red-lt);color:var(--red);font-size:11px;font-weight:700;font-family:var(--fh)">ออกจากระบบ</button> </div> <div class="drawer-body"> <!-- Manager session badge --> <div id="mgrSessionBadge" style="display:none;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(90deg,rgba(43,94,167,.12),transparent);border-bottom:1px solid rgba(43,94,167,.15);margin-bottom:4px"> <span class="mi" style="font-size:20px;color:var(--blue)">shield_person</span> <div style="flex:1"> <div style="font-size:10px;font-weight:700;color:var(--blue)">Manager Mode</div> <div id="mgrBadgeName" style="font-size:11px;color:var(--t2)"></div> </div> <div style="text-align:right"> <div id="mgrBadgeTime" style="font-size:11px;font-weight:700;color:var(--blue);font-family:var(--fh)">10:00</div> <button onclick="mgrLogout()" style="font-size:9px;color:var(--red);background:var(--red-lt);border:none;border-radius:var(--rf);padding:2px 6px;margin-top:2px;cursor:pointer;font-weight:700">ออก</button> </div> </div> <div class="drawer-item active" id="dnav-order" onclick="drawerGo('order')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">point_of_sale</span></div> <span>รับออเดอร์</span> </div> <div class="drawer-item" id="dnav-sales" onclick="drawerGo('sales')"> <div class="drawer-item-icon" style="color:var(--blue)"><span class="mi">bar_chart</span></div> <span>รายการขายวันนี้</span> </div> <div class="drawer-sep"></div> <div class="drawer-item" id="dnav-promo" onclick="drawerGo('promo')"> <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">sell</span></div> <span>โปรโมชั่น</span> </div> <div class="drawer-item" id="dnav-manage" onclick="drawerGo('manage')"> <div class="drawer-item-icon" style="color:var(--esp)"><span class="mi">restaurant_menu</span></div> <span>จัดการเมนู</span> </div> <div class="drawer-item" id="dnav-bills" onclick="drawerGo('bills')"> <div class="drawer-item-icon" style="color:var(--red)"><span class="mi">receipt_long</span></div> <span>จัดการบิล</span> </div> <div class="drawer-item" id="dnav-staff-mgmt" onclick="drawerGo('staff-mgmt')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">group</span></div> <span>พนักงาน</span> </div> <div class="drawer-item" id="dnav-audit" onclick="drawerGo('audit')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">history</span></div> <span>ประวัติ</span> </div> <div class="drawer-item" id="dnav-report" onclick="drawerGo('report')"> <div class="drawer-item-icon" style="color:var(--green)"><span class="mi">trending_up</span></div> <span>รายงาน</span> </div> <div class="drawer-item" id="dnav-stores" onclick="drawerGo('stores')"> <div class="drawer-item-icon" style="color:var(--purple)"><span class="mi">inventory_2</span></div> <span>คลัง</span> </div>
  </div> <div class="drawer-foot"> <div class="drawer-sync-badge"> <div class="top-live" id="drawerLive" style="width:7px;height:7px;"></div> <span id="drawerSync">—</span> </div> <button onclick="closeDrawer();openDebugPanel()" style="margin-top:10px;width:100%;padding:8px;border-radius:var(--r2);background:var(--bg-dk);border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:var(--fh);color:var(--t3);display:flex;align-items:center;justify-content:center;gap:6px"><span class="material-symbols-outlined" style="font-size:14px">terminal</span>Debug Panel</button> </div>
 </div> <!-- ORDER PANEL PAGE -->
-<div class="order-panel-page" id="orderPanelPage"> <div class="op-handle-wrap" onclick="closeOrderPanel()"><div class="op-handle"></div></div> <div class="op-topbar"> <button class="op-close" onclick="closeOrderPanel()"></button> <span class="op-title">รายการออเดอร์</span> <span style="font-size:11px;color:var(--t4)" id="opItemCount">0 รายการ</span> </div> <div class="op-list" id="opList"> <div class="op-empty"> <div class="e-icon">🛒</div> <div class="op-empty-title">ยังไม่มีรายการ</div> </div> </div> <div class="op-footer"> <div class="op-summary" id="opSummary"> <div class="op-sum-row"><span id="opCount">0 รายการ</span><span id="opSubTotal">฿0</span></div> <div class="op-sum-row" id="discountRow" style="display:none;color:var(--red)"><span>ส่วนลด</span><span id="opDiscountAmt">-฿0</span></div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px" onclick="requestVoidOrder()">ยกเลิก</button> <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button> </div> </div>
+<div class="order-panel-page" id="orderPanelPage"> <div class="op-handle-wrap" onclick="closeOrderPanel()"><div class="op-handle"></div></div> <div class="op-topbar"> <button class="op-close" onclick="closeOrderPanel()"></button> <span class="op-title">รายการออเดอร์</span> <span style="font-size:11px;color:var(--t4)" id="opItemCount">0 รายการ</span> </div> <div class="op-list" id="opList"> <div class="op-empty"> <div class="e-icon">🛒</div> <div class="op-empty-title">ยังไม่มีรายการ</div> </div> </div> <div class="op-footer"> <div class="op-summary" id="opSummary"> <div class="op-sum-row"><span id="opCount">0 รายการ</span><span id="opSubTotal">฿0</span></div> <div class="op-sum-row" id="discountRow" style="display:none;flex-direction:column;gap:3px;padding:6px 0;background:rgba(184,50,40,.06);border-radius:var(--r2);margin:2px 0;padding:6px 8px;">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+   <span style="font-size:11px;font-weight:700;color:var(--t3)">ส่วนลด</span>
+   <span id="opDiscountAmt" style="font-size:13px;font-weight:800;color:var(--red)">-฿0</span>
+  </div>
+  <span id="opPromoLabel" style="font-size:10px;font-weight:700;color:var(--gold)"></span>
+ </div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px" onclick="requestVoidOrder()">ยกเลิก</button> <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button> </div> </div>
 </div> <!-- RECEIPT PAGE -->
 <div class="receipt-page" id="receiptPage"> <div class="receipt-topbar"> <span class="receipt-title">ใบเสร็จ</span> <button class="btn btn-secondary btn-sm" onclick="closeReceiptPage()" style="flex-shrink:0"> ปิด</button> </div> <div class="receipt-body"> <div class="receipt-paper" id="receiptPaper"></div> </div> <div class="receipt-footer-actions"> <button class="btn-new-order" onclick="newOrderFromReceipt()">ออเดอร์ถัดไป</button> <button class="btn-print" onclick="printReceipt()">พิมพ์</button> </div>
 </div> <!-- ORDER DETAIL PAGE (slide from right) -->
@@ -1696,38 +1702,206 @@ function renderOrderPanel(){
  updateOrderSummary();
  return;
  }
+ // ── Auto-calculate promos ──
+ calcAutoPromo();
  const totalCount=orderItems.reduce((s,i)=>s+i.qty,0);
  if(itemCountEl) itemCountEl.textContent=totalCount+'รายการ';
  const CUST_LABELS={extraShot:'เพิ่มช็อต',extraMatcha:'เพิ่มมัทฉะ',extraCocoa:'เพิ่มโกโก้'};
  list.innerHTML=orderItems.map(i=>{
- const promo=i.promoId?DB.promos.find(x=>x.id===i.promoId):null;
+ const promo=i.autoPromoId?DB.promos.find(x=>x.id===i.autoPromoId):null;
  const noteParts=(i.note||'').split(' · ');
  const customTags=Object.values(CUST_LABELS).filter(v=>noteParts.includes(v));
  const otherNote=noteParts.filter(p=>!Object.values(CUST_LABELS).includes(p)).join(' · ');
- const metaLine=[i.size,i.sweet,i.ice,otherNote].filter(Boolean).join(' · ');
- const disc=i.promoDisc||0;
- return `<div class="op-item fade-up"> <div class="op-item-icon" style="background:${i.color}">${i.icon}</div> <div class="op-item-info"> <div class="op-item-name">${i.name}</div> <div class="op-item-meta">${metaLine}</div> ${customTags.length?`<div style="font-size:9px;color:var(--blue-md);font-weight:600;margin-top:1px">${customTags.map(t=>t+' +฿10').join(' · ')}</div>`:''}
- ${promo?`<div style="font-size:9px;color:var(--gold);font-weight:600;margin-top:1px">% ${promo.name} <span style="color:var(--red)">-฿${disc}</span></div>`:''}
- </div> <div class="op-item-ctrl"> <button class="op-q-btn" style="background:var(--red-lt);color:var(--red)" onclick="changeOpQty('${i.key}',-1)">−</button> <span class="op-qty">${i.qty}</span> <button class="op-q-btn" onclick="changeOpQty('${i.key}',1)">+</button> </div> <div class="op-item-price">฿${(i.price*i.qty).toLocaleString()}</div> </div>`;
+ const metaLine=[i.size,i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:'',i.ice,otherNote].filter(Boolean).join(' · ');
+ const disc=i.autoPromoDisc||0;
+ const rawTotal=i.price*i.qty;
+ const netTotal=rawTotal-disc;
+ return `<div class="op-item fade-up">
+  <div class="op-item-icon" style="background:${i.color}">${i.icon}</div>
+  <div class="op-item-info">
+   <div class="op-item-name">${i.name}</div>
+   <div class="op-item-meta">${metaLine}</div>
+   ${customTags.length?`<div style="font-size:9px;color:var(--blue-md);font-weight:600;margin-top:1px">${customTags.map(t=>t+' +฿10').join(' · ')}</div>`:''}
+   ${promo?`<div style="display:flex;align-items:center;gap:4px;margin-top:3px">
+    <span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:var(--rf);background:var(--red-lt);color:var(--red)">🏷️ ${promo.name}</span>
+    <span style="font-size:9px;color:var(--red);font-weight:700">-฿${disc.toLocaleString()}</span>
+   </div>`:''}
+  </div>
+  <div class="op-item-ctrl">
+   <button class="op-q-btn" style="background:var(--red-lt);color:var(--red)" onclick="changeOpQty('${i.key}',-1)">−</button>
+   <span class="op-qty">${i.qty}</span>
+   <button class="op-q-btn" onclick="changeOpQty('${i.key}',1)">+</button>
+  </div>
+  <div class="op-item-price" style="text-align:right">
+   ${disc>0?`<div style="font-size:9px;color:var(--t4);text-decoration:line-through;line-height:1.2">฿${rawTotal.toLocaleString()}</div>`:''}
+   <div style="font-size:13px;font-weight:800;color:${disc>0?'var(--red)':'var(--t1)'}">฿${netTotal.toLocaleString()}</div>
+  </div>
+ </div>`;
  }).join('');
  updateOrderSummary();
 }
 
-let orderDiscount=0; // set by promo selection
+/* ══════════════════════════════════════════════
+   AUTO PROMO ENGINE
+   วิเคราะห์ orderItems ทั้งหมด → apply โปรที่ดีที่สุด
+   ════════════════════════════════════════════ */
+function calcAutoPromo(){
+ const today=new Date().toISOString().split('T')[0];
+ // โปรที่ active + ไม่หมดอายุ
+ const activePromos=DB.promos.filter(p=>{
+  if(!p.active) return false;
+  if(!p.noExpiry && p.end && p.end<today) return false;
+  if(!p.noExpiry && p.start && p.start>today) return false;
+  return true;
+ });
+
+ // Reset auto-promo ทุก item ก่อน
+ orderItems.forEach(i=>{ i.autoPromoId=0; i.autoPromoDisc=0; });
+
+ if(!activePromos.length) return;
+
+ const subTotal=orderItems.reduce((s,i)=>s+i.price*i.qty,0);
+ const totalQty=orderItems.reduce((s,i)=>s+i.qty,0);
+
+ // helper: ตรวจว่า promo scope ครอบ item นี้หรือเปล่า
+ function promoCovers(p, item){
+  if(p.scope==='all') return true;
+  if(p.scope==='item'){
+   const menu=DB.menus.find(m=>m.id===item.menuId);
+   return menu && menu.promoId==p.id;
+  }
+  if(p.scope==='cat'){
+   const menu=DB.menus.find(m=>m.id===item.menuId);
+   return menu && p.catTarget && menu.cat===p.catTarget;
+  }
+  return true;
+ }
+
+ activePromos.forEach(p=>{
+  switch(p.type){
+
+   // ─── % ลด (per item) ─────────────────────────
+   case 'pct':
+    orderItems.forEach(i=>{
+     if(!promoCovers(p,i)) return;
+     const disc=Math.round(i.price*i.qty*(p.val/100));
+     if(disc>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=disc; }
+    });
+    break;
+
+   // ─── ลดราคาคงที่ (per item) ──────────────────
+   case 'fixed':
+    orderItems.forEach(i=>{
+     if(!promoCovers(p,i)) return;
+     const disc=Math.min(p.val, i.price*i.qty);
+     if(disc>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=disc; }
+    });
+    break;
+
+   // ─── ซื้อ N แถม M (กระจายทุก item ที่ครอบ) ──
+   case 'buy':{
+    const n=Math.max(1,p.val||2);
+    const m=Math.max(1,p.val2||1);
+    const covered=orderItems.filter(i=>promoCovers(p,i));
+    const coveredQty=covered.reduce((s,i)=>s+i.qty,0);
+    const freeSets=Math.floor(coveredQty/(n+m));
+    if(freeSets>0){
+     // กระจายส่วนลดตาม qty สัดส่วน
+     covered.forEach(i=>{
+      const share=Math.round((i.qty/coveredQty)*freeSets*m);
+      const disc=share*i.price;
+      if(disc>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=disc; }
+     });
+    }
+    break;
+   }
+
+   // ─── ซื้อ N ฟรี 1 (ราคาถูกสุดฟรี) ───────────
+   case 'freeN':{
+    const n=Math.max(1,p.val||2);
+    const covered=orderItems.filter(i=>promoCovers(p,i));
+    const coveredQty=covered.reduce((s,i)=>s+i.qty,0);
+    const freeCount=Math.floor(coveredQty/n);
+    if(freeCount>0){
+     // ราคาถูกสุดของ item ที่ครอบ
+     const sorted=[...covered].sort((a,b)=>a.price-b.price);
+     let remaining=freeCount;
+     sorted.forEach(i=>{
+      if(remaining<=0) return;
+      const freeQty=Math.min(remaining,i.qty);
+      const disc=freeQty*i.price;
+      remaining-=freeQty;
+      if(disc>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=disc; }
+     });
+    }
+    break;
+   }
+
+   // ─── ซื้อครบ N บาท ลด M% (ยอดรวมทั้งออเดอร์) ─
+   case 'min':{
+    if(subTotal<p.val) break;
+    const pctDisc=p.val2||0;
+    // กระจายส่วนลดตามสัดส่วนราคาแต่ละ item
+    orderItems.forEach(i=>{
+     if(!promoCovers(p,i)) return;
+     const itemTotal=i.price*i.qty;
+     const share=Math.round(itemTotal*(pctDisc/100));
+     if(share>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=share; }
+    });
+    break;
+   }
+
+   // ─── Bundle: ซื้อ N ชิ้น ราคาพิเศษ X บาท ─────
+   case 'bundle':{
+    const n=Math.max(1,p.val||2);
+    const bundlePrice=p.val2||0;
+    if(totalQty<n||!bundlePrice) break;
+    const sets=Math.floor(totalQty/n);
+    const normalTotal=orderItems.reduce((s,i)=>s+i.price*Math.min(i.qty,n*sets),0);
+    const totalDisc=Math.max(0,normalTotal-bundlePrice*sets);
+    if(totalDisc<=0) break;
+    orderItems.forEach(i=>{
+     if(!promoCovers(p,i)) return;
+     const share=Math.round((i.price*i.qty/normalTotal)*totalDisc);
+     if(share>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=share; }
+    });
+    break;
+   }
+  }
+ });
+}
+
+let orderDiscount=0;
 function updateOrderSummary(){
  const subTotal=orderItems.reduce((s,i)=>s+i.price*i.qty,0);
  const count=orderItems.reduce((s,i)=>s+i.qty,0);
- const discount=orderItems.reduce((s,i)=>s+(i.promoDisc||0),0);
+ const discount=orderItems.reduce((s,i)=>s+(i.autoPromoDisc||i.promoDisc||0),0);
  const total=Math.max(0,subTotal-discount);
+ orderDiscount=discount;
  document.getElementById('opCount').textContent=count+'รายการ';
  document.getElementById('opSubTotal').textContent='฿'+subTotal.toLocaleString();
  document.getElementById('opTotal').textContent='฿'+total.toLocaleString();
  const discRow=document.getElementById('discountRow');
+ const promoLabelEl=document.getElementById('opPromoLabel');
  if(discRow){
- if(discount>0){discRow.style.display='flex';document.getElementById('opDiscountAmt').textContent='-฿'+discount.toLocaleString();}
- else discRow.style.display='none';
+  if(discount>0){
+   discRow.style.display='flex';
+   document.getElementById('opDiscountAmt').textContent='-฿'+discount.toLocaleString();
+   // รวบชื่อโปรทั้งหมดที่ถูก apply
+   const usedPromos=[...new Set(
+    orderItems.filter(i=>i.autoPromoId).map(i=>{
+     const p=DB.promos.find(x=>x.id===i.autoPromoId);
+     return p?p.name:'';
+    }).filter(Boolean)
+   )];
+   if(promoLabelEl) promoLabelEl.textContent=usedPromos.length?'🏷️ '+usedPromos.join(' + '):'';
+  } else {
+   discRow.style.display='none';
+   if(promoLabelEl) promoLabelEl.textContent='';
+  }
  }
 }
+
 
 function changeOpQty(key,d){
  const it=orderItems.find(i=>i.key===key);if(!it)return;
@@ -1756,40 +1930,51 @@ function clearOrderConfirm(){
 
 function confirmOrder(){
  if(!orderItems.length){toast('ไม่มีรายการ');return;}
+ // ── Final promo calc ──
+ calcAutoPromo();
  const subTotal=orderItems.reduce((s,i)=>s+i.price*i.qty,0);
- const discount=orderItems.reduce((s,i)=>s+(i.promoDisc||0),0);
+ const discount=orderItems.reduce((s,i)=>s+(i.autoPromoDisc||i.promoDisc||0),0);
  const total=Math.max(0,subTotal-discount);
  const order={
  id:DB.nextId++,
- items:orderItems.map(i=>({menuId:i.menuId,name:i.name,size:i.size,qty:i.qty,price:i.price,sweet:i.sweet,ice:i.ice,note:i.note,promoId:i.promoId||0,promoDisc:i.promoDisc||0})),
+ items:orderItems.map(i=>({
+  menuId:i.menuId,name:i.name,size:i.size,qty:i.qty,price:i.price,
+  sweet:i.sweet,ice:i.ice,strength:i.strength||'50%',note:i.note,
+  promoId:i.autoPromoId||i.promoId||0,
+  promoDisc:i.autoPromoDisc||i.promoDisc||0
+ })),
  subTotal,discount,total,ts:Date.now(),
- status:'active', // active | voided
+ status:'active',
  voidReason:null, voidTs:null, voidApprovedBy:null
  };
  DB.orders.push(order);
+ // update promo usage stats
+ const usedPromoIds=[...new Set(order.items.map(i=>i.promoId).filter(Boolean))];
+ usedPromoIds.forEach(pid=>{
+  const p=DB.promos.find(x=>x.id===pid);
+  if(p){
+   p.used=(p.used||0)+1;
+   p.discount=(p.discount||0)+order.items.filter(i=>i.promoId===pid).reduce((s,i)=>s+(i.promoDisc||0),0);
+  }
+ });
  orderItems.forEach(oi=>{
- const m=DB.menus.find(x=>x.id===oi.menuId);
- if(m){ m.sold+=oi.qty; }
- // ตัดสต็อกวัตถุดิบตาม recipe
- if(m&&m.recipeId){
- const rec=DB.recipes.find(x=>x.id===m.recipeId);
- if(rec&&rec.ingredients){
- rec.ingredients.forEach(row=>{
- if(!row.ingId||!row.qty)return;
- const ing=DB.ingredients.find(x=>x.id===row.ingId);
- if(ing){ ing.qty=Math.max(0,ing.qty-row.qty*oi.qty); }
+  const m=DB.menus.find(x=>x.id===oi.menuId);
+  if(m){ m.sold+=oi.qty; }
+  if(m&&m.recipeId){
+   const rec=DB.recipes.find(x=>x.id===m.recipeId);
+   if(rec&&rec.ingredients){
+    rec.ingredients.forEach(row=>{
+     if(!row.ingId||!row.qty)return;
+     const ing=DB.ingredients.find(x=>x.id===row.ingId);
+     if(ing){ ing.qty=Math.max(0,ing.qty-row.qty*oi.qty); }
+    });
+   }
+  }
  });
- }
- }
- });
- // track last operator (if staff toggle was used)
  if(typeof currentOperator!=='undefined'&&currentOperator) lastOperator=currentOperator;
- // Audit
  AUD.orderNew(order.id, order.total, order.items.length);
- // Build receipt preview
  previewOrder={id:'#'+String(order.id).padStart(4,'0'),items:order.items.map(i=>({...i,color:DB.menus.find(m=>m.id===i.menuId)?.color||'#2C1810'})),subTotal,discount,total,ts:new Date(),orderId:order.id};
  renderReceipt(previewOrder);
- // Clear order
  orderItems=[]; orderDiscount=0;
  renderOrderPanel();updateCartFab();
  closeOrderPanel();
