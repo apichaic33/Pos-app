@@ -680,6 +680,22 @@ textarea.f-input{resize:none;}
 /* OPTION CHIPS */
 .option-chip{padding:7px 13px;border:none;border-radius:var(--rf);font-size:12px;font-weight:600;color:var(--t2);background:var(--bg);cursor:pointer;transition:all .2s;box-shadow:var(--neu-out-xs);font-family:var(--fh);}
 .option-chip.active{background:var(--cara);color:#fff;box-shadow:0 5px 14px var(--cara-glow);}
+
+/* TRIGGER PILL — 2-col option layout */
+.trig-group{display:flex;flex-direction:column;gap:4px;}
+.trig-label{font-size:9px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.7px;font-family:var(--fh);margin-bottom:2px;}
+.trig-pill{
+ display:flex;align-items:center;justify-content:space-between;
+ padding:9px 13px;border:none;border-radius:var(--r3);
+ background:var(--bg);box-shadow:var(--neu-out-xs);
+ cursor:pointer;transition:all .18s;width:100%;
+ font-family:var(--fh);font-size:12px;font-weight:600;color:var(--t2);
+}
+.trig-pill:active{transform:scale(.97);}
+.trig-pill.active{background:var(--esp);color:#fff;box-shadow:3px 3px 10px rgba(42,24,16,.35),-1px -1px 4px rgba(255,255,255,.06);}
+.trig-pill.active .trig-dot{background:#fff;}
+.trig-dot{width:7px;height:7px;border-radius:50%;background:var(--t5);transition:background .18s;flex-shrink:0;}
+.pd-options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
 .color-dot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;box-shadow:var(--neu-out-xs);}
 .color-dot.selected{border-color:#fff;box-shadow:0 0 0 3px var(--cara),var(--neu-out-xs);transform:scale(1.15);}
 .recipe-ing-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:10px;}
@@ -1020,9 +1036,94 @@ textarea.f-input{resize:none;}
 </div>
 <div id="promoDatesRow" class="f-row"> <div class="f-group"><label class="f-label">วันเริ่ม</label><input class="f-input" id="promoStart" type="date"></div> <div class="f-group"><label class="f-label">วันสิ้นสุด</label><input class="f-input" id="promoEnd" type="date"></div> </div> <div class="f-group"><label class="f-label">ใช้ได้กับ</label><select class="f-select" id="promoScope"><option value="all">ทุกเมนู</option><option value="cat">หมวดหมู่</option><option value="item">เมนูเฉพาะ</option></select></div> <div class="f-group"><label class="f-label">หมายเหตุ</label><input class="f-input" id="promoNote" placeholder="รายละเอียดเพิ่มเติม..."></div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-add-promo')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="savePromo()">บันทึก</button> </div> </div>
 </div> <!-- MODAL: Product Detail -->
-<div class="modal-overlay" id="modal-product"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title" id="pdName" style="display:flex;align-items:center;gap:6px"><span class="mi" style="font-size:18px;color:var(--cara)">local_cafe</span>ชื่อเมนู</span> </div> <div class="modal-body"> <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px"> <div id="pdImg" style="width:60px;height:60px;border-radius:var(--r4);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900"></div> <div><div id="pdDesc" style="font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:4px"></div><div id="pdMeta" style="font-size:11px;color:var(--t4)"></div></div> </div> <div class="f-group"><label class="f-label">ขนาด</label><div style="display:flex;gap:7px" id="pdSizes"></div></div> <div class="f-group"><label class="f-label">ระดับความหวาน</label><div style="display:flex;gap:6px;flex-wrap:wrap" id="pdSweet"></div></div> <div class="f-group"><label class="f-label">น้ำแข็ง</label><div style="display:flex;gap:6px;flex-wrap:wrap" id="pdIce"></div></div> <!-- Custom options — toggle style, no separate box --> <div id="pdCustomSection" style="margin-bottom:10px"> <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px;font-family:var(--fh)">Custom (+10฿ ต่อตัวเลือก)</div> <div id="pdCustomOptions" style="background:var(--bg-dk);border-radius:var(--r3);padding:6px 12px"></div> </div> <div class="f-group"><label class="f-label">หมายเหตุ</label><input class="f-input" id="pdNote" placeholder="เช่น ไม่ใส่วิป, นมโอ๊ต..."></div> <!-- Staff drink toggle --> <div style="background:var(--blue-lt);border-radius:var(--r3);padding:10px 12px;margin-bottom:10px"> <label style="display:flex;align-items:center;gap:10px;cursor:pointer"> <div style="position:relative;width:40px;height:23px;flex-shrink:0"> <input type="checkbox" id="pdIsStaff" onchange="toggleStaffFields()" style="opacity:0;width:0;height:0;position:absolute"> <span id="pdStaffSlider" style="position:absolute;inset:0;border-radius:23px;background:var(--blue-lt);box-shadow:var(--neu-in-sm);transition:background .35s;cursor:pointer"> <span id="pdStaffThumb" style="position:absolute;width:17px;height:17px;border-radius:50%;left:3px;top:3px;background:#fff;transition:transform .4s cubic-bezier(.4,0,.2,1),background .35s,opacity .3s;box-shadow:3px 3px 8px rgba(43,94,167,.35),-1px -1px 4px rgba(255,255,255,.9);display:none"></span> </span> </div> <div> <div style="font-size:13px;font-weight:700;color:var(--blue);font-family:var(--fh)">เมนูสวัสดิการพนักงาน</div> <div style="font-size:10px;color:var(--blue-md)">บิลจะถูกบันทึกเป็นสวัสดิการ — ไม่นับยอดขาย</div> </div> </label> <div id="staffFields" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(43,94,167,.15)"> <div class="f-row" style="margin-bottom:8px;gap:8px"> <div class="f-group" style="flex:1;margin-bottom:0"> <label class="f-label">รหัสพนักงาน</label> <input class="f-input" id="pdEmpId" placeholder="E01" oninput="lookupEmployee()" style="text-transform:uppercase;text-align:center;font-weight:700;letter-spacing:2px"> </div> <div class="f-group" style="flex:1;margin-bottom:0"> <label class="f-label">ชื่อพนักงาน</label> <div class="f-input" id="empLookupResult" style="display:flex;align-items:center;min-height:42px;color:var(--t4);font-size:12px">—</div> </div> </div> <div class="f-group" style="margin-bottom:0"> <label class="f-label">ประเภท</label> <select class="f-select" id="pdStaffType"> <option value="drink">เครื่องดื่มสวัสดิการ</option> <option value="test">ทดลองสูตร</option> <option value="waste">ของเสีย/ทิ้ง</option> </select> </div> </div> </div> <!-- Promo toggle --> <div style="background:var(--bg-dk);border-radius:var(--r3);padding:10px 12px;margin-bottom:10px"> <label style="display:flex;align-items:center;gap:10px;cursor:pointer"> <div style="position:relative;width:40px;height:23px;flex-shrink:0"> <input type="checkbox" id="pdIsPromo" onchange="togglePromoFields()" style="opacity:0;width:0;height:0;position:absolute"> <span id="pdPromoSlider" style="position:absolute;inset:0;border-radius:23px;background:var(--gold-lt);box-shadow:var(--neu-in-sm);transition:background .35s;cursor:pointer"> <span id="pdPromoThumb" style="position:absolute;width:17px;height:17px;border-radius:50%;left:3px;top:3px;background:#fff;transition:transform .4s cubic-bezier(.4,0,.2,1),background .35s,opacity .3s;box-shadow:3px 3px 8px rgba(184,134,11,.4),-1px -1px 4px rgba(255,255,255,.9);display:none"></span> </span> </div> <div> <div style="font-size:13px;font-weight:700;color:var(--gold);font-family:var(--fh)">ใช้โปรโมชั่น</div> <div style="font-size:10px;color:var(--t4)">เลือกโปรโมชั่นสำหรับออเดอร์นี้</div> </div> </label> <div id="promoFields" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(184,134,11,.15)"> <div class="f-group" style="margin-bottom:0"> <label class="f-label">โปรโมชั่น</label> <select class="f-select" id="pdPromoSel" onchange="applySelectedPromo()"></select> </div> <div id="pdPromoDesc" style="font-size:11px;color:var(--gold);font-weight:600;margin-top:6px;display:none"></div> </div> </div> <!-- LEFT: unit price | CENTER: qty stepper | RIGHT: total --> <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:6px"> <!-- Left: unit price --> <div style="flex:1;min-width:0"> <div style="font-size:9px;color:var(--t5);text-transform:uppercase;letter-spacing:.5px;font-weight:700">ราคา/แก้ว</div> <div id="pdUnitPrice" style="font-size:16px;font-weight:800;color:var(--t2);font-family:var(--fh)">฿0</div> </div> <!-- Center: qty stepper --> <div style="display:flex;align-items:center;gap:0;background:var(--bg);border-radius:var(--rf);box-shadow:var(--neu-in-sm);overflow:hidden;flex-shrink:0"> <button id="pdBtnMinus" onclick="changePdQty(-1)"
- style="width:42px;height:42px;border:none;background:transparent;font-size:22px;font-weight:700;color:var(--cara);cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center">−</button> <span id="pdQty" style="font-size:18px;font-weight:800;min-width:30px;text-align:center;font-family:var(--fh);color:var(--t1)">1</span> <button id="pdBtnPlus" onclick="changePdQty(1)"
- style="width:42px;height:42px;border:none;background:transparent;font-size:22px;font-weight:700;color:var(--cara);cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center">+</button> </div> <!-- Right: total price --> <div style="flex:1;text-align:right;min-width:0"> <div style="font-size:9px;color:var(--t5);text-transform:uppercase;letter-spacing:.5px;font-weight:700">ราคารวม</div> <strong id="pdPrice" style="font-size:20px;color:var(--cara);font-family:var(--fh)">฿0</strong> </div> </div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-product')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" id="pdAddBtn" onclick="addFromModal()">+ เพิ่มลงออเดอร์</button> </div> </div>
+<div class="modal-overlay" id="modal-product"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title" id="pdName" style="display:flex;align-items:center;gap:6px"><span class="mi" style="font-size:18px;color:var(--cara)">local_cafe</span>ชื่อเมนู</span> </div> <div class="modal-body">
+ <!-- Product info row -->
+ <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+  <div id="pdImg" style="width:54px;height:54px;border-radius:var(--r4);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;flex-shrink:0"></div>
+  <div><div id="pdDesc" style="font-size:12px;color:var(--t3);line-height:1.5;margin-bottom:4px"></div><div id="pdMeta" style="font-size:11px;color:var(--t4)"></div></div>
+ </div>
+
+ <!-- 2-COLUMN OPTIONS GRID -->
+ <div class="pd-options-grid">
+  <!-- COL LEFT: ขนาด + น้ำแข็ง -->
+  <div>
+   <div class="trig-label">ขนาด</div>
+   <div class="trig-group" id="pdSizes"></div>
+   <div class="trig-label" style="margin-top:10px">น้ำแข็ง</div>
+   <div class="trig-group" id="pdIce"></div>
+  </div>
+  <!-- COL RIGHT: ความหวาน + ความเข้ม -->
+  <div>
+   <div class="trig-label">ความหวาน</div>
+   <div class="trig-group" id="pdSweet"></div>
+   <div class="trig-label" style="margin-top:10px">ความเข้ม</div>
+   <div class="trig-group" id="pdStrength"></div>
+  </div>
+ </div>
+
+ <!-- Custom options -->
+ <div id="pdCustomSection" style="margin-bottom:10px">
+  <div class="trig-label" style="margin-bottom:6px">Custom (+10฿ ต่อตัวเลือก)</div>
+  <div id="pdCustomOptions" style="background:var(--bg-dk);border-radius:var(--r3);padding:6px 12px"></div>
+ </div>
+
+ <!-- หมายเหตุ -->
+ <div class="f-group"><label class="f-label">หมายเหตุ</label><input class="f-input" id="pdNote" placeholder="เช่น ไม่ใส่วิป, นมโอ๊ต..."></div>
+
+ <!-- Staff drink toggle -->
+ <div style="background:var(--blue-lt);border-radius:var(--r3);padding:10px 12px;margin-bottom:10px">
+  <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+   <div style="position:relative;width:40px;height:23px;flex-shrink:0">
+    <input type="checkbox" id="pdIsStaff" onchange="toggleStaffFields()" style="opacity:0;width:0;height:0;position:absolute">
+    <span id="pdStaffSlider" style="position:absolute;inset:0;border-radius:23px;background:var(--blue-lt);box-shadow:var(--neu-in-sm);transition:background .35s;cursor:pointer">
+     <span id="pdStaffThumb" style="position:absolute;width:17px;height:17px;border-radius:50%;left:3px;top:3px;background:#fff;transition:transform .4s cubic-bezier(.4,0,.2,1),background .35s,opacity .3s;box-shadow:3px 3px 8px rgba(43,94,167,.35),-1px -1px 4px rgba(255,255,255,.9);display:none"></span>
+    </span>
+   </div>
+   <div>
+    <div style="font-size:13px;font-weight:700;color:var(--blue);font-family:var(--fh)">เมนูสวัสดิการพนักงาน</div>
+    <div style="font-size:10px;color:var(--blue-md)">บิลจะถูกบันทึกเป็นสวัสดิการ — ไม่นับยอดขาย</div>
+   </div>
+  </label>
+  <div id="staffFields" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(43,94,167,.15)">
+   <div class="f-row" style="margin-bottom:8px;gap:8px">
+    <div class="f-group" style="flex:1;margin-bottom:0"><label class="f-label">รหัสพนักงาน</label><input class="f-input" id="pdEmpId" placeholder="E01" oninput="lookupEmployee()" style="text-transform:uppercase;text-align:center;font-weight:700;letter-spacing:2px"></div>
+    <div class="f-group" style="flex:1;margin-bottom:0"><label class="f-label">ชื่อพนักงาน</label><div class="f-input" id="empLookupResult" style="display:flex;align-items:center;min-height:42px;color:var(--t4);font-size:12px">—</div></div>
+   </div>
+   <div class="f-group" style="margin-bottom:0"><label class="f-label">ประเภท</label><select class="f-select" id="pdStaffType"><option value="drink">เครื่องดื่มสวัสดิการ</option><option value="test">ทดลองสูตร</option><option value="waste">ของเสีย/ทิ้ง</option></select></div>
+  </div>
+ </div>
+
+ <!-- Promo toggle -->
+ <div style="background:var(--bg-dk);border-radius:var(--r3);padding:10px 12px;margin-bottom:10px">
+  <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+   <div style="position:relative;width:40px;height:23px;flex-shrink:0">
+    <input type="checkbox" id="pdIsPromo" onchange="togglePromoFields()" style="opacity:0;width:0;height:0;position:absolute">
+    <span id="pdPromoSlider" style="position:absolute;inset:0;border-radius:23px;background:var(--gold-lt);box-shadow:var(--neu-in-sm);transition:background .35s;cursor:pointer">
+     <span id="pdPromoThumb" style="position:absolute;width:17px;height:17px;border-radius:50%;left:3px;top:3px;background:#fff;transition:transform .4s cubic-bezier(.4,0,.2,1),background .35s,opacity .3s;box-shadow:3px 3px 8px rgba(184,134,11,.4),-1px -1px 4px rgba(255,255,255,.9);display:none"></span>
+    </span>
+   </div>
+   <div>
+    <div style="font-size:13px;font-weight:700;color:var(--gold);font-family:var(--fh)">ใช้โปรโมชั่น</div>
+    <div style="font-size:10px;color:var(--t4)">เลือกโปรโมชั่นสำหรับออเดอร์นี้</div>
+   </div>
+  </label>
+  <div id="promoFields" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(184,134,11,.15)">
+   <div class="f-group" style="margin-bottom:0"><label class="f-label">โปรโมชั่น</label><select class="f-select" id="pdPromoSel" onchange="applySelectedPromo()"></select></div>
+   <div id="pdPromoDesc" style="font-size:11px;color:var(--gold);font-weight:600;margin-top:6px;display:none"></div>
+  </div>
+ </div>
+
+ <!-- Qty + Price row -->
+ <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:6px">
+  <div style="flex:1;min-width:0"><div style="font-size:9px;color:var(--t5);text-transform:uppercase;letter-spacing:.5px;font-weight:700">ราคา/แก้ว</div><div id="pdUnitPrice" style="font-size:16px;font-weight:800;color:var(--t2);font-family:var(--fh)">฿0</div></div>
+  <div style="display:flex;align-items:center;gap:0;background:var(--bg);border-radius:var(--rf);box-shadow:var(--neu-in-sm);overflow:hidden;flex-shrink:0">
+   <button id="pdBtnMinus" onclick="changePdQty(-1)" style="width:42px;height:42px;border:none;background:transparent;font-size:22px;font-weight:700;color:var(--cara);cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center">−</button>
+   <span id="pdQty" style="font-size:18px;font-weight:800;min-width:30px;text-align:center;font-family:var(--fh);color:var(--t1)">1</span>
+   <button id="pdBtnPlus" onclick="changePdQty(1)" style="width:42px;height:42px;border:none;background:transparent;font-size:22px;font-weight:700;color:var(--cara);cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center">+</button>
+  </div>
+  <div style="flex:1;text-align:right;min-width:0"><div style="font-size:9px;color:var(--t5);text-transform:uppercase;letter-spacing:.5px;font-weight:700">ราคารวม</div><strong id="pdPrice" style="font-size:20px;color:var(--cara);font-family:var(--fh)">฿0</strong></div>
+ </div>
+</div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-product')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" id="pdAddBtn" onclick="addFromModal()">+ เพิ่มลงออเดอร์</button> </div> </div>
 </div> <!-- MODAL: Staff Drink -->
 <div class="modal-overlay" id="modal-staff"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"><span class="modal-title" style="display:flex;align-items:center;gap:6px"><span class="mi" style="font-size:18px;color:var(--blue)">coffee</span>เครื่องดื่มพนักงาน</span></div> <div class="modal-body"> <div class="f-group"><label class="f-label">เมนู</label><select class="f-select" id="staffMenuSel"></select></div> <div class="f-row"> <div class="f-group"><label class="f-label">ชื่อพนักงาน</label><input class="f-input" id="staffName" placeholder="ชื่อ..."></div> <div class="f-group"><label class="f-label">จำนวน</label><input class="f-input" id="staffQty" type="number" value="1" min="1"></div> </div> <div class="f-group"><label class="f-label">ประเภท</label><select class="f-select" id="staffType"><option value="drink">เครื่องดื่มพนักงาน</option><option value="test">ทดลองสูตร</option><option value="waste">ของเสีย/ทิ้ง</option></select></div> <div class="f-group"><label class="f-label">หมายเหตุ</label><input class="f-input" id="staffNote" placeholder="บันทึกเพิ่มเติม..."></div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-staff')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="logStaffDrink()">บันทึก</button> </div> </div>
 </div> <!-- MODAL: Store Item -->
@@ -1365,11 +1466,14 @@ function renderProductGrid(cat){
 }
 
 /* Product Detail Modal */
-let pdItem=null,pdQtyVal=1,pdSize='',pdSweet='50%',pdIce='มีน้ำแข็ง',pdCustom={};
+let pdItem=null,pdQtyVal=1,pdSize='',pdSweet='50%',pdIce='มีน้ำแข็ง',pdStrength='50%',pdCustom={};
+function _trigHtml(items, type, defaultVal){
+ return items.map((v,i)=>`<button class="trig-pill${v===defaultVal?' active':''}" onclick="selectPdOpt(this,'${type}','${v}')"><span>${v}</span><span class="trig-dot"></span></button>`).join('');
+}
 function openProductModal(id){
  pdItem=DB.menus.find(m=>m.id===id);if(!pdItem)return;
- pdQtyVal=1;pdSize=pdItem.sizes[0]||'M';pdSweet='50%';pdIce='มีน้ำแข็ง';pdCustom={};
- document.getElementById('pdName').textContent=pdItem.name;
+ pdQtyVal=1;pdSize=pdItem.sizes[0]||'M';pdSweet='50%';pdIce='มีน้ำแข็ง';pdStrength='50%';pdCustom={};
+ document.getElementById('pdName').childNodes[1].textContent=pdItem.name;
  document.getElementById('pdImg').style.background=pdItem.color;
  document.getElementById('pdImg').style.color='rgba(255,255,255,.9)';
  document.getElementById('pdImg').textContent=pdItem.icon;
@@ -1385,7 +1489,6 @@ function openProductModal(id){
  document.getElementById('staffFields').style.display='none';
  const promoChk=document.getElementById('pdIsPromo');
  if(promoChk){
-  // auto-apply promo ถ้า menu มี promoId ที่ active
   const autoPromo = pdItem.promoId ? DB.promos.find(p=>p.id==pdItem.promoId&&p.active) : null;
   promoChk.checked = !!autoPromo;
   document.getElementById('promoFields').style.display = autoPromo ? 'block' : 'none';
@@ -1404,34 +1507,44 @@ function openProductModal(id){
  document.getElementById('pdAddBtn').textContent='+ เพิ่มลงออเดอร์';
  if(document.getElementById('pdEmpId')) document.getElementById('pdEmpId').value='';
  if(document.getElementById('empLookupResult')) {document.getElementById('empLookupResult').textContent='—';document.getElementById('empLookupResult').style.color='var(--t4)';}
- // staff thumb reset handled in toggleStaffFields
  const slider=document.getElementById('pdStaffSlider');
  if(slider) slider.style.background='';
- document.getElementById('pdSizes').innerHTML=pdItem.sizes.map(s=>`<button class="option-chip${s===pdSize?'active':''}" onclick="selectPdOpt(this,'size','${s}')">${s}</button>`).join('');
- document.getElementById('pdSweet').innerHTML=['0%','25%','50%','75%','100%'].map((sv,i)=>`<button class="option-chip${i===2?'active':''}" onclick="selectPdOpt(this,'sweet','${sv}')">${sv}</button>`).join('');
- pdSweet='50%';
- document.getElementById('pdIce').innerHTML=['มีน้ำแข็ง','ไม่มีน้ำแข็ง'].map((iv,i)=>`<button class="option-chip${i===0?'active':''}" onclick="selectPdOpt(this,'ice','${iv}')">${iv}</button>`).join('');
- pdIce='มีน้ำแข็ง';
- // Custom options — always show all 3, use toggle sliders
+ // ── Render trig-pills ──
+ document.getElementById('pdSizes').innerHTML = _trigHtml(pdItem.sizes.length?pdItem.sizes:['M'], 'size', pdSize);
+ document.getElementById('pdSweet').innerHTML  = _trigHtml(['0%','25%','50%','75%','100%'], 'sweet', '50%');
+ document.getElementById('pdIce').innerHTML    = _trigHtml(['มีน้ำแข็ง','ไม่มีน้ำแข็ง'], 'ice', 'มีน้ำแข็ง');
+ document.getElementById('pdStrength').innerHTML = _trigHtml(['25%','50%','75%','100%'], 'strength', '50%');
+ // Custom options
  pdCustom={};
  const custEl=document.getElementById('pdCustomSection');
  custEl.style.display='block';
  const ALL_CUSTOM=[
- {key:'extraShot', label:'เพิ่มช็อตกาแฟ'},
- {key:'extraMatcha',label:'เพิ่มผงมัทฉะ'},
- {key:'extraCocoa', label:'เพิ่มผงโกโก้'},
+  {key:'extraShot', label:'เพิ่มช็อตกาแฟ'},
+  {key:'extraMatcha',label:'เพิ่มผงมัทฉะ'},
+  {key:'extraCocoa', label:'เพิ่มผงโกโก้'},
  ];
  document.getElementById('pdCustomOptions').innerHTML=ALL_CUSTOM.map(o=>`
- <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 0;border-bottom:1px solid rgba(43,94,167,.1)"> <div style="position:relative;width:40px;height:23px;flex-shrink:0"> <input type="checkbox" id="cust_${o.key}" onchange="toggleCustomOpt('${o.key}',this)"
- style="opacity:0;width:0;height:0;position:absolute"> <span id="cust_slider_${o.key}" style="position:absolute;inset:0;border-radius:23px;background:var(--bg-dk);box-shadow:var(--neu-in-sm);transition:background .35s;cursor:pointer"> <span id="cust_thumb_${o.key}" style="position:absolute;width:17px;height:17px;border-radius:50%;left:3px;top:3px;background:#fff;transition:transform .4s cubic-bezier(.4,0,.2,1),background .35s,opacity .3s;box-shadow:3px 3px 8px rgba(43,94,167,.35),-1px -1px 4px rgba(255,255,255,.9);display:none"></span> </span> </div> <div style="flex:1"> <div style="font-size:13px;font-weight:600;color:var(--t2);font-family:var(--fh)">${o.label}</div> </div> <span style="font-size:11px;color:var(--green);font-weight:700;flex-shrink:0">+฿10</span> </label>`).join('');
+  <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 0;border-bottom:1px solid rgba(43,94,167,.1)">
+   <div style="position:relative;width:40px;height:23px;flex-shrink:0">
+    <input type="checkbox" id="cust_${o.key}" onchange="toggleCustomOpt('${o.key}',this)" style="opacity:0;width:0;height:0;position:absolute">
+    <span id="cust_slider_${o.key}" style="position:absolute;inset:0;border-radius:23px;background:var(--bg-dk);box-shadow:var(--neu-in-sm);transition:background .35s;cursor:pointer">
+     <span id="cust_thumb_${o.key}" style="position:absolute;width:17px;height:17px;border-radius:50%;left:3px;top:3px;background:#fff;transition:transform .4s cubic-bezier(.4,0,.2,1),background .35s,opacity .3s;box-shadow:3px 3px 8px rgba(43,94,167,.35),-1px -1px 4px rgba(255,255,255,.9);display:none"></span>
+    </span>
+   </div>
+   <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--t2);font-family:var(--fh)">${o.label}</div></div>
+   <span style="font-size:11px;color:var(--green);font-weight:700;flex-shrink:0">+฿10</span>
+  </label>`).join('');
  openModal('modal-product');
 }
 function selectPdOpt(btn,type,val){
- btn.closest('.f-group').querySelectorAll('.option-chip').forEach(b=>b.classList.remove('active'));
+ // trig-pill: ใช้ parent .trig-group
+ const group = btn.closest('.trig-group') || btn.closest('.f-group');
+ if(group) group.querySelectorAll('.trig-pill,.option-chip').forEach(b=>b.classList.remove('active'));
  btn.classList.add('active');
  if(type==='size'){pdSize=val;updatePdPrice();}
  if(type==='sweet')pdSweet=val;
  if(type==='ice')pdIce=val;
+ if(type==='strength')pdStrength=val;
 }
 function toggleCustomOpt(key, checkbox){
  if(checkbox.checked) pdCustom[key]=true; else delete pdCustom[key];
@@ -1522,7 +1635,7 @@ function addFromModal(){
  itemPromoDisc=freeCount*finalPrice;
  }
  }
- addToOrder(pdItem.id,pdItem.name,pdSize,pdQtyVal,finalPrice,noteVal,pdSweet,pdIce,pdItem.color,pdItem.icon,selPromoId,itemPromoDisc);
+ addToOrder(pdItem.id,pdItem.name,pdSize,pdQtyVal,finalPrice,noteVal,pdSweet,pdIce,pdItem.color,pdItem.icon,selPromoId,itemPromoDisc,pdStrength);
  closeModal('modal-product');
  toast(`+ ${pdItem.name} (${pdSize}) x${pdQtyVal}${extraCount?' +Custom':''}`);
 }
@@ -1532,19 +1645,18 @@ function quickAdd(id){
  toast(`+ ${m.name}`);
 }
 
-function addToOrder(menuId,name,size,qty,price,note,sweet,ice,color,icon,promoId,promoDisc){
- const key=`${menuId}-${size}-${sweet}-${ice}-${note}`;
+function addToOrder(menuId,name,size,qty,price,note,sweet,ice,color,icon,promoId,promoDisc,strength){
+ const key=`${menuId}-${size}-${sweet}-${ice}-${strength||'50%'}-${note}`;
  const ex=orderItems.find(i=>i.key===key);
  if(ex){
  const prev=ex.qty; ex.qty+=qty;
- // promoDisc per unit = promoDisc/qty (new), scale to new total qty
  if(promoDisc && qty){
  const discPerUnit=Math.round(promoDisc/qty);
  ex.promoDisc=(ex.promoDisc||0)+discPerUnit*qty;
  }
  AUD.itemEdit(name,size,prev,ex.qty,price);
  } else {
- orderItems.push({key,menuId,name,size,qty,price,note,sweet,ice,color:color||'#2C1810',icon:icon||'?',promoId:promoId||0,promoDisc:promoDisc||0});
+ orderItems.push({key,menuId,name,size,qty,price,note,sweet,ice,strength:strength||'50%',color:color||'#2C1810',icon:icon||'?',promoId:promoId||0,promoDisc:promoDisc||0});
  AUD.itemAdd(name,size,qty,price);
  }
  updateCartFab();
