@@ -995,7 +995,7 @@ textarea.f-input{resize:none;}
     </div>
     <span class="nl">รายการขาย</span>
   </button>
-</div> <!-- CART FAB --> <button class="cart-fab" id="cartFab" onclick="openOrderPanel()"> <div class="cart-fab-count" id="cartFabCount">0</div> </button> <!-- TOAST --> <div class="toast" id="toast"></div> 
+</div> <!-- CART FAB --> <button class="cart-fab" id="cartFab" onclick="openOrderPanel()"><span class="mi" style="font-size:24px;color:#fff">shopping_cart</span> <div class="cart-fab-count" id="cartFabCount">0</div> </button> <!-- TOAST --> <div class="toast" id="toast"></div> 
 <!-- BOTTOM ACTION BARS -->
 <div class="bottom-action-bar" id="bab-promo">
   <button class="bab-btn" onclick="openModal('modal-add-promo')">
@@ -1032,7 +1032,7 @@ textarea.f-input{resize:none;}
  margin-bottom:16px;padding:8px 14px;
  font-size:14px;font-weight:600;color:var(--t4);
  transition:all .2s;
- ">—</div> <!-- PIN label --> <div class="f-label" style="margin-bottom:8px">รหัส PIN (4 หลัก)</div> <!-- PIN dots --> <!-- First-run hint + Setup Mode button --> <div id="loginFirstRunHint" style="display:none"> <div style="background:rgba(184,134,11,.08);border:1px solid rgba(184,134,11,.2);border-radius:var(--r3);padding:12px 14px;margin-bottom:12px;text-align:center"> <div style="font-size:20px;margin-bottom:6px">☕</div> <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px">ยังไม่มีพนักงานในระบบ</div> <div style="font-size:11px;color:var(--t4);margin-bottom:14px;line-height:1.6">ต้องตั้งค่าครั้งแรกก่อนเริ่มใช้งาน<br>กรุณาสร้างบัญชี Manager</div> <button onclick="openSetupMode()" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--esp),#5C3317);color:#fff;border:none;border-radius:var(--r3);font-size:14px;font-weight:700;font-family:var(--fh);cursor:pointer;box-shadow:0 4px 14px rgba(44,24,16,.3)">เริ่มตั้งค่าระบบ
+ ">—</div> <!-- PIN label --> <div class="f-label" style="margin-bottom:8px">รหัส PIN (4 หลัก)</div> <!-- PIN dots --> <!-- First-run hint + Setup Mode button --> <div id="loginFirstRunHint" style="display:none"> <div style="background:rgba(184,134,11,.08);border:1px solid rgba(184,134,11,.2);border-radius:var(--r3);padding:12px 14px;margin-bottom:12px;text-align:center"> <div style="font-size:28px;margin-bottom:6px"><span class="mi" style="font-size:28px;opacity:.5">manage_accounts</span></div> <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px">ยังไม่มีพนักงานในระบบ</div> <div style="font-size:11px;color:var(--t4);margin-bottom:14px;line-height:1.6">ต้องตั้งค่าครั้งแรกก่อนเริ่มใช้งาน<br>กรุณาสร้างบัญชี Manager</div> <button onclick="openSetupMode()" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--esp),#5C3317);color:#fff;border:none;border-radius:var(--r3);font-size:14px;font-weight:700;font-family:var(--fh);cursor:pointer;box-shadow:0 4px 14px rgba(44,24,16,.3)">เริ่มตั้งค่าระบบ
  </button> </div> </div> <div style="display:flex;justify-content:center;gap:12px;margin-bottom:16px" id="loginPinDots"> <div class="pin-dot" id="dot0"></div> <div class="pin-dot" id="dot1"></div> <div class="pin-dot" id="dot2"></div> <div class="pin-dot" id="dot3"></div> </div> <!-- Numpad --> <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px" id="loginNumpad"> <button class="numpad-btn" onclick="loginPinKey('1')">1</button> <button class="numpad-btn" onclick="loginPinKey('2')">2</button> <button class="numpad-btn" onclick="loginPinKey('3')">3</button> <button class="numpad-btn" onclick="loginPinKey('4')">4</button> <button class="numpad-btn" onclick="loginPinKey('5')">5</button> <button class="numpad-btn" onclick="loginPinKey('6')">6</button> <button class="numpad-btn" onclick="loginPinKey('7')">7</button> <button class="numpad-btn" onclick="loginPinKey('8')">8</button> <button class="numpad-btn" onclick="loginPinKey('9')">9</button> <button class="numpad-btn" onclick="loginPinClear()"><span class="mi" style="font-size:24px">backspace</span></button> <button class="numpad-btn" onclick="loginPinKey('0')">0</button> <button class="numpad-btn" style="background:var(--cara);color:#fff;box-shadow:0 4px 14px var(--cara-glow)" onclick="loginSubmit()">เข้า</button> </div>
  <!-- ลืม PIN -->
  <div style="text-align:center;margin-top:10px">
@@ -1047,26 +1047,65 @@ textarea.f-input{resize:none;}
 <div class="drawer" id="drawer"> <div class="drawer-head"> <div class="drawer-logo">POS<span>·</span>APP</div> <div class="drawer-sub">ระบบบริหารร้านกาแฟ v5</div> <div id="drawerUserInfo" style="font-size:11px;color:var(--cara);font-weight:700;margin-top:6px;font-family:var(--fh)"></div> <button onclick="logoutUser()" style="margin-top:8px;padding:6px 14px;border-radius:var(--rf);background:var(--red-lt);color:var(--red);font-size:11px;font-weight:700;font-family:var(--fh)">ออกจากระบบ</button> </div> <div class="drawer-body"> <!-- Manager session badge --> <div id="mgrSessionBadge" style="display:none;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(90deg,rgba(43,94,167,.12),transparent);border-bottom:1px solid rgba(43,94,167,.15);margin-bottom:4px"> <span class="mi" style="font-size:20px;color:var(--blue)">shield_person</span> <div style="flex:1"> <div style="font-size:10px;font-weight:700;color:var(--blue)">Manager Mode</div> <div id="mgrBadgeName" style="font-size:11px;color:var(--t2)"></div> </div> <div style="text-align:right"> <div id="mgrBadgeTime" style="font-size:11px;font-weight:700;color:var(--blue);font-family:var(--fh)">10:00</div> <button onclick="mgrLogout()" style="font-size:9px;color:var(--red);background:var(--red-lt);border:none;border-radius:var(--rf);padding:2px 6px;margin-top:2px;cursor:pointer;font-weight:700">ออก</button> </div> </div> <div class="drawer-item active" id="dnav-order" onclick="drawerGo('order')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">point_of_sale</span></div> <span>รับออเดอร์</span> </div> <div class="drawer-item" id="dnav-sales" onclick="drawerGo('sales')"> <div class="drawer-item-icon" style="color:var(--blue)"><span class="mi">bar_chart</span></div> <span>รายการขายวันนี้</span> </div> <div class="drawer-sep"></div> <div class="drawer-item" id="dnav-promo" onclick="drawerGo('promo')"> <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">sell</span></div> <span>โปรโมชั่น</span> </div> <div class="drawer-item" id="dnav-manage" onclick="drawerGo('manage')"> <div class="drawer-item-icon" style="color:var(--esp)"><span class="mi">restaurant_menu</span></div> <span>จัดการเมนู</span> </div> <div class="drawer-item" id="dnav-bills" onclick="drawerGo('bills')"> <div class="drawer-item-icon" style="color:var(--red)"><span class="mi">receipt_long</span></div> <span>จัดการบิล</span> </div> <div class="drawer-item" id="dnav-staff-mgmt" onclick="drawerGo('staff-mgmt')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">group</span></div> <span>พนักงาน</span> </div> <div class="drawer-item" id="dnav-audit" onclick="drawerGo('audit')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">history</span></div> <span>ประวัติ</span> </div> <div class="drawer-item" id="dnav-report" onclick="drawerGo('report')"> <div class="drawer-item-icon" style="color:var(--green)"><span class="mi">trending_up</span></div> <span>รายงาน</span> </div> <div class="drawer-item" id="dnav-stores" onclick="drawerGo('stores')"> <div class="drawer-item-icon" style="color:var(--purple)"><span class="mi">inventory_2</span></div> <span>คลัง</span> </div>
  </div> <div class="drawer-foot"> <div class="drawer-sync-badge"> <div class="top-live" id="drawerLive" style="width:7px;height:7px;"></div> <span id="drawerSync">—</span> </div> <button onclick="closeDrawer();openDebugPanel()" style="margin-top:10px;width:100%;padding:8px;border-radius:var(--r2);background:var(--bg-dk);border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:var(--fh);color:var(--t3);display:flex;align-items:center;justify-content:center;gap:6px"><span class="material-symbols-outlined" style="font-size:14px">terminal</span>Debug Panel</button> </div>
 </div> <!-- ORDER PANEL PAGE -->
-<div class="order-panel-page" id="orderPanelPage"> <div class="op-handle-wrap" onclick="closeOrderPanel()"><div class="op-handle"></div></div> <div class="op-topbar"> <button class="op-close" onclick="closeOrderPanel()"></button> <span class="op-title">รายการออเดอร์</span> <span style="font-size:11px;color:var(--t4)" id="opItemCount">0 รายการ</span> </div> <div class="op-list" id="opList"> <div class="op-empty"> <div class="e-icon">🛒</div> <div class="op-empty-title">ยังไม่มีรายการ</div> </div> </div> <div class="op-footer"> <div class="op-summary" id="opSummary"> <div class="op-sum-row"><span id="opCount">0 รายการ</span><span id="opSubTotal">฿0</span></div> <div class="op-sum-row" id="discountRow" style="display:none;flex-direction:column;gap:3px;padding:6px 0;background:rgba(184,50,40,.06);border-radius:var(--r2);margin:2px 0;padding:6px 8px;">
+<div class="order-panel-page" id="orderPanelPage"> <div class="op-handle-wrap" onclick="closeOrderPanel()"><div class="op-handle"></div></div> <div class="op-topbar"> <button class="op-close" onclick="closeOrderPanel()"><span class="mi" style="font-size:22px">close</span></button> <span class="op-title">รายการออเดอร์</span> <span style="font-size:11px;color:var(--t4)" id="opItemCount">0 รายการ</span> </div> <div class="op-list" id="opList"> <div class="op-empty"><div class="e-icon"><span class="mi" style="font-size:48px;opacity:.35">shopping_cart</span></div><div class="op-empty-title">ยังไม่มีรายการ</div></div> </div> <div class="op-footer"> <div class="op-summary" id="opSummary"> <div class="op-sum-row"><span id="opCount">0 รายการ</span><span id="opSubTotal">฿0</span></div> <div class="op-sum-row" id="discountRow" style="display:none;flex-direction:column;gap:3px;padding:6px 0;background:rgba(184,50,40,.06);border-radius:var(--r2);margin:2px 0;padding:6px 8px;">
   <div style="display:flex;justify-content:space-between;align-items:center">
    <span style="font-size:11px;font-weight:700;color:var(--t3)">ส่วนลด</span>
    <span id="opDiscountAmt" style="font-size:13px;font-weight:800;color:var(--red)">-฿0</span>
   </div>
   <span id="opPromoLabel" style="font-size:10px;font-weight:700;color:var(--gold)"></span>
- </div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px" onclick="requestVoidOrder()">ยกเลิก</button> <button class="btn-confirm" onclick="confirmOrder()">ยืนยัน ออเดอร์</button> </div> </div>
+ </div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px;display:flex;align-items:center;gap:5px" onclick="requestVoidOrder()"><span class="mi" style="font-size:16px">delete_sweep</span>ยกเลิก</button> <button class="btn-confirm" style="display:flex;align-items:center;justify-content:center;gap:6px" onclick="confirmOrder()"><span class="mi" style="font-size:18px">receipt_long</span>ยืนยัน ออเดอร์</button> </div> </div>
 </div> <!-- RECEIPT PAGE -->
 <div class="receipt-page" id="receiptPage"> <div class="receipt-topbar"> <span class="receipt-title">ใบเสร็จ</span> <button class="btn btn-secondary btn-sm" onclick="closeReceiptPage()" style="flex-shrink:0"> ปิด</button> </div> <div class="receipt-body"> <div class="receipt-paper" id="receiptPaper"></div> </div> <div class="receipt-footer-actions"> <button class="btn-new-order" onclick="newOrderFromReceipt()">ออเดอร์ถัดไป</button> <button class="btn-print" onclick="printReceipt()">พิมพ์</button> </div>
 </div> <!-- ORDER DETAIL PAGE (slide from right) -->
 <div class="order-detail-page" id="orderDetailPage"> <div class="od-topbar"> <button class="btn btn-secondary btn-sm" onclick="closeOrderDetail()">← กลับ</button> <span class="od-title" id="odTitle">รายละเอียดบิล</span> <div id="odStatusBadge"></div> </div> <div class="od-body" id="odBody"></div>
 </div> <!-- APPROVAL MODAL (Employee ID) -->
-<div class="pin-overlay" id="pinOverlay"> <div class="pin-box"> <div class="pin-title" id="pinTitle">ยืนยันตัวตน</div> <div class="pin-sub" id="pinSub">ใส่รหัสพนักงานผู้อนุมัติ</div> <div style="margin:14px 0 6px"> <label class="f-label" style="text-align:center;display:block">รหัสพนักงาน</label> <input class="f-input" id="approvalEmpId" placeholder="เช่น MGR01"
- style="text-transform:uppercase;font-size:20px;font-weight:700;text-align:center;letter-spacing:4px"
- oninput="this.value=this.value.toUpperCase();clearApprovalError()"
- autocomplete="off"> </div> <div id="approvalEmpName" style="text-align:center;font-size:13px;font-weight:700;color:var(--green);min-height:20px;margin-bottom:8px"></div> <div class="pin-error" id="pinError"></div> <div style="display:flex;gap:10px;margin-top:14px"> <button class="btn btn-secondary" style="flex:1" onclick="closePinModal()">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="submitApproval()"> ยืนยัน</button> </div> </div>
+<div class="pin-overlay" id="pinOverlay"> <div class="pin-box"> <div class="pin-title" id="pinTitle">ยืนยันตัวตน</div> <div class="pin-sub" id="pinSub">ใส่ PIN ของผู้จัดการ</div>
+ <div style="margin:12px 0 4px">
+  <label class="f-label" style="text-align:center;display:block;margin-bottom:6px">รหัสพนักงาน</label>
+  <input class="f-input" id="approvalEmpId" placeholder="เช่น 690001"
+   style="text-transform:uppercase;font-size:18px;font-weight:700;text-align:center;letter-spacing:3px;margin-bottom:8px"
+   oninput="this.value=this.value.toUpperCase();clearApprovalError()"
+   autocomplete="off" inputmode="numeric" type="tel">
+ </div>
+ <div id="approvalEmpName" style="text-align:center;font-size:12px;font-weight:700;color:var(--green);min-height:18px;margin-bottom:8px"></div>
+ <label class="f-label" style="text-align:center;display:block;margin-bottom:6px">รหัส PIN (4 หลัก)</label>
+ <div style="display:flex;justify-content:center;gap:10px;margin-bottom:12px" id="approvalPinDots">
+  <div class="pin-dot" id="apd0"></div><div class="pin-dot" id="apd1"></div>
+  <div class="pin-dot" id="apd2"></div><div class="pin-dot" id="apd3"></div>
+ </div>
+ <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">
+  <button class="numpad-btn" onclick="approvalPinKey('1')">1</button>
+  <button class="numpad-btn" onclick="approvalPinKey('2')">2</button>
+  <button class="numpad-btn" onclick="approvalPinKey('3')">3</button>
+  <button class="numpad-btn" onclick="approvalPinKey('4')">4</button>
+  <button class="numpad-btn" onclick="approvalPinKey('5')">5</button>
+  <button class="numpad-btn" onclick="approvalPinKey('6')">6</button>
+  <button class="numpad-btn" onclick="approvalPinKey('7')">7</button>
+  <button class="numpad-btn" onclick="approvalPinKey('8')">8</button>
+  <button class="numpad-btn" onclick="approvalPinKey('9')">9</button>
+  <button class="numpad-btn" onclick="approvalPinClear()"><span class="mi" style="font-size:20px">backspace</span></button>
+  <button class="numpad-btn" onclick="approvalPinKey('0')">0</button>
+  <button class="numpad-btn" style="background:var(--cara);color:#fff;box-shadow:0 4px 14px var(--cara-glow)" onclick="submitApproval()">ยืนยัน</button>
+ </div>
+ <div class="pin-error" id="pinError"></div>
+ <div style="margin-top:8px"><button class="btn btn-secondary" style="width:100%" onclick="closePinModal()">ยกเลิก</button></div>
+</div>
 </div> <!-- 
  MODALS
  --> <!-- MODAL: Add/Edit Menu -->
-<div class="modal-overlay" id="modal-add-menu"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title" id="menuModalTitle" style="display:flex;align-items:center;gap:6px"><span class="mi" style="font-size:18px;color:var(--cara)">restaurant_menu</span>เพิ่มเมนูใหม่</span>  </div> <div class="modal-body"> <input type="hidden" id="menuEditId"> <input type="hidden" id="menuRecipeId" value=""> <!-- Tab bar --> <div class="tab-bar" style="margin-bottom:14px"> <button class="tab-btn active" id="menuTab-info" onclick="switchMenuTab('info')">ข้อมูลเมนู</button> <button class="tab-btn" id="menuTab-recipe" onclick="switchMenuTab('recipe')">สูตร/ต้นทุน</button> </div> <!-- TAB: ข้อมูลเมนู --> <div id="menuSection-info"> <div class="f-row"> <div class="f-group" style="flex:2"><label class="f-label">ชื่อเมนู</label><input class="f-input" id="menuName" placeholder="เช่น Cappuccino"></div> <div class="f-group"><label class="f-label">หมวด</label><select class="f-select" id="menuCat" onchange="toggleCustomFields()"><option value="coffee">กาแฟ</option><option value="tea">ชา</option><option value="cocoa">โกโก้</option><option value="custom"> Custom</option><option value="other">อื่นๆ</option></select></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">ราคา (฿)</label><input class="f-input" id="menuPrice" type="number" placeholder="65" oninput="recalcMenuCost()"></div> <div class="f-group"><label class="f-label">ต้นทุน (฿)</label><input class="f-input" id="menuCost" type="number" placeholder="20" readonly style="background:var(--bg-dk);color:var(--t3)"></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">ปริมาณ (ml)</label><select class="f-select" id="menuVol"><option value="200">200 ml</option><option value="1000">1000 ml</option></select></div> <div class="f-group"><label class="f-label">ตัวย่อ</label><input class="f-input" id="menuIcon" placeholder="C" maxlength="2"></div> </div> <div class="f-group"><label class="f-label">สี</label><div style="display:flex;gap:7px;flex-wrap:wrap" id="colorPicker"><div class="color-dot" style="background:#2C1810" onclick="selectColor('#2C1810',this)"></div><div class="color-dot" style="background:#3D2314" onclick="selectColor('#3D2314',this)"></div><div class="color-dot" style="background:#5C3317" onclick="selectColor('#5C3317',this)"></div><div class="color-dot" style="background:#2D4A3E" onclick="selectColor('#2D4A3E',this)"></div><div class="color-dot" style="background:#2B5EA7" onclick="selectColor('#2B5EA7',this)"></div><div class="color-dot" style="background:#5B3FA0" onclick="selectColor('#5B3FA0',this)"></div><div class="color-dot" style="background:#8B3A3A" onclick="selectColor('#8B3A3A',this)"></div><div class="color-dot" style="background:#3A6B4A" onclick="selectColor('#3A6B4A',this)"></div></div><input type="hidden" id="menuColor" value="#2C1810"></div> <div class="f-group"><label class="f-label">ขนาด</label><div style="display:flex;gap:8px;flex-wrap:wrap" id="sizeCheckboxGroup"><label style="display:flex;align-items:center;gap:6px;font-size:13px;background:var(--bg);border-radius:var(--r2);padding:6px 10px;box-shadow:var(--neu-out-xs);cursor:pointer"><input type="checkbox" id="sizeM" checked> M</label><label style="display:flex;align-items:center;gap:6px;font-size:13px;background:var(--bg);border-radius:var(--r2);padding:6px 10px;box-shadow:var(--neu-out-xs);cursor:pointer"><input type="checkbox" id="sizeL"> L</label><input type="hidden" id="sizeS"></div></div> <div class="f-group"><label class="f-label">สถานะ</label><select class="f-select" id="menuStatus"><option value="active">เปิดขาย</option><option value="inactive">ปิด</option></select></div> <div class="f-group"><label class="f-label">โปรโมชั่น</label><select class="f-select" id="menuPromo"></select></div> <div class="f-group"><label class="f-label">คำอธิบาย</label><textarea class="f-input" id="menuDesc" rows="2" placeholder="อธิบายรสชาติ..."></textarea></div> </div><!-- end menuSection-info --> <!-- TAB: สูตร/ต้นทุน --> <div id="menuSection-recipe" style="display:none"> <div style="background:var(--bg-dk);border-radius:var(--r3);padding:12px;margin-bottom:10px"> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"> <span style="font-size:12px;font-weight:700;color:var(--t2);font-family:var(--fh)">วัตถุดิบต่อ 1 แก้ว</span> <button onclick="addRecipeRow()" style="background:var(--blue-lt);color:var(--blue);border:none;border-radius:var(--rf);padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">+ เพิ่ม</button> </div> <div id="menuRecipeRows"></div> <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(140,123,107,.2)"> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span style="color:var(--t4)">ต้นทุนจากสูตร</span> <span id="recipeCostCalc" style="font-weight:700;color:var(--cara)">฿0</span> </div> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span style="color:var(--t4)">ราคาขาย</span> <span id="recipePriceRef" style="font-weight:700;color:var(--t1)">฿0</span> </div> <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"> <span style="color:var(--green)">Margin</span> <span id="recipeMarginCalc" style="color:var(--green)">0%</span> </div> </div> </div> <div style="font-size:10px;color:var(--t4);padding:0 2px">* ต้นทุนคำนวณจากราคาวัตถุดิบในคลัง บันทึกเพื่ออัปเดต</div> </div> <!-- Custom options section (always visible) --> <div id="customFieldsSection" style="display:none;background:var(--blue-lt);border-radius:var(--r3);padding:10px 12px"> <div style="font-size:12px;font-weight:700;color:var(--blue);font-family:var(--fh);margin-bottom:8px">ตัวเลือก Custom (+10฿)</div> <label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--t2)"> <input type="checkbox" id="customExtraShot"> เพิ่มช็อตกาแฟ <span style="color:var(--t4);font-size:11px">(เฉพาะกาแฟ)</span> </label> <label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--t2)"> <input type="checkbox" id="customExtraMatcha"> เพิ่มผงมัทฉะ <span style="color:var(--t4);font-size:11px">(เฉพาะมัทฉะ)</span> </label> <label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--t2)"> <input type="checkbox" id="customExtraCocoa"> เพิ่มผงโกโก้ <span style="color:var(--t4);font-size:11px">(เฉพาะโกโก้)</span> </label> <div style="font-size:10px;color:var(--t4);margin-top:6px">* ตัวเลือก Custom จะแสดงในรายละเอียดเมนูเมื่อสั่ง</div> </div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-add-menu')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="saveMenu()">บันทึก</button> </div> </div>
+<div class="modal-overlay" id="modal-add-menu"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title" id="menuModalTitle" style="display:flex;align-items:center;gap:6px"><span class="mi" style="font-size:18px;color:var(--cara)">restaurant_menu</span>เพิ่มเมนูใหม่</span>  </div> <div class="modal-body"> <input type="hidden" id="menuEditId"> <input type="hidden" id="menuRecipeId" value=""> <!-- Tab bar --> <div class="tab-bar" style="margin-bottom:14px"> <button class="tab-btn active" id="menuTab-info" onclick="switchMenuTab('info')">ข้อมูลเมนู</button> <button class="tab-btn" id="menuTab-recipe" onclick="switchMenuTab('recipe')">สูตร/ต้นทุน</button> </div> <!-- TAB: ข้อมูลเมนู --> <div id="menuSection-info"> <div class="f-row"> <div class="f-group" style="flex:2"><label class="f-label">ชื่อเมนู</label><input class="f-input" id="menuName" placeholder="เช่น Cappuccino"></div> <div class="f-group"><label class="f-label">หมวด</label><select class="f-select" id="menuCat" onchange="toggleCustomFields()"><option value="coffee">กาแฟ</option><option value="tea">ชา</option><option value="cocoa">โกโก้</option><option value="custom"> Custom</option><option value="other">อื่นๆ</option></select></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">ราคา (฿)</label><input class="f-input" id="menuPrice" type="number" placeholder="65" oninput="recalcMenuCost()"></div> <div class="f-group"><label class="f-label">ต้นทุน (฿)</label><input class="f-input" id="menuCost" type="number" placeholder="20" readonly style="background:var(--bg-dk);color:var(--t3)"></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">ปริมาณ (ml)</label><select class="f-select" id="menuVol"><option value="200">200 ml</option><option value="1000">1000 ml</option></select></div> <div class="f-group"><label class="f-label">ตัวย่อ</label><input class="f-input" id="menuIcon" placeholder="C" maxlength="2"></div> </div> <div class="f-group"><label class="f-label">สี</label><div style="display:flex;gap:7px;flex-wrap:wrap" id="colorPicker"><div class="color-dot" style="background:#2C1810" onclick="selectColor('#2C1810',this)"></div><div class="color-dot" style="background:#3D2314" onclick="selectColor('#3D2314',this)"></div><div class="color-dot" style="background:#5C3317" onclick="selectColor('#5C3317',this)"></div><div class="color-dot" style="background:#2D4A3E" onclick="selectColor('#2D4A3E',this)"></div><div class="color-dot" style="background:#2B5EA7" onclick="selectColor('#2B5EA7',this)"></div><div class="color-dot" style="background:#5B3FA0" onclick="selectColor('#5B3FA0',this)"></div><div class="color-dot" style="background:#8B3A3A" onclick="selectColor('#8B3A3A',this)"></div><div class="color-dot" style="background:#3A6B4A" onclick="selectColor('#3A6B4A',this)"></div></div><input type="hidden" id="menuColor" value="#2C1810"></div> <div class="f-group"><label class="f-label">ขนาด</label><div style="display:flex;gap:8px;flex-wrap:wrap" id="sizeCheckboxGroup"><label style="display:flex;align-items:center;gap:6px;font-size:13px;background:var(--bg);border-radius:var(--r2);padding:6px 10px;box-shadow:var(--neu-out-xs);cursor:pointer"><input type="checkbox" id="sizeM" checked> 200ml</label><label style="display:flex;align-items:center;gap:6px;font-size:13px;background:var(--bg);border-radius:var(--r2);padding:6px 10px;box-shadow:var(--neu-out-xs);cursor:pointer"><input type="checkbox" id="sizeL"> 1000ml</label><input type="hidden" id="sizeS"></div></div> <div class="f-group"><label class="f-label">สถานะ</label><select class="f-select" id="menuStatus"><option value="active">เปิดขาย</option><option value="inactive">ปิด</option></select></div> <div class="f-group"><label class="f-label">โปรโมชั่น</label><select class="f-select" id="menuPromo"></select></div> <div class="f-group"><label class="f-label">คำอธิบาย</label><textarea class="f-input" id="menuDesc" rows="2" placeholder="อธิบายรสชาติ..."></textarea></div> </div><!-- end menuSection-info --> <!-- TAB: สูตร/ต้นทุน --> <div id="menuSection-recipe" style="display:none"> <div style="background:var(--bg-dk);border-radius:var(--r3);padding:12px;margin-bottom:10px"> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"> <span style="font-size:12px;font-weight:700;color:var(--t2);font-family:var(--fh)">วัตถุดิบต่อ 1 แก้ว</span> <button onclick="addRecipeRow()" style="background:var(--blue-lt);color:var(--blue);border:none;border-radius:var(--rf);padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">+ เพิ่ม</button> </div> <div id="menuRecipeRows"></div> <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(140,123,107,.2)"> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span style="color:var(--t4)">ต้นทุนจากสูตร</span> <span id="recipeCostCalc" style="font-weight:700;color:var(--cara)">฿0</span> </div> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span style="color:var(--t4)">ราคาขาย</span> <span id="recipePriceRef" style="font-weight:700;color:var(--t1)">฿0</span> </div> <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"> <span style="color:var(--green)">Margin</span> <span id="recipeMarginCalc" style="color:var(--green)">0%</span> </div> </div> </div> <div style="font-size:10px;color:var(--t4);padding:0 2px">* ต้นทุนคำนวณจากราคาวัตถุดิบในคลัง บันทึกเพื่ออัปเดต</div> </div> <!-- Custom options section (always visible) --> <div id="customFieldsSection" style="display:none;background:var(--blue-lt);border-radius:var(--r3);padding:10px 12px">
+ <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+  <div style="font-size:12px;font-weight:700;color:var(--blue);font-family:var(--fh)">ตัวเลือก Custom (+10฿)</div>
+  <button onclick="addCustomOption()" style="background:var(--blue);color:#fff;border:none;border-radius:var(--rf);padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px"><span class="mi" style="font-size:13px">add</span>เพิ่ม</button>
+ </div>
+ <div id="customOptionsList">
+  <label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--t2)"><input type="checkbox" id="customExtraShot"> เพิ่มช็อตกาแฟ <span style="color:var(--t4);font-size:11px">(เฉพาะกาแฟ)</span></label>
+  <label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--t2)"><input type="checkbox" id="customExtraMatcha"> เพิ่มผงมัทฉะ <span style="color:var(--t4);font-size:11px">(เฉพาะมัทฉะ)</span></label>
+  <label style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;color:var(--t2)"><input type="checkbox" id="customExtraCocoa"> เพิ่มผงโกโก้ <span style="color:var(--t4);font-size:11px">(เฉพาะโกโก้)</span></label>
+  <div id="customDynamicOptions"></div>
+ </div>
+ <div style="font-size:10px;color:var(--t4);margin-top:6px">* ตัวเลือก Custom จะแสดงในรายละเอียดเมนูเมื่อสั่ง (+10฿ ต่อรายการ)</div>
+</div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-add-menu')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="saveMenu()">บันทึก</button> </div> </div>
 </div> <!-- MODAL: Add/Edit Promo -->
 <div class="modal-overlay" id="modal-add-promo"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title" id="promoModalTitle" style="display:flex;align-items:center;gap:6px"><span class="mi" style="font-size:18px;color:var(--gold)">sell</span>สร้างโปรโมชั่น</span>  </div> <div class="modal-body"> <input type="hidden" id="promoEditId"> <div class="f-group"><label class="f-label">ชื่อโปรโมชั่น</label><input class="f-input" id="promoName" placeholder="เช่น Happy Hour"></div> <div class="f-group"><label class="f-label">ประเภท</label><select class="f-select" id="promoType" onchange="updatePromoFields()"><option value="pct">ลด % จากราคา</option><option value="fixed">ลดราคาคงที่ (฿)</option><option value="buy">ซื้อ X แถม Y</option><option value="freeN">ซื้อ N ฟรี 1 (ราคาต่ำสุด)</option><option value="min">ซื้อครบขั้นต่ำลด</option><option value="bundle">ซื้อจำนวนราคาพิเศษ</option></select></div> <div class="f-row" id="promoValRow"> <div class="f-group"><label class="f-label" id="promoValLabel">ส่วนลด (%)</label><input class="f-input" id="promoVal" type="number" placeholder="10"></div> <div class="f-group" id="promoVal2Group" style="display:none"><label class="f-label" id="promoVal2Label">แถม (แก้ว)</label><input class="f-input" id="promoVal2" type="number" placeholder="1"></div> </div> <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:10px 12px;background:var(--bg-dk);border-radius:var(--r3)">
   <input type="checkbox" id="promoNoExpiry" style="width:16px;height:16px;cursor:pointer;accent-color:var(--cara)" onchange="togglePromoExpiry()">
@@ -1488,7 +1527,7 @@ function renderPromoRibbon(){
 function renderProductGrid(cat){
  const list=cat==='all'?DB.menus.filter(m=>m.status==='active'):DB.menus.filter(m=>m.cat===cat&&m.status==='active');
  const grid=document.getElementById('orderGrid');
- if(!list.length){grid.innerHTML=`<div class="empty-state" style="grid-column:span 2"><div class="e-icon">☕</div><div class="e-title">ไม่มีเมนูในหมวดนี้</div></div>`;return;}
+ if(!list.length){grid.innerHTML=`<div class="empty-state" style="grid-column:span 2"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">coffee</span></div><div class="e-title">ไม่มีเมนูในหมวดนี้</div></div>`;return;}
  grid.innerHTML=list.map(m=>`
  <div class="prod-card fade-up" style="position:relative">
    <div class="prod-img" style="background:${m.color};border-radius:var(--r3) var(--r3) 0 0;font-size:28px">${m.icon}</div>
@@ -1515,7 +1554,7 @@ function _neuToggleHtml(items, type, defaultVal){
 }
 function openProductModal(id){
  pdItem=DB.menus.find(m=>m.id===id);if(!pdItem)return;
- pdQtyVal=1;pdSize=pdItem.sizes[0]||'M';pdSweet='50%';pdIce='มีน้ำแข็ง';pdStrength='50%';pdCustom={};
+ pdQtyVal=1;pdSize=pdItem.sizes[0]||'200ml';pdSweet='50%';pdIce='มีน้ำแข็ง';pdStrength='50%';pdCustom={};
  document.getElementById('pdName').childNodes[1].textContent=pdItem.name;
  document.getElementById('pdImg').style.background=pdItem.color;
  document.getElementById('pdImg').style.color='rgba(255,255,255,.9)';
@@ -1553,7 +1592,7 @@ function openProductModal(id){
  const slider=document.getElementById('pdStaffSlider');
  if(slider) slider.style.background='';
  // ── Render Neumorphic radio toggles ──
- document.getElementById('pdSizes').innerHTML    = _neuToggleHtml(pdItem.sizes.length?pdItem.sizes:['M'], 'size', pdSize);
+ document.getElementById('pdSizes').innerHTML    = _neuToggleHtml(pdItem.sizes.length?pdItem.sizes:['200ml'], 'size', pdSize);
  document.getElementById('pdSweet').innerHTML    = _neuToggleHtml(['0%','25%','50%','75%','100%'], 'sweet', '50%');
  document.getElementById('pdIce').innerHTML      = _neuToggleHtml(['มีน้ำแข็ง','ไม่มีน้ำแข็ง'], 'ice', 'มีน้ำแข็ง');
  document.getElementById('pdStrength').innerHTML = _neuToggleHtml(['25%','50%','75%','100%'], 'strength', '50%');
@@ -1688,7 +1727,7 @@ function addFromModal(){
 }
 function quickAdd(id){
  const m=DB.menus.find(x=>x.id===id);if(!m)return;
- addToOrder(m.id,m.name,m.sizes[0]||'M',1,m.price,'','50%','มีน้ำแข็ง',m.color,m.icon);
+ addToOrder(m.id,m.name,m.sizes[0]||'200ml',1,m.price,'','50%','มีน้ำแข็ง',m.color,m.icon);
  toast(`+ ${m.name}`);
 }
 
@@ -1739,7 +1778,7 @@ function renderOrderPanel(){
  const list=document.getElementById('opList');
  const itemCountEl=document.getElementById('opItemCount');
  if(!orderItems.length){
- list.innerHTML=`<div class="op-empty"><div class="e-icon">🛒</div><div class="op-empty-title">ยังไม่มีรายการ</div><div style="font-size:12px;color:var(--t4);margin-top:6px">กดเพิ่มเมนูจากหน้า ORDER</div></div>`;
+ list.innerHTML=`<div class="op-empty"><div class="e-icon"><span class="mi" style="font-size:48px;opacity:.35">shopping_cart</span></div><div class="op-empty-title">ยังไม่มีรายการ</div><div style="font-size:12px;color:var(--t4);margin-top:6px">กดเพิ่มเมนูจากหน้า ORDER</div></div>`;
  if(itemCountEl) itemCountEl.textContent='0 รายการ';
  updateOrderSummary();
  return;
@@ -1765,7 +1804,7 @@ function renderOrderPanel(){
    <div class="op-item-meta">${metaLine}</div>
    ${customTags.length?`<div style="font-size:9px;color:var(--blue-md);font-weight:600;margin-top:1px">${customTags.map(t=>t+' +฿10').join(' · ')}</div>`:''}
    ${promo?`<div style="display:flex;align-items:center;gap:4px;margin-top:3px">
-    <span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:var(--rf);background:var(--red-lt);color:var(--red)">🏷️ ${promo.name}</span>
+    <span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:var(--rf);background:var(--red-lt);color:var(--red)">🏷 ${promo.name}</span>
     <span style="font-size:9px;color:var(--red);font-weight:700">-฿${disc.toLocaleString()}</span>
    </div>`:''}
   </div>
@@ -2235,9 +2274,23 @@ function renderManage(cat){
  </div> <div style="text-align:right;flex-shrink:0"> <div style="display:flex;align-items:center;gap:6px"> <div style="font-size:16px;font-weight:800;color:var(--cara);font-family:var(--fh)">฿${m.price}</div> ${m.recipeId?'<span style="font-size:9px;background:var(--blue-lt);color:var(--blue);border-radius:var(--rf);padding:2px 6px;font-weight:700"> มีสูตร</span>':''}
  </div> <span class="badge ${m.status==='active'?'badge-green':'badge-gray'}" style="font-size:9px">${m.status==='active'?'เปิด':'ปิด'}</span> </div> </div> <div style="display:flex;border-top:1px solid rgba(176,154,133,.12)"> <button class="btn btn-secondary" style="flex:1;border-radius:0;padding:10px;font-size:12px;font-weight:600;border-right:1px solid rgba(176,154,133,.12)"
  onclick="editMenu(${m.id})"> แก้ไข</button> <button class="btn btn-danger" style="flex:1;border-radius:0;padding:10px;font-size:12px;font-weight:600"
- onclick="delMenu(${m.id})"> ลบ</button> </div> </div>`}).join('') : '<div class="empty-state"><div class="e-icon">🍵</div><div class="e-title">ยังไม่มีเมนู</div></div>');
+ onclick="delMenu(${m.id})"> ลบ</button> </div> </div>`}).join('') : '<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">emoji_food_beverage</span></div><div class="e-title">ยังไม่มีเมนู</div></div>');
 }
 function catLabel(c){return{coffee:'กาแฟ',tea:'ชา',cocoa:'โกโก้',custom:'Custom',other:'อื่นๆ'}[c]||c;}
+function addCustomOption(){
+ const list = document.getElementById('customDynamicOptions');
+ if(!list) return;
+ const id = 'customDyn_' + Date.now();
+ const row = document.createElement('div');
+ row.style = 'display:flex;align-items:center;gap:6px;padding:4px 0';
+ row.innerHTML = `<input type="checkbox" id="${id}" checked>
+  <input class="f-input" placeholder="ชื่อตัวเลือก เช่น เพิ่มซีรัป"
+   style="flex:1;padding:5px 8px;font-size:12px" maxlength="20"
+   oninput="document.getElementById('${id}').setAttribute('data-label',this.value)">
+  <button onclick="this.parentNode.remove()" style="background:var(--red-lt);color:var(--red);border:none;border-radius:var(--rf);padding:4px 7px;cursor:pointer;flex-shrink:0"><span class="mi" style="font-size:14px">delete</span></button>`;
+ list.appendChild(row);
+ row.querySelector('input[type=text],input.f-input:not([type=checkbox])').focus();
+}
 function toggleCustomFields(){
  const cat=document.getElementById('menuCat').value;
  document.getElementById('customFieldsSection').style.display=cat==='custom'?'block':'none';
@@ -2255,9 +2308,9 @@ function editMenu(id){
  document.getElementById('menuColor').value=m.color;
  document.getElementById('menuDesc').value=m.desc;
  document.getElementById('menuStatus').value=m.status;
- document.getElementById('sizeS').checked=m.sizes.includes('S');
- document.getElementById('sizeM').checked=m.sizes.includes('M');
- document.getElementById('sizeL').checked=m.sizes.includes('L');
+ document.getElementById('sizeS').checked=m.sizes.includes('200ml');
+ document.getElementById('sizeM').checked=m.sizes.includes('200ml');
+ document.getElementById('sizeL').checked=m.sizes.includes('1000ml');
  const co=m.customOptions||[];
  document.getElementById('customExtraShot').checked=co.includes('extraShot');
  document.getElementById('customExtraMatcha').checked=co.includes('extraMatcha');
@@ -2382,12 +2435,20 @@ function saveMenu(){
  const id=parseInt(document.getElementById('menuEditId').value)||null;
  const sizes=[];
  if(document.getElementById('sizeS').checked)sizes.push('S');
- if(document.getElementById('sizeM').checked)sizes.push('M');
- if(document.getElementById('sizeL').checked)sizes.push('L');
+ if(document.getElementById('sizeM').checked)sizes.push('200ml');
+ if(document.getElementById('sizeL').checked)sizes.push('1000ml');
  const customOptions=[];
  if(document.getElementById('customExtraShot').checked) customOptions.push('extraShot');
  if(document.getElementById('customExtraMatcha').checked) customOptions.push('extraMatcha');
  if(document.getElementById('customExtraCocoa').checked) customOptions.push('extraCocoa');
+ // dynamic custom options
+ document.querySelectorAll('#customDynamicOptions [type=checkbox]').forEach(cb=>{
+  if(cb.checked){
+   const inp=cb.parentNode.querySelector('.f-input');
+   const label=inp?inp.value.trim():'';
+   if(label) customOptions.push('dyn:'+label);
+  }
+ });
  const data={
  name:document.getElementById('menuName').value.trim(),
  cat:document.getElementById('menuCat').value,
@@ -2478,7 +2539,7 @@ function renderPromos(type){
  <span class="badge badge-blue">${p.start} — ${p.end||'ไม่จำกัด'}</span> </div> </div> <label class="toggle"><input type="checkbox" ${p.active?'checked':''} onchange="togglePromo(${p.id},this.checked)"><span class="toggle-slider"></span></label> </div> <div class="pc-foot"> <div class="pc-stats">ใช้แล้ว <strong>${p.used}</strong> ครั้ง · ลดรวม <strong>฿${p.discount.toLocaleString()}</strong></div> </div> <div style="display:flex;border-top:1px solid rgba(176,154,133,.12)"> <button class="btn btn-secondary" style="flex:1;border-radius:0;padding:10px;font-size:12px;font-weight:600;border-right:1px solid rgba(176,154,133,.12)"
  onclick="editPromo(${p.id})"> แก้ไข</button> <button class="btn btn-danger" style="flex:1;border-radius:0;padding:10px;font-size:12px;font-weight:600"
  onclick="delPromo(${p.id})"> ลบ</button> </div> </div>`;
- }).join('')||'<div class="empty-state"><div class="e-icon">🏷️</div><div class="e-title">ยังไม่มีโปรโมชั่น</div></div>';
+ }).join('')||'<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">sell</span></div><div class="e-title">ยังไม่มีโปรโมชั่น</div></div>';
 }
 function togglePromo(id,val){
  const p=DB.promos.find(x=>x.id===id);
@@ -2812,7 +2873,7 @@ function renderAuditLog(filter){
  document.getElementById('auditSub').textContent = `${list.length} รายการ`;
  const el = document.getElementById('auditList');
  if(!list.length){
- el.innerHTML='<div class="empty-state"><div class="e-icon">📋</div><div class="e-title">ยังไม่มีประวัติ</div></div>'; return;
+ el.innerHTML='<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">list_alt</span></div><div class="e-title">ยังไม่มีประวัติ</div></div>'; return;
  }
  el.innerHTML = list.map(e=>{
  const d = new Date(e.ts);
@@ -2841,6 +2902,7 @@ function openPinModal(title, sub, mode, callback){
  document.getElementById('pinError').textContent = '';
  document.getElementById('approvalEmpId').value = '';
  document.getElementById('approvalEmpName').textContent = '';
+ _approvalPin=''; updateApprovalDots();
  document.getElementById('pinOverlay').classList.add('open');
  setTimeout(()=>document.getElementById('approvalEmpId').focus(), 200);
 }
@@ -2858,23 +2920,53 @@ function clearApprovalError(){
  else if(id.length>=2){ nameEl.textContent = 'ไม่พบรหัสนี้'; nameEl.style.color='var(--t5)'; }
  else { nameEl.textContent = ''; }
 }
+let _approvalPin = '';
+function approvalPinKey(k){
+ if(_approvalPin.length>=4) return;
+ _approvalPin += k;
+ updateApprovalDots();
+ if(_approvalPin.length===4) setTimeout(submitApproval, 200);
+}
+function approvalPinClear(){
+ _approvalPin = _approvalPin.slice(0,-1);
+ updateApprovalDots();
+}
+function updateApprovalDots(){
+ for(let i=0;i<4;i++){
+  const d=document.getElementById('apd'+i);
+  if(d) d.classList.toggle('filled', i<_approvalPin.length);
+ }
+}
 function submitApproval(){
  const id = document.getElementById('approvalEmpId').value.trim().toUpperCase();
  const emp = DB.employees.find(e=>String(e.id)===String(id));
+ const errEl = document.getElementById('pinError');
  if(!emp){
- document.getElementById('pinError').textContent = 'ไม่พบรหัสพนักงาน กรุณาลองใหม่';
- AUD.approvalFail('—', id);
- return;
+  errEl.textContent = 'ไม่พบรหัสพนักงาน กรุณาลองใหม่';
+  AUD.approvalFail('—', id);
+  _approvalPin=''; updateApprovalDots(); return;
  }
  if(approvalMode==='manager' && emp.role!=='manager'){
- document.getElementById('pinError').textContent = ` ${emp.name} ไม่มีสิทธิ์ผู้จัดการ`;
- AUD.approvalFail('—', `${id} (${emp.name}) ไม่ใช่ผู้จัดการ`);
- return;
+  errEl.textContent = `${emp.name} ไม่มีสิทธิ์ผู้จัดการ`;
+  AUD.approvalFail('—', `${id} (${emp.name}) ไม่ใช่ผู้จัดการ`);
+  _approvalPin=''; updateApprovalDots(); return;
  }
- // success
- document.getElementById('pinOverlay').classList.remove('open');
- const cb = approvalCallback; approvalCallback = null;
- if(cb) cb(true, emp);
+ if(!_approvalPin || _approvalPin.length!==4){
+  errEl.textContent = 'กรุณากรอก PIN 4 หลัก';
+  return;
+ }
+ hashPin(_approvalPin).then(inputHash=>{
+  const expectedPin = isHashed(String(emp.pin||'')) ? String(emp.pin) : null;
+  if(!expectedPin || inputHash !== expectedPin){
+   errEl.textContent = 'PIN ไม่ถูกต้อง';
+   _approvalPin=''; updateApprovalDots(); return;
+  }
+  // success
+  _approvalPin=''; updateApprovalDots();
+  document.getElementById('pinOverlay').classList.remove('open');
+  const cb = approvalCallback; approvalCallback = null;
+  if(cb) cb(true, emp);
+ });
 }
 // allow Enter key to submit
 document.addEventListener('keydown', e=>{
@@ -2956,7 +3048,7 @@ function renderStaffMgmt(tab){
  // TAB: รายชื่อ
  if(!list.length){
  document.getElementById('staffMgmtContent').innerHTML = tabBar +
- `<div class="empty-state"><div class="e-icon">👥</div><div class="e-title">ยังไม่มีพนักงาน</div><div class="e-sub">กดปุ่ม + เพิ่มพนักงานคนแรก</div></div>`;
+ `<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">group</span></div><div class="e-title">ยังไม่มีพนักงาน</div><div class="e-sub">กดปุ่ม + เพิ่มพนักงานคนแรก</div></div>`;
  return;
  }
  const roleLabel={cashier:'แคชเชียร์',manager:'ผู้จัดการ'};
@@ -2999,7 +3091,7 @@ function renderStaffLoginHistory(filterEmpId, dateFrom, dateTo){
  </div>`;
 
  if(!loginLogs.length) return filterBadge + dateFilter +
- `<div class="empty-state"><div class="e-icon">📋</div><div class="e-title">ยังไม่มีประวัติ</div></div>`;
+ `<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">list_alt</span></div><div class="e-title">ยังไม่มีประวัติ</div></div>`;
 
  const rows = loginLogs.map(a=>{
  const emp = DB.employees.find(e=>String(e.id)===String(a.empId));
@@ -3234,7 +3326,7 @@ function renderBillManagement(filter){
 
  const el = document.getElementById('billMgList');
  if(!orders.length){
- el.innerHTML='<div class="empty-state"><div class="e-icon">🧾</div><div class="e-title">ยังไม่มีบิล</div></div>'; return;
+ el.innerHTML='<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">receipt_long</span></div><div class="e-title">ยังไม่มีบิล</div></div>'; return;
  }
  el.innerHTML = orders.map(o=>{
  const t = new Date(o.ts).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
@@ -3401,7 +3493,7 @@ function renderStores(tab){
  const data={ingredient:DB.ingredients,package:DB.packages,equipment:DB.equipment}[tab]||[];
  const today=new Date().toISOString().split('T')[0];
  const soon=new Date();soon.setDate(soon.getDate()+7);const soonStr=soon.toISOString().split('T')[0];
- if(!data.length){el.innerHTML=`<div class="empty-state"><div class="e-icon">📦</div><div class="e-title">ยังไม่มีรายการ</div><div class="e-sub">กดปุ่ม + เพิ่มรายการ</div></div>`;return;}
+ if(!data.length){el.innerHTML=`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">inventory_2</span></div><div class="e-title">ยังไม่มีรายการ</div><div class="e-sub">กดปุ่ม + เพิ่มรายการ</div></div>`;return;}
  el.innerHTML='<div style="padding:12px 16px 80px">'+data.map(item=>{
  const lowStock=item.qty<=item.min;
  const expiring=item.expiry&&item.expiry<=soonStr;
@@ -3453,7 +3545,7 @@ function renderRecipeTab(){
  const linked = DB.recipes.filter(r=>r.menuId);
  const standalone = DB.recipes.filter(r=>!r.menuId);
  const allRecs = [...linked,...standalone];
- if(!allRecs.length)return`<div class="empty-state"><div class="e-icon">📝</div><div class="e-title">ยังไม่มีสูตร</div><div class="e-sub">เพิ่มสูตรผ่านหน้าจัดการเมนู</div></div>`;
+ if(!allRecs.length)return`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">description</span></div><div class="e-title">ยังไม่มีสูตร</div><div class="e-sub">เพิ่มสูตรผ่านหน้าจัดการเมนู</div></div>`;
  return`<div style="padding:12px 16px 80px">`+allRecs.map(rec=>{
  const menu=rec.menuId?DB.menus.find(m=>m.id===rec.menuId):null;
  const cost=calcRecipeCostPerCup(rec);
@@ -3463,7 +3555,7 @@ function renderRecipeTab(){
  }).join('')+'</div>';
 }
 function renderUseLogTab(){
- if(!DB.useLogs.length)return`<div class="empty-state"><div class="e-icon">✏️</div><div class="e-title">ยังไม่มีบันทึก</div><div class="e-sub">กดปุ่ม + บันทึกการใช้</div></div>`;
+ if(!DB.useLogs.length)return`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">edit_note</span></div><div class="e-title">ยังไม่มีบันทึก</div><div class="e-sub">กดปุ่ม + บันทึกการใช้</div></div>`;
  return`<div style="padding:12px 0 80px">`+DB.useLogs.slice().reverse().map(l=>`
  <div class="store-item"> <span class="badge badge-blue">${{staff:'พนักงาน',test:'ทดลอง',expired:'หมดอายุ',damaged:'เสียหาย',other:'อื่นๆ'}[l.reason]||l.reason}</span> <div class="si-info" style="margin-left:4px"><div class="si-name">${l.itemName}</div><div class="si-meta">${l.note||''}</div></div> <div style="text-align:right"><div style="font-size:12px;font-weight:700;color:var(--red)">-${l.qty} ${l.unit}</div><div style="font-size:9px;color:var(--t4)">${new Date(l.ts).toLocaleDateString('th-TH')}</div></div> </div>`
  ).join('')+'</div>';
@@ -3822,7 +3914,7 @@ function renderPOTab(){
  </div>`;
  }
  // existing POs
- if(!pos.length&&!lowItems.length) return`<div class="empty-state"><div class="e-icon">🚚</div><div class="e-title">ไม่มีรายการสั่งซื้อ</div><div class="e-sub">กดปุ่ม + เพื่อสร้างใบสั่งซื้อ</div></div>`;
+ if(!pos.length&&!lowItems.length) return`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">local_shipping</span></div><div class="e-title">ไม่มีรายการสั่งซื้อ</div><div class="e-sub">กดปุ่ม + เพื่อสร้างใบสั่งซื้อ</div></div>`;
  if(pos.length){
  html+=`<div style="padding:0 0 80px"><div style="font-size:10px;font-weight:700;color:var(--t4);padding:6px 16px">รายการสั่งซื้อทั้งหมด</div>`;
  html+=pos.map(po=>{
@@ -3898,7 +3990,7 @@ function renderAlertTab(){
  const lowStock=[...DB.ingredients,...DB.packages].filter(i=>i.qty<=i.min&&i.status==='active');
  const damaged=allItems.filter(i=>i.status==='damaged');
  if(!expired.length&&!expiring.length&&!lowStock.length&&!damaged.length)
- return`<div class="empty-state"><div class="e-icon">✅</div><div class="e-title">ทุกอย่างปกติ</div><div class="e-sub">ไม่มีการแจ้งเตือน</div></div>`;
+ return`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">check_circle</span></div><div class="e-title">ทุกอย่างปกติ</div><div class="e-sub">ไม่มีการแจ้งเตือน</div></div>`;
  const section=(icon,title,col,items,extra='')=>{
  if(!items.length)return'';
  return`<div style="margin:0 16px 12px;background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);overflow:hidden"> <div style="padding:8px 12px;background:${col}22;border-bottom:1px solid ${col}33"> <span style="font-size:11px;font-weight:700;color:${col}">${icon} ${title} (${items.length})</span> </div> ${items.map(i=>`<div style="display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid rgba(140,123,107,.1)"> <span style="font-size:12px;color:var(--t2)">${i.name}</span> <span style="font-size:11px;color:${col}">${i.expiry?i.expiry:i.qty+'/'+i.min+' '+i.unit}</span> </div>`).join('')}
@@ -3942,7 +4034,7 @@ function renderSalesToday(){
 
  const listEl=document.getElementById('salesTodayList');
  if(!allOrders.length){
- listEl.innerHTML='<div class="empty-state"><div class="e-icon">🌅</div><div class="e-title">ยังไม่มีออเดอร์วันนี้</div><div class="e-sub">เริ่มรับออเดอร์ได้เลย!</div></div>';
+ listEl.innerHTML='<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">wb_twilight</span></div><div class="e-title">ยังไม่มีออเดอร์วันนี้</div><div class="e-sub">เริ่มรับออเดอร์ได้เลย!</div></div>';
  return;
  }
  listEl.innerHTML=allOrders.slice().reverse().map(function(o){
