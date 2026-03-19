@@ -964,7 +964,17 @@ textarea.f-input{resize:none;}
     <div id="salesTodayProfit" style="font-size:16px;font-weight:800;color:var(--green);font-family:var(--fh)">฿0</div>
   </div>
 </div> <div class="scroll-body" id="salesTodayList" style="padding-bottom:20px"></div> </div> <!-- PAGE: BILL MANAGEMENT --> <div class="page" id="pg-staff-mgmt"> <div class="pg-head"> <div> <div class="pg-title">พนักงาน</div> <div class="pg-sub" id="staffMgmtSub">0 คน</div> </div> </div> <div id="staffMgmtContent" style="padding:0 16px 100px"></div>
-</div> <div class="page" id="pg-bills"> <div class="pg-head"> <div> <div class="pg-title">จัดการบิล</div> <div class="pg-sub" id="billMgSub">—</div> </div> <div class="tab-bar" style="margin:0;width:auto"> <button class="tab-btn active" onclick="switchBillTab(this,'today')" style="padding:6px 9px;font-size:9px">วันนี้</button> <button class="tab-btn" onclick="switchBillTab(this,'all')" style="padding:6px 9px;font-size:9px">ทั้งหมด</button> </div> </div> <div id="pendingVoidsList"></div> <div class="scroll-body" id="billMgList" style="padding-bottom:20px"></div> </div> <!-- PAGE: CUSTOM OPTIONS MANAGER -->
+</div> <div class="page" id="pg-bills"> <div class="pg-head"> <div> <div class="pg-title">จัดการบิล</div> <div class="pg-sub" id="billMgSub">—</div> </div> <div class="tab-bar" style="margin:0;width:auto"> <button class="tab-btn active" onclick="switchBillTab(this,'today')" style="padding:6px 9px;font-size:9px">วันนี้</button> <button class="tab-btn" onclick="switchBillTab(this,'all')" style="padding:6px 9px;font-size:9px">ทั้งหมด</button> </div> </div> <div id="pendingVoidsList"></div> <div class="scroll-body" id="billMgList" style="padding-bottom:20px"></div> </div> <!-- PAGE: OPTION SETS MANAGER -->
+<div class="page" id="pg-optsets">
+ <div class="pg-head">
+  <div>
+   <div class="pg-title">ตัวเลือกเมนู</div>
+   <div class="pg-sub">น้ำแข็ง / ความหวาน / ความเข้ม</div>
+  </div>
+ </div>
+ <div class="scroll-body" id="optSetsContent" style="padding:0 16px 80px"></div>
+</div>
+<!-- PAGE: CUSTOM OPTIONS MANAGER -->
 <div class="page" id="pg-custom">
  <div class="pg-head">
   <div>
@@ -1064,7 +1074,11 @@ textarea.f-input{resize:none;}
  <!-- Error --> <div id="loginError" style="text-align:center;font-size:12px;color:var(--red);min-height:20px;font-weight:600"></div> </div> <div style="text-align:center;font-size:10px;color:var(--t5);margin-top:8px">POS-APP · Secure Login</div> </div>
 </div> <!-- DRAWER -->
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
-<div class="drawer" id="drawer"> <div class="drawer-head"> <div class="drawer-logo">POS<span>·</span>APP</div> <div class="drawer-sub">ระบบบริหารร้านกาแฟ v5</div> <div id="drawerUserInfo" style="font-size:11px;color:var(--cara);font-weight:700;margin-top:6px;font-family:var(--fh)"></div> <button onclick="logoutUser()" style="margin-top:8px;padding:6px 14px;border-radius:var(--rf);background:var(--red-lt);color:var(--red);font-size:11px;font-weight:700;font-family:var(--fh)">ออกจากระบบ</button> </div> <div class="drawer-body"> <!-- Manager session badge --> <div id="mgrSessionBadge" style="display:none;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(90deg,rgba(43,94,167,.12),transparent);border-bottom:1px solid rgba(43,94,167,.15);margin-bottom:4px"> <span class="mi" style="font-size:20px;color:var(--blue)">shield_person</span> <div style="flex:1"> <div style="font-size:10px;font-weight:700;color:var(--blue)">Manager Mode</div> <div id="mgrBadgeName" style="font-size:11px;color:var(--t2)"></div> </div> <div style="text-align:right"> <div id="mgrBadgeTime" style="font-size:11px;font-weight:700;color:var(--blue);font-family:var(--fh)">10:00</div> <button onclick="mgrLogout()" style="font-size:9px;color:var(--red);background:var(--red-lt);border:none;border-radius:var(--rf);padding:2px 6px;margin-top:2px;cursor:pointer;font-weight:700">ออก</button> </div> </div> <div class="drawer-item active" id="dnav-order" onclick="drawerGo('order')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">point_of_sale</span></div> <span>รับออเดอร์</span> </div> <div class="drawer-item" id="dnav-sales" onclick="drawerGo('sales')"> <div class="drawer-item-icon" style="color:var(--blue)"><span class="mi">bar_chart</span></div> <span>รายการขายวันนี้</span> </div> <div class="drawer-sep"></div> <div class="drawer-item" id="dnav-promo" onclick="drawerGo('promo')"> <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">sell</span></div> <span>โปรโมชั่น</span> </div> <div class="drawer-item" id="dnav-custom" onclick="drawerGo('custom')">
+<div class="drawer" id="drawer"> <div class="drawer-head"> <div class="drawer-logo">POS<span>·</span>APP</div> <div class="drawer-sub">ระบบบริหารร้านกาแฟ v5</div> <div id="drawerUserInfo" style="font-size:11px;color:var(--cara);font-weight:700;margin-top:6px;font-family:var(--fh)"></div> <button onclick="logoutUser()" style="margin-top:8px;padding:6px 14px;border-radius:var(--rf);background:var(--red-lt);color:var(--red);font-size:11px;font-weight:700;font-family:var(--fh)">ออกจากระบบ</button> </div> <div class="drawer-body"> <!-- Manager session badge --> <div id="mgrSessionBadge" style="display:none;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(90deg,rgba(43,94,167,.12),transparent);border-bottom:1px solid rgba(43,94,167,.15);margin-bottom:4px"> <span class="mi" style="font-size:20px;color:var(--blue)">shield_person</span> <div style="flex:1"> <div style="font-size:10px;font-weight:700;color:var(--blue)">Manager Mode</div> <div id="mgrBadgeName" style="font-size:11px;color:var(--t2)"></div> </div> <div style="text-align:right"> <div id="mgrBadgeTime" style="font-size:11px;font-weight:700;color:var(--blue);font-family:var(--fh)">10:00</div> <button onclick="mgrLogout()" style="font-size:9px;color:var(--red);background:var(--red-lt);border:none;border-radius:var(--rf);padding:2px 6px;margin-top:2px;cursor:pointer;font-weight:700">ออก</button> </div> </div> <div class="drawer-item active" id="dnav-order" onclick="drawerGo('order')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">point_of_sale</span></div> <span>รับออเดอร์</span> </div> <div class="drawer-item" id="dnav-sales" onclick="drawerGo('sales')"> <div class="drawer-item-icon" style="color:var(--blue)"><span class="mi">bar_chart</span></div> <span>รายการขายวันนี้</span> </div> <div class="drawer-sep"></div> <div class="drawer-item" id="dnav-promo" onclick="drawerGo('promo')"> <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">sell</span></div> <span>โปรโมชั่น</span> </div> <div class="drawer-item" id="dnav-optsets" onclick="drawerGo('optsets')">
+   <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">settings_suggest</span></div>
+   <span>ตัวเลือกเมนู</span>
+  </div>
+  <div class="drawer-item" id="dnav-custom" onclick="drawerGo('custom')">
    <div class="drawer-item-icon" style="color:var(--blue)"><span class="mi">tune</span></div>
    <span>Custom Options</span>
   </div>
@@ -1469,7 +1483,12 @@ let DB = {
  auditLog: [],
  pendingVoids: [],
  nextId: 1,
- customOptions: [] // global custom options pool: [{id, key, label, price, active}]
+ customOptions: [], // global custom options pool: [{id, key, label, price, active}]
+ optionSets: {
+  ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง']},
+  sweet:    {label:'ความหวาน',   default:'50%',        items:['0%','25%','50%','75%','100%']},
+  strength: {label:'ความเข้ม',   default:'50%',        items:['25%','50%','75%','100%']}
+ }
 };
 
 /* 
@@ -1601,7 +1620,7 @@ function _neuToggleHtml(items, type, defaultVal){
 }
 function openProductModal(id){
  pdItem=DB.menus.find(m=>m.id===id);if(!pdItem)return;
- pdQtyVal=1;pdSize=pdItem.sizes[0]||'200ml';pdSweet='50%';pdIce='มีน้ำแข็ง';pdStrength='50%';pdCustom={};
+ pdQtyVal=1;pdSize=pdItem.sizes[0]||'200ml';pdSweet=(DB.optionSets&&DB.optionSets.sweet?DB.optionSets.sweet.default:'50%');pdIce=(DB.optionSets&&DB.optionSets.ice?DB.optionSets.ice.default:'มีน้ำแข็ง');pdStrength=(DB.optionSets&&DB.optionSets.strength?DB.optionSets.strength.default:'50%');pdCustom={};
  document.getElementById('pdName').childNodes[1].textContent=pdItem.name;
  document.getElementById('pdImg').style.background=pdItem.color;
  document.getElementById('pdImg').style.color='rgba(255,255,255,.9)';
@@ -1640,9 +1659,14 @@ function openProductModal(id){
  if(slider) slider.style.background='';
  // ── Render Neumorphic radio toggles ──
  document.getElementById('pdSizes').innerHTML    = _neuToggleHtml(pdItem.sizes.length?pdItem.sizes:['200ml'], 'size', pdSize);
- document.getElementById('pdSweet').innerHTML    = _neuToggleHtml(['0%','25%','50%','75%','100%'], 'sweet', '50%');
- document.getElementById('pdIce').innerHTML      = _neuToggleHtml(['มีน้ำแข็ง','ไม่มีน้ำแข็ง'], 'ice', 'มีน้ำแข็ง');
- document.getElementById('pdStrength').innerHTML = _neuToggleHtml(['25%','50%','75%','100%'], 'strength', '50%');
+ const _os = DB.optionSets||{};
+ const _sweet = _os.sweet||{items:['0%','25%','50%','75%','100%'],default:'50%'};
+ const _ice   = _os.ice||{items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง'],default:'มีน้ำแข็ง'};
+ const _str   = _os.strength||{items:['25%','50%','75%','100%'],default:'50%'};
+ pdSweet=_sweet.default; pdIce=_ice.default; pdStrength=_str.default;
+ document.getElementById('pdSweet').innerHTML    = _neuToggleHtml(_sweet.items,'sweet',_sweet.default);
+ document.getElementById('pdIce').innerHTML      = _neuToggleHtml(_ice.items,'ice',_ice.default);
+ document.getElementById('pdStrength').innerHTML = _neuToggleHtml(_str.items,'strength',_str.default);
  // Custom options
  pdCustom={};
  const custEl=document.getElementById('pdCustomSection');
@@ -2803,6 +2827,98 @@ function renderPromoPerf(filtered){
 
 
 /* ══════════════════════════════════════════════
+   OPTION SETS MANAGER
+   จัดการ น้ำแข็ง / ความหวาน / ความเข้ม
+   ══════════════════════════════════════════ */
+
+const OPTSET_META = {
+ ice:      {label:'น้ำแข็ง',   icon:'ac_unit',    color:'var(--blue)'},
+ sweet:    {label:'ความหวาน',  icon:'water_drop',  color:'var(--gold)'},
+ strength: {label:'ความเข้ม',  icon:'coffee',      color:'var(--esp)'},
+};
+
+function renderOptionSets(){
+ if(!DB.optionSets) DB.optionSets={
+  ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง']},
+  sweet:    {label:'ความหวาน',   default:'50%',        items:['0%','25%','50%','75%','100%']},
+  strength: {label:'ความเข้ม',   default:'50%',        items:['25%','50%','75%','100%']}
+ };
+ const el = document.getElementById('optSetsContent');
+ if(!el) return;
+ el.innerHTML = Object.keys(OPTSET_META).map(key=>{
+  const meta = OPTSET_META[key];
+  const set  = DB.optionSets[key]||{label:meta.label,default:'',items:[]};
+  const items = set.items||[];
+  return `<div style="background:var(--bg);border-radius:var(--r4);box-shadow:var(--neu-out-sm);padding:16px;margin-bottom:16px">
+   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+    <div style="width:40px;height:40px;border-radius:var(--r2);background:var(--bg-dk);display:flex;align-items:center;justify-content:center">
+     <span class="mi" style="font-size:22px;color:${meta.color}">${meta.icon}</span>
+    </div>
+    <div style="flex:1">
+     <div style="font-size:14px;font-weight:800;color:var(--t1);font-family:var(--fh)">${meta.label}</div>
+     <div style="font-size:10px;color:var(--t4)">ค่า default: <strong>${set.default||'-'}</strong></div>
+    </div>
+    <button onclick="addOptSetItem('${key}')" style="display:flex;align-items:center;gap:4px;background:var(--cara);color:#fff;border:none;border-radius:var(--rf);padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px var(--cara-glow)">
+     <span class="mi" style="font-size:14px">add</span>เพิ่ม
+    </button>
+   </div>
+   <div id="optset-list-${key}" style="display:flex;flex-direction:column;gap:6px">
+    ${items.map((item,idx)=>`
+     <div style="display:flex;align-items:center;gap:8px;background:var(--bg-dk);border-radius:var(--r2);padding:8px 12px">
+      <span class="mi" style="font-size:14px;color:var(--t4);cursor:pointer" onclick="moveOptSetItem('${key}',${idx},-1)" title="ขึ้น">arrow_upward</span>
+      <span class="mi" style="font-size:14px;color:var(--t4);cursor:pointer" onclick="moveOptSetItem('${key}',${idx},1)" title="ลง">arrow_downward</span>
+      <div style="flex:1;font-size:13px;font-weight:600;color:var(--t1)" id="optset-item-${key}-${idx}">${item}</div>
+      <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:var(--rf);background:${set.default===item?'var(--green-lt)':'var(--bg)'};color:${set.default===item?'var(--green)':'var(--t4)'};border:${set.default===item?'':'1px solid rgba(176,154,133,.2)'};cursor:pointer" onclick="setOptSetDefault('${key}','${item}')">${set.default===item?'✓ default':'set default'}</span>
+      <button onclick="editOptSetItem('${key}',${idx})" style="background:var(--blue-lt);color:var(--blue);border:none;border-radius:var(--rf);padding:4px 8px;font-size:10px;font-weight:700;cursor:pointer">แก้ไข</button>
+      <button onclick="delOptSetItem('${key}',${idx})" style="background:var(--red-lt);color:var(--red);border:none;border-radius:var(--rf);padding:4px 8px;font-size:10px;font-weight:700;cursor:pointer"><span class="mi" style="font-size:13px">delete</span></button>
+     </div>`).join('')}
+   </div>
+  </div>`;
+ }).join('');
+}
+
+function addOptSetItem(key){
+ const val = prompt('ชื่อตัวเลือกใหม่ (เช่น 75%, น้อยมาก):');
+ if(!val||!val.trim()) return;
+ if(!DB.optionSets[key]) return;
+ if(DB.optionSets[key].items.includes(val.trim())){toast('มีตัวเลือกนี้อยู่แล้ว');return;}
+ DB.optionSets[key].items.push(val.trim());
+ scheduleSync(); renderOptionSets();
+ toast('เพิ่ม "'+val.trim()+'" แล้ว');
+}
+
+function editOptSetItem(key, idx){
+ const old = DB.optionSets[key].items[idx];
+ const val = prompt('แก้ไขตัวเลือก:', old);
+ if(!val||!val.trim()||val.trim()===old) return;
+ DB.optionSets[key].items[idx] = val.trim();
+ if(DB.optionSets[key].default===old) DB.optionSets[key].default=val.trim();
+ scheduleSync(); renderOptionSets();
+}
+
+function delOptSetItem(key, idx){
+ const item = DB.optionSets[key].items[idx];
+ if(!confirm('ลบ "'+item+'" ?')) return;
+ DB.optionSets[key].items.splice(idx,1);
+ if(DB.optionSets[key].default===item) DB.optionSets[key].default=DB.optionSets[key].items[0]||'';
+ scheduleSync(); renderOptionSets();
+}
+
+function moveOptSetItem(key, idx, dir){
+ const items = DB.optionSets[key].items;
+ const newIdx = idx+dir;
+ if(newIdx<0||newIdx>=items.length) return;
+ [items[idx],items[newIdx]]=[items[newIdx],items[idx]];
+ scheduleSync(); renderOptionSets();
+}
+
+function setOptSetDefault(key, val){
+ DB.optionSets[key].default = val;
+ scheduleSync(); renderOptionSets();
+ toast('"'+val+'" เป็นค่า default แล้ว');
+}
+
+/* ══════════════════════════════════════════════
    CUSTOM OPTIONS MANAGER
    ══════════════════════════════════════════ */
 let customMgrFilter = 'all';
@@ -2863,6 +2979,11 @@ function filterCustomMgr(btn, filter){
 
 function openAddCustomOption(editKey){
  if(!DB.customOptions) DB.customOptions=[];
+ if(!DB.optionSets) DB.optionSets={
+  ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง']},
+  sweet:    {label:'ความหวาน',   default:'50%',        items:['0%','25%','50%','75%','100%']},
+  strength: {label:'ความเข้ม',   default:'50%',        items:['25%','50%','75%','100%']}
+ };
  const existing = editKey ? DB.customOptions.find(o=>o.key===editKey) : null;
  const title = existing ? 'แก้ไข Custom Option' : 'เพิ่ม Custom Option ใหม่';
  openModal('modal-custom-opt');
@@ -4908,6 +5029,7 @@ function _goPageDirect(p){
  if(p==='audit') renderAuditLog(auditFilter||'all');
  if(p==='staff-mgmt') renderStaffMgmt();
  if(p==='custom') renderCustomMgr();
+ if(p==='optsets') renderOptionSets();
 }
 
 
