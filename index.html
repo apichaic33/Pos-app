@@ -1600,17 +1600,18 @@ function openProductModal(id){
  pdCustom={};
  const custEl=document.getElementById('pdCustomSection');
  custEl.style.display='block';
- const ALL_CUSTOM=[
-  {key:'extraShot', label:'เพิ่มช็อตกาแฟ'},
-  {key:'extraMatcha',label:'เพิ่มผงมัทฉะ'},
-  {key:'extraCocoa', label:'เพิ่มผงโกโก้'},
- ];
+ const STATIC_CUSTOM={extraShot:'เพิ่มช็อตกาแฟ',extraMatcha:'เพิ่มผงมัทฉะ',extraCocoa:'เพิ่มผงโกโก้'};
+ const ALL_CUSTOM=(pdItem.customOptions||[]).map(k=>{
+  if(k.startsWith('dyn:')) return {key:k, label:k.slice(4)};
+  return {key:k, label:STATIC_CUSTOM[k]||k};
+ });
+ if(!ALL_CUSTOM.length){document.getElementById('pdCustomSection').style.display='none';}
  document.getElementById('pdCustomOptions').innerHTML=ALL_CUSTOM.map(o=>`
   <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 0;border-bottom:1px solid rgba(43,94,167,.1)">
    <div style="position:relative;width:40px;height:23px;flex-shrink:0">
-    <input type="checkbox" id="cust_${o.key}" onchange="toggleCustomOpt('${o.key}',this)" style="opacity:0;width:0;height:0;position:absolute">
-    <span id="cust_slider_${o.key}" style="position:absolute;inset:0;border-radius:23px;background:var(--bg-dk);box-shadow:var(--neu-in-sm);transition:background .35s;cursor:pointer">
-     <span id="cust_thumb_${o.key}" style="position:absolute;width:17px;height:17px;border-radius:50%;left:3px;top:3px;background:#fff;transition:transform .4s cubic-bezier(.4,0,.2,1),background .35s,opacity .3s;box-shadow:3px 3px 8px rgba(43,94,167,.35),-1px -1px 4px rgba(255,255,255,.9);display:none"></span>
+    <input type="checkbox" id="cust_${o.key.replace(/[^a-zA-Z0-9_]/g,'_')}" onchange="toggleCustomOpt('${o.key}',this)" style="opacity:0;width:0;height:0;position:absolute">
+    <span id="cust_slider_${o.key.replace(/[^a-zA-Z0-9_]/g,'_')}" style="position:absolute;inset:0;border-radius:23px;background:var(--bg-dk);box-shadow:var(--neu-in-sm);transition:background .35s;cursor:pointer">
+     <span id="cust_thumb_${o.key.replace(/[^a-zA-Z0-9_]/g,'_')}" style="position:absolute;width:17px;height:17px;border-radius:50%;left:3px;top:3px;background:#fff;transition:transform .4s cubic-bezier(.4,0,.2,1),background .35s,opacity .3s;box-shadow:3px 3px 8px rgba(43,94,167,.35),-1px -1px 4px rgba(255,255,255,.9);display:none"></span>
     </span>
    </div>
    <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--t2);font-family:var(--fh)">${o.label}</div></div>
@@ -1634,8 +1635,9 @@ function selectNeuOpt(label, type, val){
 }
 function toggleCustomOpt(key, checkbox){
  if(checkbox.checked) pdCustom[key]=true; else delete pdCustom[key];
- const slider = document.getElementById('cust_slider_'+key);
- const thumb = document.getElementById('cust_thumb_'+key);
+ const safeKey = key.replace(/[^a-zA-Z0-9_]/g,'_');
+ const slider = document.getElementById('cust_slider_'+safeKey);
+ const thumb = document.getElementById('cust_thumb_'+safeKey);
  if(checkbox.checked){
  if(thumb){
  thumb.style.opacity='0'; thumb.style.transform='translateX(0)';
@@ -1700,7 +1702,7 @@ function addFromModal(){
  // Regular order item — calculate final price with custom extras
  const extraCount = Object.keys(pdCustom).length;
  const finalPrice = pdItem.price + extraCount * 10;
- const customNote = Object.keys(pdCustom).map(k=>({extraShot:'เพิ่มช็อต',extraMatcha:'เพิ่มมัทฉะ',extraCocoa:'เพิ่มโกโก้'}[k]||k)).join(', ');
+ const customNote = Object.keys(pdCustom).map(k=>({extraShot:'เพิ่มช็อต',extraMatcha:'เพิ่มมัทฉะ',extraCocoa:'เพิ่มโกโก้'}[k]||(k.startsWith('dyn:')?k.slice(4):k))).join(', ');
  const noteVal = [document.getElementById('pdNote').value, customNote].filter(Boolean).join(' · ');
  // capture promo if selected
  const isPromo = document.getElementById('pdIsPromo').checked;
@@ -2265,7 +2267,7 @@ function renderManage(cat){
  document.getElementById('mgSub').textContent=list.length+'เมนู';
  const customLabels = {extraShot:'เพิ่มช็อต',extraMatcha:'เพิ่มมัทฉะ',extraCocoa:'เพิ่มโกโก้'};
  document.getElementById('mgList').innerHTML = (list.length ? list.map(m=>{
- const custOpts = (m.customOptions||[]).map(k=>customLabels[k]||k).join(' · ');
+ const custOpts = (m.customOptions||[]).map(k=>customLabels[k]||(k.startsWith('dyn:')?k.slice(4):k)).join(' · ');
  return`
  <div style="margin:0 16px 12px;background:var(--bg);border-radius:var(--r4);box-shadow:var(--neu-out-sm);overflow:hidden"> <div style="display:flex;align-items:center;gap:12px;padding:12px 14px"> <div style="width:46px;height:46px;border-radius:var(--r3);background:${m.color};flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:var(--neu-out-xs)"> <span style="font-size:20px;font-weight:900;color:rgba(255,255,255,.9);font-family:var(--fh)">${m.icon}</span> </div> <div style="flex:1;min-width:0"> <div style="font-size:14px;font-weight:700;color:var(--t1);font-family:var(--fh)">${m.name}</div> <div style="font-size:10px;color:var(--t4);margin-top:2px"> ${catLabel(m.cat)} · ${m.vol}ml · ต้นทุน ฿${m.cost}
  ${(()=>{const mg=m.price>0?Math.round((m.price-m.cost)/m.price*100):0;const c=mg>=50?'var(--green)':mg>=30?'var(--gold)':'var(--red)';return `<span style="color:${c};font-weight:700">· Margin ${mg}%</span>`})()}
@@ -2308,13 +2310,28 @@ function editMenu(id){
  document.getElementById('menuColor').value=m.color;
  document.getElementById('menuDesc').value=m.desc;
  document.getElementById('menuStatus').value=m.status;
- document.getElementById('sizeS').checked=m.sizes.includes('200ml');
  document.getElementById('sizeM').checked=m.sizes.includes('200ml');
  document.getElementById('sizeL').checked=m.sizes.includes('1000ml');
  const co=m.customOptions||[];
  document.getElementById('customExtraShot').checked=co.includes('extraShot');
  document.getElementById('customExtraMatcha').checked=co.includes('extraMatcha');
  document.getElementById('customExtraCocoa').checked=co.includes('extraCocoa');
+ // restore dynamic custom options
+ const dynList=document.getElementById('customDynamicOptions');
+ if(dynList){ dynList.innerHTML='';
+  co.filter(k=>k.startsWith('dyn:')).forEach(k=>{
+   const label=k.slice(4);
+   const id='customDyn_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+   const row=document.createElement('div');
+   row.style='display:flex;align-items:center;gap:6px;padding:4px 0';
+   row.innerHTML=`<input type="checkbox" id="${id}" checked data-label="${label}">
+    <input class="f-input" placeholder="ชื่อตัวเลือก" value="${label}"
+     style="flex:1;padding:5px 8px;font-size:12px" maxlength="20"
+     oninput="document.getElementById('${id}').setAttribute('data-label',this.value)">
+    <button onclick="this.parentNode.remove()" style="background:var(--red-lt);color:var(--red);border:none;border-radius:var(--rf);padding:4px 7px;cursor:pointer;flex-shrink:0"><span class="mi" style="font-size:14px">delete</span></button>`;
+   dynList.appendChild(row);
+  });
+ }
  toggleCustomFields();
  document.querySelectorAll('.color-dot').forEach(d=>{d.classList.toggle('selected',d.style.backgroundColor===m.color||d.getAttribute('onclick')?.includes(m.color));});
  fillPromoSelect('menuPromo',m.promoId);
@@ -2434,7 +2451,6 @@ function recalcMenuCost(){
 function saveMenu(){
  const id=parseInt(document.getElementById('menuEditId').value)||null;
  const sizes=[];
- if(document.getElementById('sizeS').checked)sizes.push('S');
  if(document.getElementById('sizeM').checked)sizes.push('200ml');
  if(document.getElementById('sizeL').checked)sizes.push('1000ml');
  const customOptions=[];
@@ -2955,9 +2971,18 @@ function submitApproval(){
   errEl.textContent = 'กรุณากรอก PIN 4 หลัก';
   return;
  }
- hashPin(_approvalPin).then(inputHash=>{
-  const expectedPin = isHashed(String(emp.pin||'')) ? String(emp.pin) : null;
-  if(!expectedPin || inputHash !== expectedPin){
+ const expectedPin = isHashed(String(emp.pin||'')) ? String(emp.pin) : null;
+ hashPin(_approvalPin).then(async inputHash=>{
+  // ถ้า pin ยังเป็น plain text → hash แล้วเปรียบเทียบ
+  let match = false;
+  if(expectedPin){
+   match = (inputHash === expectedPin);
+  } else {
+   // plain text pin — hash it first then compare
+   const plainHash = await hashPin(String(emp.pin||'1234'));
+   match = (inputHash === plainHash);
+  }
+  if(!match){
    errEl.textContent = 'PIN ไม่ถูกต้อง';
    _approvalPin=''; updateApprovalDots(); return;
   }
