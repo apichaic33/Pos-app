@@ -1078,10 +1078,6 @@ textarea.f-input{resize:none;}
    <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">settings_suggest</span></div>
    <span>ตัวเลือกเมนู</span>
   </div>
-  <div class="drawer-item" id="dnav-custom" onclick="drawerGo('custom')">
-   <div class="drawer-item-icon" style="color:var(--blue)"><span class="mi">tune</span></div>
-   <span>Custom Options</span>
-  </div>
   <div class="drawer-item" id="dnav-manage" onclick="drawerGo('manage')"> <div class="drawer-item-icon" style="color:var(--esp)"><span class="mi">restaurant_menu</span></div> <span>จัดการเมนู</span> </div> <div class="drawer-item" id="dnav-bills" onclick="drawerGo('bills')"> <div class="drawer-item-icon" style="color:var(--red)"><span class="mi">receipt_long</span></div> <span>จัดการบิล</span> </div> <div class="drawer-item" id="dnav-staff-mgmt" onclick="drawerGo('staff-mgmt')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">group</span></div> <span>พนักงาน</span> </div> <div class="drawer-item" id="dnav-audit" onclick="drawerGo('audit')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">history</span></div> <span>ประวัติ</span> </div> <div class="drawer-item" id="dnav-report" onclick="drawerGo('report')"> <div class="drawer-item-icon" style="color:var(--green)"><span class="mi">trending_up</span></div> <span>รายงาน</span> </div> <div class="drawer-item" id="dnav-stores" onclick="drawerGo('stores')"> <div class="drawer-item-icon" style="color:var(--purple)"><span class="mi">inventory_2</span></div> <span>คลัง</span> </div>
  </div> <div class="drawer-foot"> <div class="drawer-sync-badge"> <div class="top-live" id="drawerLive" style="width:7px;height:7px;"></div> <span id="drawerSync">—</span> </div> <button onclick="closeDrawer();openDebugPanel()" style="margin-top:10px;width:100%;padding:8px;border-radius:var(--r2);background:var(--bg-dk);border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:var(--fh);color:var(--t3);display:flex;align-items:center;justify-content:center;gap:6px"><span class="material-symbols-outlined" style="font-size:14px">terminal</span>Debug Panel</button> </div>
 </div> <!-- ORDER PANEL PAGE -->
@@ -1485,6 +1481,7 @@ let DB = {
  nextId: 1,
  customOptions: [], // global custom options pool: [{id, key, label, price, active}]
  optionSets: {
+  sizes:    {label:'ขนาด',       default:'200ml',      items:['200ml','1000ml']},
   ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง']},
   sweet:    {label:'ความหวาน',   default:'50%',        items:['0%','25%','50%','75%','100%']},
   strength: {label:'ความเข้ม',   default:'50%',        items:['25%','50%','75%','100%']}
@@ -2878,6 +2875,7 @@ function renderPromoPerf(filtered){
    ══════════════════════════════════════════ */
 
 const OPTSET_META = {
+ sizes:    {label:'ขนาด',      icon:'straighten', color:'var(--cara)'},
  ice:      {label:'น้ำแข็ง',   icon:'ac_unit',    color:'var(--blue)'},
  sweet:    {label:'ความหวาน',  icon:'water_drop',  color:'var(--gold)'},
  strength: {label:'ความเข้ม',  icon:'coffee',      color:'var(--esp)'},
@@ -2885,6 +2883,7 @@ const OPTSET_META = {
 
 function renderOptionSets(){
  if(!DB.optionSets) DB.optionSets={
+  sizes:    {label:'ขนาด',       default:'200ml',      items:['200ml','1000ml']},
   ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง']},
   sweet:    {label:'ความหวาน',   default:'50%',        items:['0%','25%','50%','75%','100%']},
   strength: {label:'ความเข้ม',   default:'50%',        items:['25%','50%','75%','100%']}
@@ -3028,6 +3027,7 @@ function filterCustomMgr(btn, filter){
 function openAddCustomOption(editKey){
  if(!DB.customOptions) DB.customOptions=[];
  if(!DB.optionSets) DB.optionSets={
+  sizes:    {label:'ขนาด',       default:'200ml',      items:['200ml','1000ml']},
   ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง']},
   sweet:    {label:'ความหวาน',   default:'50%',        items:['0%','25%','50%','75%','100%']},
   strength: {label:'ความเข้ม',   default:'50%',        items:['25%','50%','75%','100%']}
