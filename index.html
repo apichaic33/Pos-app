@@ -2562,7 +2562,7 @@ function renderReport(days){
  document.getElementById('rProfit').textContent='฿'+profit.toLocaleString();
  document.getElementById('rOrders').textContent=totalOrders;
  document.getElementById('rAvg').textContent='฿'+avgOrder;
- renderBarChart();renderTopProducts();renderStaffLogSummary();renderPromoPerf();
+ renderBarChart();renderTopProducts(filtered);renderStaffLogSummary();renderPromoPerf(filtered);
 }
 function renderBarChart(){
  const days=['อา','จ','อ','พ','พฤ','ศ','ส'];
@@ -2573,16 +2573,17 @@ function renderBarChart(){
  const dayEnd=dayStart+86400000;
  const orders=DB.orders.filter(o=>o.ts>=dayStart&&o.ts<dayEnd);
  const rev=orders.reduce((s,o)=>s+o.total,0);
- const prof=orders.reduce((s,o)=>s+o.items.reduce((ss,i)=>{const m=DB.menus.find(x=>x.id===i.menuId);return ss+(m?(m.price-m.cost)*i.qty:0);},0),0);
+ const prof=orders.reduce((s,o)=>s+o.items.reduce((ss,i)=>{const m=DB.menus.find(x=>x.id===i.menuId);return ss+(m?(i.price-m.cost)*i.qty-(i.autoPromoDisc||i.promoDisc||0):0);},0),0);
  bars.push({day:days[d.getDay()],rev,prof});
  }
  const maxVal=Math.max(...bars.map(b=>b.rev),1);
  document.getElementById('barChart').innerHTML=bars.map(b=>`
  <div class="cb-wrap"> <div style="display:flex;gap:2px;align-items:flex-end;height:52px"> <div class="cb-bar" style="height:${Math.round(b.rev/maxVal*48)+4}px;width:11px"></div> <div class="cb-bar profit" style="height:${Math.round(b.prof/maxVal*48)+4}px;width:11px"></div> </div> <span class="cb-lbl">${b.day}</span> </div> `).join('');
 }
-function renderTopProducts(){
+function renderTopProducts(filtered){
+ filtered=filtered||DB.orders;
  const sold={};
- DB.orders.forEach(o=>o.items.forEach(i=>{sold[i.menuId]=(sold[i.menuId]||0)+i.qty;}));
+ filtered.forEach(o=>o.items.forEach(i=>{sold[i.menuId]=(sold[i.menuId]||0)+i.qty;}));
  const ranked=DB.menus.map(m=>({...m,totalSold:sold[m.id]||0})).sort((a,b)=>b.totalSold-a.totalSold).slice(0,5);
  const medals=['1','2','3','4','5'];
  const maxSold=Math.max(...ranked.map(m=>m.totalSold),1);
@@ -2617,22 +2618,34 @@ function renderStaffLogSummary(){
        <div style="font-size:10px;color:var(--t4);margin-top:3px">${new Date(l.ts).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})}</div></div>
    </div>`).join('')+'</div>';
 }
-function renderPromoPerf(){
+function renderPromoPerf(filtered){
+ filtered=filtered||DB.orders;
  const el=document.getElementById('promoPerf');
  if(!DB.promos.length){el.innerHTML='<div style="padding:0 16px 8px;font-size:12px;color:var(--t4)">ยังไม่มีโปรโมชั่น</div>';return;}
- const maxUsed=Math.max(...DB.promos.map(p=>p.used||0),1);
+ // คำนวณ used/discount จาก filtered orders เท่านั้น
+ const promoStats={};
+ filtered.forEach(o=>{
+  const ids=[...new Set(o.items.map(i=>i.promoId||i.autoPromoId).filter(Boolean))];
+  ids.forEach(pid=>{
+   if(!promoStats[pid]) promoStats[pid]={used:0,discount:0};
+   promoStats[pid].used++;
+   promoStats[pid].discount+=o.items.filter(i=>(i.promoId===pid||i.autoPromoId===pid)).reduce((s,i)=>s+(i.promoDisc||i.autoPromoDisc||0),0);
+  });
+ });
+ const maxUsed=Math.max(...DB.promos.map(p=>(promoStats[p.id]||{}).used||0),1);
  el.innerHTML='<div style="padding:0 16px 8px">'+DB.promos.map(p=>{
-   const pct=Math.round((p.used||0)/maxUsed*100);
+   const st=promoStats[p.id]||{used:0,discount:0};
+   const pct=Math.round(st.used/maxUsed*100);
    return `<div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px 14px;margin-bottom:8px">
      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
        <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:var(--rf);background:${p.active?'var(--green-lt)':'var(--bg-dk)'};color:${p.active?'var(--green)':'var(--t4)'}">${p.active?'ใช้งาน':'ปิด'}</span>
        <div style="flex:1;font-size:12px;font-weight:700;color:var(--t1)">${p.name}</div>
-       <div style="text-align:right;flex-shrink:0"><div style="font-size:13px;font-weight:800;color:var(--cara)">${p.used||0}<span style="font-size:9px;font-weight:400;color:var(--t4)"> ครั้ง</span></div></div>
+       <div style="text-align:right;flex-shrink:0"><div style="font-size:13px;font-weight:800;color:var(--cara)">${st.used}<span style="font-size:9px;font-weight:400;color:var(--t4)"> ครั้ง</span></div></div>
      </div>
      <div style="font-size:10px;color:var(--t4);margin-bottom:6px">${getPromoDesc(p)}</div>
      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
        <div style="flex:1;height:4px;border-radius:2px;background:var(--bg-dk)"><div style="height:4px;border-radius:2px;background:var(--cara);width:${pct}%;transition:width .6s"></div></div>
-       <div style="font-size:10px;color:var(--red);font-weight:700;flex-shrink:0">-฿${(p.discount||0).toLocaleString()}</div>
+       <div style="font-size:10px;color:var(--red);font-weight:700;flex-shrink:0">-฿${st.discount.toLocaleString()}</div>
      </div></div>`;
  }).join('')+'</div>';
 }
