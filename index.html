@@ -1832,22 +1832,21 @@ function addFromModal(){
  scheduleSync();
  return;
  }
- // Regular order item — log the add action
  // Regular order item — calculate final price with custom extras
  const extraCount = Object.keys(pdCustom).length;
+ // คำนวณราคา custom (ต้อง declare ก่อนใช้)
+ const customExtraPrice = Object.keys(pdCustom).reduce((s,k)=>{
+  const g=(DB.customOptions||[]).find(o=>o.key===k);
+  return s+(g?g.price:10);
+ },0);
  const optSurcharge2 = calcOptionSurcharge();
- const finalPrice = pdItem.price + (customExtraPrice||0) + optSurcharge2;
+ const finalPrice = pdItem.price + customExtraPrice + optSurcharge2;
  const CUST_LABELS_LOCAL={extraShot:'เพิ่มช็อต',extraMatcha:'เพิ่มมัทฉะ',extraCocoa:'เพิ่มโกโก้'};
  const customNote = Object.keys(pdCustom).map(k=>{
   const g=(DB.customOptions||[]).find(o=>o.key===k);
   if(g) return g.label;
   return CUST_LABELS_LOCAL[k]||(k.startsWith('dyn:')?k.slice(4):k);
  }).join(', ');
- // คำนวณราคา custom
- const customExtraPrice = Object.keys(pdCustom).reduce((s,k)=>{
-  const g=(DB.customOptions||[]).find(o=>o.key===k);
-  return s+(g?g.price:10);
- },0);
  const noteVal = [document.getElementById('pdNote').value, customNote].filter(Boolean).join(' · ');
  // capture promo if selected
  const isPromo = document.getElementById('pdIsPromo').checked;
