@@ -1940,6 +1940,11 @@ function renderOrderPanel(){
  const customTags=Object.values(CUST_LABELS).filter(v=>noteParts.includes(v));
  const otherNote=noteParts.filter(p=>!Object.values(CUST_LABELS).includes(p)).join(' · ');
  const metaLine=[i.size,i.sweet&&i.sweet!=='50%'&&i.sweet!=='ปกติ'?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:'',i.ice&&i.ice!=='ปกติ'?i.ice:'',otherNote].filter(Boolean).join(' · ');
+ const icePrice2   = getOptItemPrice('ice', i.ice);
+ const sweetPrice2 = getOptItemPrice('sweet', i.sweet);
+ const strPrice2   = getOptItemPrice('strength', i.strength);
+ const sizePrice2  = getOptItemPrice('sizes', i.size);
+ const optExtra    = icePrice2+sweetPrice2+strPrice2+sizePrice2;
  const disc=i.autoPromoDisc||0;
  const rawTotal=i.price*i.qty;
  const netTotal=rawTotal-disc;
@@ -2360,11 +2365,6 @@ function printSalesCopy(orderId){
  const noteParts=(i.note||'').split(' · ');
  const cTags=noteParts.filter(p=>allCustVals.includes(p));
  const otherNote=noteParts.filter(p=>!allCustVals.includes(p)&&p.trim()).join(' · ');
- const icePrice   = getOptItemPrice('ice', i.ice);
- const sweetPrice  = getOptItemPrice('sweet', i.sweet);
- const strPrice    = getOptItemPrice('strength', i.strength);
- const sizePrice   = getOptItemPrice('sizes', i.size);
- const optExtra    = icePrice+sweetPrice+strPrice+sizePrice;
  const opts=[i.ice,i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'',otherNote].filter(Boolean).join(' · ');
  const basePerCup=i.price-cTags.length*10;
  const totalP=i.price*i.qty;
