@@ -1089,7 +1089,7 @@ textarea.f-input{resize:none;}
   <span id="opPromoLabel" style="font-size:10px;font-weight:700;color:var(--gold)"></span>
  </div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px;display:flex;align-items:center;gap:5px" onclick="requestVoidOrder()"><span class="mi" style="font-size:16px">delete_sweep</span>ยกเลิก</button> <button class="btn-confirm" style="display:flex;align-items:center;justify-content:center;gap:6px" onclick="confirmOrder()"><span class="mi" style="font-size:18px">receipt_long</span>ยืนยัน ออเดอร์</button> </div> </div>
 </div> <!-- RECEIPT PAGE -->
-<div class="receipt-page" id="receiptPage"> <div class="receipt-topbar"> <span class="receipt-title">ใบเสร็จ</span> <button class="btn btn-secondary btn-sm" onclick="closeReceiptPage()" style="flex-shrink:0"> ปิด</button> </div> <div class="receipt-body"> <div class="receipt-paper" id="receiptPaper" style="width:302px;margin:0 auto"></div> </div> <div class="receipt-footer-actions"> <button class="btn-new-order" onclick="newOrderFromReceipt()">ออเดอร์ถัดไป</button> <button class="btn-print" onclick="saveReceiptAsImage(document.getElementById('receiptWrap'))" style="display:flex;align-items:center;gap:5px"><span class="mi" style="font-size:16px">download</span>บันทึกรูป</button> </div>
+<div class="receipt-page" id="receiptPage"> <div class="receipt-topbar"> <span class="receipt-title">ใบเสร็จ</span> <button class="btn btn-secondary btn-sm" onclick="closeReceiptPage()" style="flex-shrink:0"> ปิด</button> </div> <div class="receipt-body"> <div class="receipt-paper" id="receiptPaper" style="width:302px;margin:0 auto"></div> </div> <div class="receipt-footer-actions"> <button class="btn-new-order" onclick="newOrderFromReceipt()">ออเดอร์ถัดไป</button> <button class="btn-print" onclick="saveReceiptAsImage()style="display:flex;align-items:center;gap:5px"><span class="mi" style="font-size:16px">download</span>บันทึกรูป</button> </div>
 </div> <!-- ORDER DETAIL PAGE (slide from right) -->
 <div class="order-detail-page" id="orderDetailPage"> <div class="od-topbar"> <button class="btn btn-secondary btn-sm" onclick="closeOrderDetail()">← กลับ</button> <span class="od-title" id="odTitle">รายละเอียดบิล</span> <div id="odStatusBadge"></div> </div> <div class="od-body" id="odBody"></div>
 </div> <!-- APPROVAL MODAL (Employee ID) -->
@@ -2335,12 +2335,10 @@ function renderReceipt(order){
  <div class="receipt-row total"><span>รวมทั้งสิ้น</span><span>฿${order.total.toLocaleString()}</span></div> <div class="receipt-meta">ขอบคุณที่ใช้บริการ</div> `;
 }
 function printReceipt(){
- const el = document.getElementById('receiptPaper');
- // ใช้ html2canvas บันทึกเป็นรูป
- saveReceiptAsImage(el);
+ saveReceiptAsImage();
 }
 
-async function saveReceiptAsImage(el){
+async function saveReceiptAsImage(){
  // โหลด html2canvas ถ้ายังไม่มี
  if(!window.html2canvas){
   await new Promise((res,rej)=>{
@@ -4688,9 +4686,32 @@ function renderSalesToday(){
  +'</div>';
  return '<div style="margin:0 16px 10px;background:var(--bg);border-radius:var(--r4);box-shadow:var(--neu-out-sm);overflow:hidden;opacity:'+opacity+'">'
  +'<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer" onclick="toggleBillDetail(\''+detailId+'\')">'
- +'<div style="width:46px;height:46px;border-radius:var(--r3);background:'+bgEsp+';display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(42,24,16,.25)">'
- +'<span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--fh)">'+(function(id){var s=String(id);var parts=s.split('-');if(parts.length>=3){var last=parts[parts.length-1];var n=parseInt(last,10);return isNaN(n)?last.slice(0,5):n;}return s;})(o.id)+'</span>'
- +'</div>'
+ +(function(){
+  // สร้าง icon stack จากสีเมนูในออเดอร์
+  var icons=o.items.slice(0,3).map(function(i){
+   var m=DB.menus.find(function(x){return x.id===i.menuId;});
+   var col=m?m.color:i.color||'#5C3317';
+   var ico=m?m.icon:i.icon||'?';
+   return '<div style="width:28px;height:28px;border-radius:50%;background:'+col+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:rgba(255,255,255,.95);box-shadow:0 2px 6px rgba(0,0,0,.25);border:2px solid var(--bg)">'+ico+'</div>';
+  });
+  var count=o.items.reduce(function(s,i){return s+i.qty;},0);
+  if(o.items.length<=1){
+   // 1 เมนู → icon ใหญ่เดียว
+   var m=DB.menus.find(function(x){return x.id===o.items[0].menuId;});
+   var col=m?m.color:o.items[0].color||'#5C3317';
+   var ico=m?m.icon:o.items[0].icon||'?';
+   return '<div style="width:46px;height:46px;border-radius:var(--r3);background:'+col+';display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,.2)">'
+    +'<span style="font-size:18px;font-weight:900;color:rgba(255,255,255,.95)">'+ico+'</span>'
+    +'</div>';
+  }
+  // 2-3 เมนู → stack circles
+  var overlap=icons.length===2?'-8px':'-10px';
+  return '<div style="width:46px;height:46px;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center">'
+   +'<div style="display:flex;align-items:center">'
+   +icons.map(function(ic,idx){return '<div style="margin-left:'+(idx===0?'0':overlap)+';z-index:'+(10-idx)+'">'+ic+'</div>';}).join('')
+   +'</div>'
+   +'</div>';
+ })()
  +'<div style="flex:1">'
  +'<div style="font-size:9px;font-weight:500;color:var(--t4);font-family:var(--fh);letter-spacing:.3px;margin-bottom:2px">'+o.id+'</div>'
  +'<div style="font-size:12px;font-weight:700;color:var(--t1);font-family:var(--fh);display:flex;align-items:center;gap:6px">'
