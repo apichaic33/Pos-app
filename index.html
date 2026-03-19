@@ -1276,6 +1276,35 @@ textarea.f-input{resize:none;}
 </div> </div> <div class="f-group" id="storeExpiryGroup"><label class="f-label">วันหมดอายุ</label><input class="f-input" id="storeItemExpiry" type="date"></div> <div class="f-group" id="storeStatusGroup" style="display:none"><label class="f-label">สถานะ</label><select class="f-select" id="storeItemStatus"><option value="active">ปกติ</option><option value="damaged">เสียหาย</option><option value="retired">เลิกใช้</option></select></div> <div class="f-group"><label class="f-label">หมายเหตุ</label><input class="f-input" id="storeItemNote"></div> </div> <div class="modal-foot"> <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-store-item')">ยกเลิก</button> <button class="btn btn-dark" style="flex:2" onclick="saveStoreItem()">บันทึก</button> </div> </div>
 </div> <!-- MODAL: Recipe -->
 <!-- MODAL: SETUP MODE (First-run) -->
+<div class="modal-overlay" id="modal-optset-item">
+ <div class="modal-sheet">
+  <div class="modal-handle"></div>
+  <div class="modal-head">
+   <span class="modal-title" style="display:flex;align-items:center;gap:6px">
+    <span class="mi" style="font-size:18px;color:var(--gold)" id="optsetItemIcon">tune</span>
+    <span id="optsetItemTitle">เพิ่มตัวเลือก</span>
+   </span>
+  </div>
+  <div class="modal-body">
+   <input type="hidden" id="optsetItemKey">
+   <input type="hidden" id="optsetItemIdx" value="-1">
+   <div class="f-group">
+    <label class="f-label">ชื่อตัวเลือก</label>
+    <input class="f-input" id="optsetItemLabel" placeholder="เช่น 400ml, น้อยมาก, เย็นจัด" maxlength="20">
+   </div>
+   <div class="f-group">
+    <label class="f-label">ราคาเพิ่มเติม (฿)</label>
+    <input class="f-input" id="optsetItemPrice" type="number" value="0" min="0" max="999" placeholder="0 = ฟรี">
+    <div style="font-size:10px;color:var(--t4);margin-top:4px">ใส่ 0 ถ้าไม่มีค่าใช้จ่ายเพิ่ม</div>
+   </div>
+   <div style="color:var(--red);font-size:12px;min-height:18px" id="optsetItemError"></div>
+  </div>
+  <div class="modal-foot">
+   <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-optset-item')">ยกเลิก</button>
+   <button class="btn btn-dark" style="flex:2" onclick="saveOptSetItem()">บันทึก</button>
+  </div>
+ </div>
+</div>
 <div class="modal-overlay" id="modal-custom-opt">
  <div class="modal-sheet">
   <div class="modal-handle"></div>
@@ -1481,10 +1510,10 @@ let DB = {
  nextId: 1,
  customOptions: [], // global custom options pool: [{id, key, label, price, active}]
  optionSets: {
-  sizes:    {label:'ขนาด',       default:'200ml',      items:['200ml','1000ml']},
-  ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง']},
-  sweet:    {label:'ความหวาน',   default:'50%',        items:['0%','25%','50%','75%','100%']},
-  strength: {label:'ความเข้ม',   default:'50%',        items:['25%','50%','75%','100%']}
+  sizes:    {label:'ขนาด',       default:'200ml',      items:[{label:'200ml',price:0},{label:'1000ml',price:30}]},
+  ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:[{label:'มีน้ำแข็ง',price:0},{label:'ไม่มีน้ำแข็ง',price:0}]},
+  sweet:    {label:'ความหวาน',   default:'50%',        items:[{label:'0%',price:0},{label:'25%',price:0},{label:'50%',price:0},{label:'75%',price:0},{label:'100%',price:0}]},
+  strength: {label:'ความเข้ม',   default:'50%',        items:[{label:'25%',price:0},{label:'50%',price:0},{label:'75%',price:0},{label:'100%',price:0}]}
  }
 };
 
@@ -1609,11 +1638,17 @@ function renderProductGrid(cat){
 let pdItem=null,pdQtyVal=1,pdSize='',pdSweet='50%',pdIce='มีน้ำแข็ง',pdStrength='50%',pdCustom={};
 
 function _neuToggleHtml(items, type, defaultVal){
- return items.map(v=>`
-  <label class="neu-tog-row${v===defaultVal?' on':''}" id="neut_${type}_${v.replace(/[^a-z0-9]/gi,'_')}" onclick="selectNeuOpt(this,'${type}','${v}')">
+ return items.map(v=>{
+  const lbl = typeof v==='object' ? v.label : v;
+  const prc = typeof v==='object' ? (v.price||0) : 0;
+  const isOn = lbl===defaultVal;
+  const safeId = lbl.replace(/[^a-z0-9]/gi,'_');
+  return `<label class="neu-tog-row${isOn?' on':''}" id="neut_${type}_${safeId}" onclick="selectNeuOpt(this,'${type}','${lbl}')">
    <div class="neu-tog-track"><div class="neu-tog-thumb"></div></div>
-   <span class="neu-tog-name">${v}</span>
-  </label>`).join('');
+   <span class="neu-tog-name">${lbl}${prc>0?`<span style="font-size:9px;color:var(--gold);margin-left:4px;font-weight:700">+฿${prc}</span>`:''}
+   </span>
+  </label>`;
+ }).join('');
 }
 function openProductModal(id){
  pdItem=DB.menus.find(m=>m.id===id);if(!pdItem)return;
@@ -1655,19 +1690,26 @@ function openProductModal(id){
  const slider=document.getElementById('pdStaffSlider');
  if(slider) slider.style.background='';
  // ── Render Neumorphic radio toggles ──
- const _sizes_pool = (DB.optionSets&&DB.optionSets.sizes&&DB.optionSets.sizes.items.length) ? DB.optionSets.sizes.items : ['200ml','1000ml'];
- const _sizes_use  = (pdItem.sizes&&pdItem.sizes.length) ? pdItem.sizes : _sizes_pool;
+ const _sizes_pool = (DB.optionSets&&DB.optionSets.sizes&&DB.optionSets.sizes.items.length) ? DB.optionSets.sizes.items : [{label:'200ml',price:0}];
+ const _sizes_labels = _sizes_pool.map(getOptLabel);
+ // per-menu sizes: กรองเฉพาะที่อยู่ใน pool
+ const _menu_sizes = (pdItem.sizes&&pdItem.sizes.length) ? pdItem.sizes.filter(s=>_sizes_labels.includes(s)) : [];
+ const _sizes_use  = _menu_sizes.length ? _menu_sizes : _sizes_labels;
  const _sizes_def  = (DB.optionSets&&DB.optionSets.sizes) ? DB.optionSets.sizes.default : '200ml';
  pdSize = _sizes_use.includes(_sizes_def) ? _sizes_def : _sizes_use[0];
  document.getElementById('pdSizes').innerHTML = _neuToggleHtml(_sizes_use, 'size', pdSize);
  const _os = DB.optionSets||{};
- const _sweet = _os.sweet||{items:['0%','25%','50%','75%','100%'],default:'50%'};
- const _ice   = _os.ice||{items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง'],default:'มีน้ำแข็ง'};
- const _str   = _os.strength||{items:['25%','50%','75%','100%'],default:'50%'};
+ const _sweet = _os.sweet||{items:[],default:'50%'};
+ const _ice   = _os.ice||{items:[],default:'มีน้ำแข็ง'};
+ const _str   = _os.strength||{items:[],default:'50%'};
  pdSweet=_sweet.default; pdIce=_ice.default; pdStrength=_str.default;
- document.getElementById('pdSweet').innerHTML    = _neuToggleHtml(_sweet.items,'sweet',_sweet.default);
- document.getElementById('pdIce').innerHTML      = _neuToggleHtml(_ice.items,'ice',_ice.default);
- document.getElementById('pdStrength').innerHTML = _neuToggleHtml(_str.items,'strength',_str.default);
+ // แปลง items → labels สำหรับ _neuToggleHtml
+ const sweetLabels = (_sweet.items||[]).map(getOptLabel);
+ const iceLabels   = (_ice.items||[]).map(getOptLabel);
+ const strLabels   = (_str.items||[]).map(getOptLabel);
+ document.getElementById('pdSweet').innerHTML    = _neuToggleHtml(sweetLabels.length?sweetLabels:['0%','25%','50%','75%','100%'],'sweet',_sweet.default);
+ document.getElementById('pdIce').innerHTML      = _neuToggleHtml(iceLabels.length?iceLabels:['มีน้ำแข็ง','ไม่มีน้ำแข็ง'],'ice',_ice.default);
+ document.getElementById('pdStrength').innerHTML = _neuToggleHtml(strLabels.length?strLabels:['25%','50%','75%','100%'],'strength',_str.default);
  // Custom options
  pdCustom={};
  const custEl=document.getElementById('pdCustomSection');
@@ -1707,10 +1749,11 @@ function selectNeuOpt(label, type, val){
  });
  // ON row ที่กด
  label.classList.add('on');
- if(type==='size'){pdSize=val;updatePdPrice();}
- if(type==='sweet')pdSweet=val;
- if(type==='ice')pdIce=val;
+ if(type==='size')    pdSize=val;
+ if(type==='sweet')   pdSweet=val;
+ if(type==='ice')     pdIce=val;
  if(type==='strength')pdStrength=val;
+ updatePdPrice(); // อัปเดตราคาทุกครั้งที่เปลี่ยน option
 }
 function toggleCustomOpt(key, checkbox){
  if(checkbox.checked) pdCustom[key]=true; else delete pdCustom[key];
@@ -1733,13 +1776,25 @@ function toggleCustomOpt(key, checkbox){
  }
  updatePdPrice();
 }
+function calcOptionSurcharge(){
+ // รวมราคาเพิ่มจาก ice/sweet/strength/size
+ return getOptItemPrice('sizes', pdSize)
+      + getOptItemPrice('ice', pdIce)
+      + getOptItemPrice('sweet', pdSweet)
+      + getOptItemPrice('strength', pdStrength);
+}
 function updatePdPrice(){
  if(!pdItem)return;
  const extraCount=Object.keys(pdCustom).length;
- const unitPrice=pdItem.price + extraCount*10;
+ const customExtraPrice2 = Object.keys(pdCustom).reduce((s,k)=>{
+  const g=(DB.customOptions||[]).find(o=>o.key===k);
+  return s+(g?g.price:10);
+ },0);
+ const optSurcharge = calcOptionSurcharge();
+ const unitPrice = pdItem.price + customExtraPrice2 + optSurcharge;
  const total=unitPrice * pdQtyVal;
  const unitEl=document.getElementById('pdUnitPrice');
- if(unitEl) unitEl.textContent='฿'+unitPrice;
+ if(unitEl) unitEl.textContent='฿'+unitPrice+(optSurcharge>0?` (+฿${optSurcharge} option)`:'');
  document.getElementById('pdPrice').textContent='฿'+total.toLocaleString();
 }
 function changePdQty(d){
@@ -1780,7 +1835,8 @@ function addFromModal(){
  // Regular order item — log the add action
  // Regular order item — calculate final price with custom extras
  const extraCount = Object.keys(pdCustom).length;
- const finalPrice = pdItem.price + extraCount * 10;
+ const optSurcharge2 = calcOptionSurcharge();
+ const finalPrice = pdItem.price + (customExtraPrice||0) + optSurcharge2;
  const CUST_LABELS_LOCAL={extraShot:'เพิ่มช็อต',extraMatcha:'เพิ่มมัทฉะ',extraCocoa:'เพิ่มโกโก้'};
  const customNote = Object.keys(pdCustom).map(k=>{
   const g=(DB.customOptions||[]).find(o=>o.key===k);
@@ -1892,7 +1948,7 @@ function renderOrderPanel(){
   <div class="op-item-icon" style="background:${i.color}">${i.icon}</div>
   <div class="op-item-info">
    <div class="op-item-name">${i.name}</div>
-   <div class="op-item-meta">${metaLine}</div>
+   <div class="op-item-meta">${metaLine}${optExtra>0?` <span style="color:var(--gold);font-weight:700">+฿${optExtra}</span>`:''}</div>
    ${customTags.length?`<div style="font-size:9px;color:var(--blue-md);font-weight:600;margin-top:1px">${customTags.map(t=>t+' +฿10').join(' · ')}</div>`:''}
    ${promo?`<div style="display:flex;align-items:center;gap:4px;margin-top:3px">
     <span style="font-size:9px;font-weight:700;padding:1px 6px;border-radius:var(--rf);background:var(--red-lt);color:var(--red)">🏷 ${promo.name}</span>
@@ -2305,6 +2361,11 @@ function printSalesCopy(orderId){
  const noteParts=(i.note||'').split(' · ');
  const cTags=noteParts.filter(p=>allCustVals.includes(p));
  const otherNote=noteParts.filter(p=>!allCustVals.includes(p)&&p.trim()).join(' · ');
+ const icePrice   = getOptItemPrice('ice', i.ice);
+ const sweetPrice  = getOptItemPrice('sweet', i.sweet);
+ const strPrice    = getOptItemPrice('strength', i.strength);
+ const sizePrice   = getOptItemPrice('sizes', i.size);
+ const optExtra    = icePrice+sweetPrice+strPrice+sizePrice;
  const opts=[i.ice,i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'',otherNote].filter(Boolean).join(' · ');
  const basePerCup=i.price-cTags.length*10;
  const totalP=i.price*i.qty;
@@ -2398,10 +2459,12 @@ function renderSizeCheckboxGroup(selectedSizes){
  grp.innerHTML = '';
  hidden.forEach(h=>grp.appendChild(h));
  pool.forEach((s,i)=>{
-  const isChecked = selectedSizes ? selectedSizes.includes(s) : (i===0);
+  const sl = getOptLabel(s);
+  const sp = getOptPrice(s);
+  const isChecked = selectedSizes ? selectedSizes.includes(sl) : (i===0);
   const lbl = document.createElement('label');
   lbl.style.cssText='display:flex;align-items:center;gap:6px;font-size:13px;background:var(--bg);border-radius:var(--r2);padding:6px 10px;box-shadow:var(--neu-out-xs);cursor:pointer';
-  lbl.innerHTML=`<input type="checkbox" class="size-dynamic-cb" data-size="${s}" ${isChecked?'checked':''}> ${s}`;
+  lbl.innerHTML=`<input type="checkbox" class="size-dynamic-cb" data-size="${sl}" ${isChecked?'checked':''}> ${sl}${sp>0?' <span style="font-size:10px;color:var(--gold);font-weight:700">+฿'+sp+'</span>':''}`;
   grp.appendChild(lbl);
  });
 }
@@ -2874,6 +2937,18 @@ function renderPromoPerf(filtered){
    จัดการ น้ำแข็ง / ความหวาน / ความเข้ม
    ══════════════════════════════════════════ */
 
+// helper: optionSets item อาจเป็น string (เก่า) หรือ {label,price} (ใหม่)
+function getOptLabel(item){ return typeof item==='object' ? item.label : item; }
+function getOptPrice(item){ return typeof item==='object' ? (item.price||0) : 0; }
+function getOptDefault(set){ return set.default||''; }
+// หา price ของ option ที่เลือก
+function getOptItemPrice(setKey, selectedLabel){
+ const set = DB.optionSets&&DB.optionSets[setKey];
+ if(!set) return 0;
+ const found = (set.items||[]).find(i=>getOptLabel(i)===selectedLabel);
+ return found ? getOptPrice(found) : 0;
+}
+
 const OPTSET_META = {
  sizes:    {label:'ขนาด',      icon:'straighten', color:'var(--cara)'},
  ice:      {label:'น้ำแข็ง',   icon:'ac_unit',    color:'var(--blue)'},
@@ -2883,10 +2958,10 @@ const OPTSET_META = {
 
 function renderOptionSets(){
  if(!DB.optionSets) DB.optionSets={
-  sizes:    {label:'ขนาด',       default:'200ml',      items:['200ml','1000ml']},
-  ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง']},
-  sweet:    {label:'ความหวาน',   default:'50%',        items:['0%','25%','50%','75%','100%']},
-  strength: {label:'ความเข้ม',   default:'50%',        items:['25%','50%','75%','100%']}
+  sizes:    {label:'ขนาด',       default:'200ml',      items:[{label:'200ml',price:0},{label:'1000ml',price:30}]},
+  ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:[{label:'มีน้ำแข็ง',price:0},{label:'ไม่มีน้ำแข็ง',price:0}]},
+  sweet:    {label:'ความหวาน',   default:'50%',        items:[{label:'0%',price:0},{label:'25%',price:0},{label:'50%',price:0},{label:'75%',price:0},{label:'100%',price:0}]},
+  strength: {label:'ความเข้ม',   default:'50%',        items:[{label:'25%',price:0},{label:'50%',price:0},{label:'75%',price:0},{label:'100%',price:0}]}
  };
  const el = document.getElementById('optSetsContent');
  if(!el) return;
@@ -2912,8 +2987,9 @@ function renderOptionSets(){
      <div style="display:flex;align-items:center;gap:8px;background:var(--bg-dk);border-radius:var(--r2);padding:8px 12px">
       <span class="mi" style="font-size:14px;color:var(--t4);cursor:pointer" onclick="moveOptSetItem('${key}',${idx},-1)" title="ขึ้น">arrow_upward</span>
       <span class="mi" style="font-size:14px;color:var(--t4);cursor:pointer" onclick="moveOptSetItem('${key}',${idx},1)" title="ลง">arrow_downward</span>
-      <div style="flex:1;font-size:13px;font-weight:600;color:var(--t1)" id="optset-item-${key}-${idx}">${item}</div>
-      <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:var(--rf);background:${set.default===item?'var(--green-lt)':'var(--bg)'};color:${set.default===item?'var(--green)':'var(--t4)'};border:${set.default===item?'':'1px solid rgba(176,154,133,.2)'};cursor:pointer" onclick="setOptSetDefault('${key}','${item}')">${set.default===item?'✓ default':'set default'}</span>
+      <div style="flex:1;font-size:13px;font-weight:600;color:var(--t1)">${getOptLabel(item)}</div>
+      <span style="font-size:10px;font-weight:700;color:${getOptPrice(item)>0?'var(--gold)':'var(--t5)'}">+฿${getOptPrice(item)}</span>
+      <span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:var(--rf);background:${set.default===getOptLabel(item)?'var(--green-lt)':'var(--bg)'};color:${set.default===getOptLabel(item)?'var(--green)':'var(--t4)'};border:${set.default===getOptLabel(item)?'':'1px solid rgba(176,154,133,.2)'};cursor:pointer" onclick="setOptSetDefault('${key}','${getOptLabel(item)}')">${set.default===getOptLabel(item)?'✓ default':'default'}</span>
       <button onclick="editOptSetItem('${key}',${idx})" style="background:var(--blue-lt);color:var(--blue);border:none;border-radius:var(--rf);padding:4px 8px;font-size:10px;font-weight:700;cursor:pointer">แก้ไข</button>
       <button onclick="delOptSetItem('${key}',${idx})" style="background:var(--red-lt);color:var(--red);border:none;border-radius:var(--rf);padding:4px 8px;font-size:10px;font-weight:700;cursor:pointer"><span class="mi" style="font-size:13px">delete</span></button>
      </div>`).join('')}
@@ -2922,32 +2998,75 @@ function renderOptionSets(){
  }).join('');
 }
 
-function addOptSetItem(key){
- const val = prompt('ชื่อตัวเลือกใหม่ (เช่น 75%, น้อยมาก):');
- if(!val||!val.trim()) return;
- if(!DB.optionSets[key]) return;
- if(DB.optionSets[key].items.includes(val.trim())){toast('มีตัวเลือกนี้อยู่แล้ว');return;}
- DB.optionSets[key].items.push(val.trim());
- scheduleSync(); renderOptionSets();
- toast('เพิ่ม "'+val.trim()+'" แล้ว');
- // refresh edit menu ถ้าเปิดอยู่
- if(document.getElementById('modal-add-menu').classList.contains('open')) renderSizeCheckboxGroup();
+function openOptSetItemModal(key, idx){
+ const meta = OPTSET_META[key]||{label:key,icon:'tune',color:'var(--t3)'};
+ document.getElementById('optsetItemKey').value = key;
+ document.getElementById('optsetItemIdx').value = idx===null||idx===undefined ? -1 : idx;
+ document.getElementById('optsetItemIcon').textContent = meta.icon;
+ document.getElementById('optsetItemIcon').style.color = meta.color;
+ document.getElementById('optsetItemError').textContent = '';
+ const isEdit = idx!==null && idx!==undefined && idx>=0;
+ document.getElementById('optsetItemTitle').textContent = isEdit ? 'แก้ไขตัวเลือก '+meta.label : 'เพิ่มตัวเลือก '+meta.label;
+ if(isEdit){
+  const cur = DB.optionSets[key].items[idx];
+  document.getElementById('optsetItemLabel').value = getOptLabel(cur);
+  document.getElementById('optsetItemPrice').value = getOptPrice(cur);
+ } else {
+  document.getElementById('optsetItemLabel').value = '';
+  document.getElementById('optsetItemPrice').value = '0';
+ }
+ openModal('modal-optset-item');
+ setTimeout(()=>document.getElementById('optsetItemLabel').focus(),200);
 }
 
-function editOptSetItem(key, idx){
- const old = DB.optionSets[key].items[idx];
- const val = prompt('แก้ไขตัวเลือก:', old);
- if(!val||!val.trim()||val.trim()===old) return;
- DB.optionSets[key].items[idx] = val.trim();
- if(DB.optionSets[key].default===old) DB.optionSets[key].default=val.trim();
- scheduleSync(); renderOptionSets();
+function saveOptSetItem(){
+ const key   = document.getElementById('optsetItemKey').value;
+ const idx   = parseInt(document.getElementById('optsetItemIdx').value);
+ const label = document.getElementById('optsetItemLabel').value.trim();
+ const price = parseInt(document.getElementById('optsetItemPrice').value)||0;
+ const errEl = document.getElementById('optsetItemError');
+ if(!label){ errEl.textContent='กรุณาใส่ชื่อตัวเลือก'; return; }
+ const set = DB.optionSets[key];
+ if(!set){ errEl.textContent='ไม่พบ option set'; return; }
+ const isEdit = idx>=0;
+ if(!isEdit && set.items.find(i=>getOptLabel(i)===label)){
+  errEl.textContent='มีตัวเลือกนี้อยู่แล้ว'; return;
+ }
+ const newItem = price>0 ? {label, price} : label;
+ if(isEdit){
+  const oldLabel = getOptLabel(set.items[idx]);
+  set.items[idx] = newItem;
+  if(set.default===oldLabel) set.default = label;
+ } else {
+  set.items.push(newItem);
+ }
+ closeModal('modal-optset-item');
+ scheduleSync();
+ renderOptionSets();
+ // อัปเดต popup ถ้าเปิดอยู่
+ if(document.getElementById('modal-product')&&document.getElementById('modal-product').classList.contains('open')){
+  const _os=DB.optionSets||{};
+  const _ice=_os.ice||{items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง'],default:'มีน้ำแข็ง'};
+  const _sweet=_os.sweet||{items:['0%','25%','50%','75%','100%'],default:'50%'};
+  const _str=_os.strength||{items:['25%','50%','75%','100%'],default:'50%'};
+  if(key==='ice')      document.getElementById('pdIce').innerHTML      = _neuToggleHtml(_ice.items,'ice',pdIce);
+  if(key==='sweet')    document.getElementById('pdSweet').innerHTML    = _neuToggleHtml(_sweet.items,'sweet',pdSweet);
+  if(key==='strength') document.getElementById('pdStrength').innerHTML = _neuToggleHtml(_str.items,'strength',pdStrength);
+ }
+ toast((isEdit?'แก้ไข':'เพิ่ม')+' "'+label+'" แล้ว'+(price>0?' (+฿'+price+')':''));
 }
+
+function addOptSetItem(key){
+ openOptSetItemModal(key, null);
+}
+function editOptSetItem(key, idx){ openOptSetItemModal(key, idx); }
 
 function delOptSetItem(key, idx){
  const item = DB.optionSets[key].items[idx];
- if(!confirm('ลบ "'+item+'" ?')) return;
+ const lbl = getOptLabel(item);
+ if(!confirm('ลบ "'+lbl+'" ?')) return;
  DB.optionSets[key].items.splice(idx,1);
- if(DB.optionSets[key].default===item) DB.optionSets[key].default=DB.optionSets[key].items[0]||'';
+ if(DB.optionSets[key].default===lbl) DB.optionSets[key].default=getOptLabel(DB.optionSets[key].items[0]||'');
  scheduleSync(); renderOptionSets();
 }
 
@@ -3027,10 +3146,10 @@ function filterCustomMgr(btn, filter){
 function openAddCustomOption(editKey){
  if(!DB.customOptions) DB.customOptions=[];
  if(!DB.optionSets) DB.optionSets={
-  sizes:    {label:'ขนาด',       default:'200ml',      items:['200ml','1000ml']},
-  ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:['มีน้ำแข็ง','ไม่มีน้ำแข็ง']},
-  sweet:    {label:'ความหวาน',   default:'50%',        items:['0%','25%','50%','75%','100%']},
-  strength: {label:'ความเข้ม',   default:'50%',        items:['25%','50%','75%','100%']}
+  sizes:    {label:'ขนาด',       default:'200ml',      items:[{label:'200ml',price:0},{label:'1000ml',price:30}]},
+  ice:      {label:'น้ำแข็ง',    default:'มีน้ำแข็ง', items:[{label:'มีน้ำแข็ง',price:0},{label:'ไม่มีน้ำแข็ง',price:0}]},
+  sweet:    {label:'ความหวาน',   default:'50%',        items:[{label:'0%',price:0},{label:'25%',price:0},{label:'50%',price:0},{label:'75%',price:0},{label:'100%',price:0}]},
+  strength: {label:'ความเข้ม',   default:'50%',        items:[{label:'25%',price:0},{label:'50%',price:0},{label:'75%',price:0},{label:'100%',price:0}]}
  };
  const existing = editKey ? DB.customOptions.find(o=>o.key===editKey) : null;
  const title = existing ? 'แก้ไข Custom Option' : 'เพิ่ม Custom Option ใหม่';
@@ -4562,7 +4681,19 @@ function updateSyncUI(){
 }
 function saveLocal(){try{localStorage.setItem(LS_KEY,JSON.stringify(DB));localStorage.setItem(LS_DIRTY,'true');}catch(e){}}
 function loadLocal(){
- try{const raw=localStorage.getItem(LS_KEY);if(!raw)return false;const saved=JSON.parse(raw);Object.keys(saved).forEach(k=>{if(!(k in DB))return;const v=saved[k];if(Array.isArray(DB[k])&&!Array.isArray(v))return;if(k==='nextId'&&typeof v!=='number')return;DB[k]=v;});return true;}
+ try{const raw=localStorage.getItem(LS_KEY);if(!raw)return false;const saved=JSON.parse(raw);Object.keys(saved).forEach(k=>{
+   if(!(k in DB))return;
+   const v=saved[k];
+   if(Array.isArray(DB[k])&&!Array.isArray(v))return;
+   if(k==='nextId'&&typeof v!=='number')return;
+   // deep merge objects (optionSets, customOptions)
+   if(k==='optionSets'&&v&&typeof v==='object'&&!Array.isArray(v)){
+    DB[k]=DB[k]||{};
+    Object.keys(v).forEach(sk=>{ DB[k][sk]=v[sk]; });
+    return;
+   }
+   DB[k]=v;
+  });return true;}
  catch(e){localStorage.removeItem(LS_KEY);localStorage.removeItem(LS_DIRTY);return false;}
 }
 async function apiFetch(body){if(!isOnline)return null;try{const res=await fetch(SCRIPT_URL,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);return await res.json();}catch(e){console.error('[apiFetch] error:',e.message,body?.action);return null;}}
@@ -4611,7 +4742,12 @@ async function loadFromSheet(){
  }
 
  // ─── โหลดสำเร็จ ─────────────────────────────────────────
- Object.keys(result).forEach(k=>{if(k in DB)DB[k]=result[k];});
+ const _LOCAL_ONLY = ['optionSets','customOptions'];
+ Object.keys(result).forEach(k=>{
+  if(!(k in DB)) return;
+  if(_LOCAL_ONLY.includes(k)) return;
+  DB[k]=result[k];
+ });
  if(!DB.customOptions) DB.customOptions=[];
  recalcNextId(); // ✅ sync nextId ให้ใหญ่กว่า ID สูงสุดใน Sheet
  saveLocal();localStorage.setItem(LS_DIRTY,'');
@@ -5129,6 +5265,15 @@ async function migratePins(){
 function migrateSizes(){
   // แปลง S/M/L → 200ml/1000ml ให้เมนูเก่า
   const MAP = {'S':'200ml','M':'200ml','L':'1000ml'};
+  // แปลง optionSets.items string → object ถ้ายังเป็น string อยู่
+  if(DB.optionSets){
+    Object.keys(DB.optionSets).forEach(k=>{
+      const set = DB.optionSets[k];
+      if(set&&set.items){
+        set.items = set.items.map(i=> typeof i==='string' ? {label:i,price:0} : i);
+      }
+    });
+  }
   let changed = false;
   for(const m of DB.menus){
     if(!m.sizes || !m.sizes.length){ m.sizes=['200ml']; changed=true; continue; }
