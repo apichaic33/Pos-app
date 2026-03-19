@@ -2338,8 +2338,38 @@ function printReceipt(){
  saveReceiptAsImage();
 }
 
+// ── helper: แปลง canvas → บันทึกลง Gallery ผ่าน Web Share API ──────────────
+async function saveImageToGallery(canvas, fname){
+ return new Promise(async (resolve)=>{
+  canvas.toBlob(async (blob)=>{
+   if(!blob){ toast('สร้างรูปไม่ได้'); resolve(false); return; }
+   // วิธีที่ 1: Web Share API (iOS Safari ≥15 / Android Chrome ≥76)
+   // → เปิด Share Sheet ของ OS ให้กด "บันทึกในรูปภาพ" ได้โดยตรง
+   if(navigator.canShare && navigator.canShare({files:[new File([blob],fname,{type:'image/png'})]})){
+    try{
+     await navigator.share({
+      files:[new File([blob],fname,{type:'image/png'})],
+      title:'ใบเสร็จ NALINCHa'
+     });
+     toast('เปิด Share Sheet แล้ว — เลือก "บันทึกในรูปภาพ" ✓');
+     resolve(true); return;
+    }catch(e){
+     if(e.name==='AbortError'){ toast('ยกเลิก'); resolve(false); return; }
+     // ถ้า share ล้มเหลวด้วยเหตุอื่น → fallback ด้านล่าง
+    }
+   }
+   // วิธีที่ 2: Fallback — a.download (desktop / browser ที่ไม่รองรับ Share API)
+   const url = URL.createObjectURL(blob);
+   const a = document.createElement('a');
+   a.href = url; a.download = fname; a.click();
+   setTimeout(()=>URL.revokeObjectURL(url), 3000);
+   toast('บันทึกรูปแล้ว ✓ (ดูที่ Downloads)');
+   resolve(true);
+  },'image/png');
+ });
+}
+
 async function saveReceiptAsImage(){
- // โหลด html2canvas ถ้ายังไม่มี
  if(!window.html2canvas){
   await new Promise((res,rej)=>{
    const s=document.createElement('script');
@@ -2348,7 +2378,6 @@ async function saveReceiptAsImage(){
    document.head.appendChild(s);
   });
  }
- // สร้าง wrapper 80mm (302px @96dpi)
  const wrap = document.createElement('div');
  wrap.style.cssText=[
   'position:fixed','top:-9999px','left:-9999px',
@@ -2363,14 +2392,9 @@ async function saveReceiptAsImage(){
    scale:3, useCORS:true, backgroundColor:'#ffffff',
    width:302, windowWidth:302
   });
-  // download
-  const link = document.createElement('a');
   const d = new Date();
   const fname = `receipt_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}.png`;
-  link.download = fname;
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-  toast('บันทึกใบเสร็จเป็นรูปแล้ว ✓');
+  await saveImageToGallery(canvas, fname);
  } catch(e) {
   toast('ไม่สามารถบันทึกรูปได้: '+e.message);
  } finally {
@@ -2541,11 +2565,9 @@ async function saveCopyAsImage(){
    windowWidth:302,windowHeight:actualH,
    scrollX:0,scrollY:0
   });
-  const link=document.createElement('a');
   const d=new Date();
-  link.download=`copy_receipt_${order.id}_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.png`;
-  link.href=canvas.toDataURL('image/png');link.click();
-  toast('บันทึกสำเนาใบเสร็จแล้ว ✓');
+  const fname=`copy_receipt_${order.id}_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.png`;
+  await saveImageToGallery(canvas, fname);
  }catch(e){toast('บันทึกไม่ได้: '+e.message);}
  finally{document.body.removeChild(wrap);}
 }
