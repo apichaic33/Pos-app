@@ -2457,7 +2457,7 @@ function buildCopyReceiptHTML(order, emp){
   </div>`;
  }).join('');
 
- return `<div style="font-family:Sarabun,sans-serif;color:#1A0F08;font-size:12px;width:302px;box-sizing:border-box;position:relative">
+ return `<div style="font-family:Sarabun,sans-serif;color:#1A0F08;font-size:12px;width:278px;box-sizing:border-box;position:relative;word-break:break-word;overflow-wrap:break-word">
   <!-- WATERMARK -->
   <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-30deg);font-size:32px;font-weight:900;color:rgba(180,50,40,.12);white-space:nowrap;pointer-events:none;z-index:0">สำเนาใบเสร็จ</div>
   <div style="position:relative;z-index:1">
@@ -2467,7 +2467,7 @@ function buildCopyReceiptHTML(order, emp){
     <div style="font-size:10px;font-weight:700;color:#B83228;background:#fff3f3;border:1px solid #ffcccc;border-radius:4px;padding:3px 8px;margin-top:6px;display:inline-block">สำเนาใบเสร็จ</div>
    </div>
    <hr style="border:none;border-top:1px dashed #bbb;margin:8px 0">
-   <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">เลขออเดอร์</span><strong style="font-size:11px">${order.id}</strong></div>
+   <div style="display:flex;justify-content:space-between;gap:8px;padding:2px 0"><span style="color:#888;font-size:11px;flex-shrink:0">เลขออเดอร์</span><strong style="font-size:10px;text-align:right;word-break:break-all">${order.id}</strong></div>
    <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">วันที่</span><span style="font-size:11px">${dateStr}</span></div>
    <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">อนุมัติโดย</span><span style="font-size:11px">${emp.id} ${emp.name}</span></div>
    <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">หมายเลข POS</span><span style="font-size:11px">${DB.posId||'POS-01'}</span></div>
@@ -2496,12 +2496,12 @@ function showCopyOptions(order,emp){
   </div>
   <div style="display:flex;flex-direction:column;gap:10px">
    <button class="btn btn-dark" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px"
-    onclick="saveCopyAsImage('${order.id}','${emp.id}','${emp.name}')">
+    onclick="saveCopyAsImage()">
     <span class="mi" style="font-size:20px">download</span>
     บันทึกรูปลงอุปกรณ์
    </button>
    <button class="btn btn-secondary" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px"
-    onclick="printCopyReceipt('${order.id}','${emp.id}','${emp.name}')">
+    onclick="printCopyReceipt()">
     <span class="mi" style="font-size:20px">print</span>
     พิมพ์ใบเสร็จ
    </button>
@@ -2514,20 +2514,29 @@ function showCopyOptions(order,emp){
  sheet._order=order; sheet._emp=emp;
 }
 
-async function saveCopyAsImage(orderId,empId,empName){
+async function saveCopyAsImage(){
  const sheet=document.getElementById('copy-options-sheet');
- const order=sheet?sheet._order:DB.orders.find(o=>String(o.id)===String(orderId));
- const emp=sheet?sheet._emp:{id:empId,name:empName};
+ if(!sheet){toast('เกิดข้อผิดพลาด');return;}
+ const order=sheet._order;
+ const emp=sheet._emp;
  if(sheet) sheet.remove();
  if(!window.html2canvas){
   await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s);});
  }
  const wrap=document.createElement('div');
- wrap.style.cssText='position:fixed;top:-9999px;left:-9999px;width:302px;background:#fff;font-family:Sarabun,sans-serif;padding:12px;box-sizing:border-box';
+ wrap.style.cssText='position:absolute;top:-99999px;left:-99999px;width:302px;background:#fff;font-family:Sarabun,sans-serif;padding:12px;box-sizing:border-box;overflow:visible;white-space:normal;word-break:break-word';
  wrap.innerHTML=buildCopyReceiptHTML(order,emp);
  document.body.appendChild(wrap);
  try{
-  const canvas=await html2canvas(wrap,{scale:3,useCORS:true,backgroundColor:'#ffffff',width:302,windowWidth:302});
+  // วัดความสูงจริงก่อน render
+  await new Promise(r=>setTimeout(r,100)); // รอ layout settle
+  const actualH = wrap.scrollHeight;
+  const canvas=await html2canvas(wrap,{
+   scale:3,useCORS:true,backgroundColor:'#ffffff',
+   width:302,height:actualH,
+   windowWidth:302,windowHeight:actualH,
+   scrollX:0,scrollY:0
+  });
   const link=document.createElement('a');
   const d=new Date();
   link.download=`copy_receipt_${orderId}_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.png`;
@@ -2537,10 +2546,11 @@ async function saveCopyAsImage(orderId,empId,empName){
  finally{document.body.removeChild(wrap);}
 }
 
-function printCopyReceipt(orderId,empId,empName){
+function printCopyReceipt(){
  const sheet=document.getElementById('copy-options-sheet');
- const order=sheet?sheet._order:DB.orders.find(o=>String(o.id)===String(orderId));
- const emp=sheet?sheet._emp:{id:empId,name:empName};
+ if(!sheet){toast('เกิดข้อผิดพลาด');return;}
+ const order=sheet._order;
+ const emp=sheet._emp;
  if(sheet) sheet.remove();
  const html=buildCopyReceiptHTML(order,emp);
  const w=window.open('','_blank','width=380,height=700');
