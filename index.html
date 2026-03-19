@@ -1089,7 +1089,7 @@ textarea.f-input{resize:none;}
   <span id="opPromoLabel" style="font-size:10px;font-weight:700;color:var(--gold)"></span>
  </div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px;display:flex;align-items:center;gap:5px" onclick="requestVoidOrder()"><span class="mi" style="font-size:16px">delete_sweep</span>ยกเลิก</button> <button class="btn-confirm" style="display:flex;align-items:center;justify-content:center;gap:6px" onclick="confirmOrder()"><span class="mi" style="font-size:18px">receipt_long</span>ยืนยัน ออเดอร์</button> </div> </div>
 </div> <!-- RECEIPT PAGE -->
-<div class="receipt-page" id="receiptPage"> <div class="receipt-topbar"> <span class="receipt-title">ใบเสร็จ</span> <button class="btn btn-secondary btn-sm" onclick="closeReceiptPage()" style="flex-shrink:0"> ปิด</button> </div> <div class="receipt-body"> <div class="receipt-paper" id="receiptPaper"></div> </div> <div class="receipt-footer-actions"> <button class="btn-new-order" onclick="newOrderFromReceipt()">ออเดอร์ถัดไป</button> <button class="btn-print" onclick="printReceipt()">พิมพ์</button> </div>
+<div class="receipt-page" id="receiptPage"> <div class="receipt-topbar"> <span class="receipt-title">ใบเสร็จ</span> <button class="btn btn-secondary btn-sm" onclick="closeReceiptPage()" style="flex-shrink:0"> ปิด</button> </div> <div class="receipt-body"> <div class="receipt-paper" id="receiptPaper" style="width:302px;margin:0 auto"></div> </div> <div class="receipt-footer-actions"> <button class="btn-new-order" onclick="newOrderFromReceipt()">ออเดอร์ถัดไป</button> <button class="btn-print" onclick="saveReceiptAsImage(document.getElementById('receiptWrap'))" style="display:flex;align-items:center;gap:5px"><span class="mi" style="font-size:16px">download</span>บันทึกรูป</button> </div>
 </div> <!-- ORDER DETAIL PAGE (slide from right) -->
 <div class="order-detail-page" id="orderDetailPage"> <div class="od-topbar"> <button class="btn btn-secondary btn-sm" onclick="closeOrderDetail()">← กลับ</button> <span class="od-title" id="odTitle">รายละเอียดบิล</span> <div id="odStatusBadge"></div> </div> <div class="od-body" id="odBody"></div>
 </div> <!-- APPROVAL MODAL (Employee ID) -->
@@ -2335,20 +2335,100 @@ function renderReceipt(order){
  <div class="receipt-row total"><span>รวมทั้งสิ้น</span><span>฿${order.total.toLocaleString()}</span></div> <div class="receipt-meta">ขอบคุณที่ใช้บริการ</div> `;
 }
 function printReceipt(){
- const el=document.getElementById('receiptPaper');
- const w=window.open('','_blank','width=360,height=600');
- w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style> body{font-family:'Sarabun',sans-serif;font-size:13px;padding:16px;max-width:320px;margin:0 auto;background:#fff;color:#1A0F08;}
- .receipt-shop-name{font-size:20px;font-weight:800;text-align:center;}
- .receipt-shop-sub{font-size:11px;color:#888;text-align:center;margin-bottom:8px;}
- hr{border:none;border-top:1px dashed #ccc;margin:10px 0;}
- .r-row{display:flex;justify-content:space-between;padding:3px 0;font-size:12px;}
- .r-total{font-size:14px;font-weight:800;color:#2A1810;}
- .r-meta{text-align:center;font-size:10px;color:#888;margin-top:12px;}
- @media print{body{font-size:12px;padding:8px;}}
- </style><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
-</head><body>${el.innerHTML}</body></html>`);
- w.document.close();
- setTimeout(()=>{w.focus();w.print();},300);
+ const el = document.getElementById('receiptPaper');
+ // ใช้ html2canvas บันทึกเป็นรูป
+ saveReceiptAsImage(el);
+}
+
+async function saveReceiptAsImage(el){
+ // โหลด html2canvas ถ้ายังไม่มี
+ if(!window.html2canvas){
+  await new Promise((res,rej)=>{
+   const s=document.createElement('script');
+   s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+   s.onload=res; s.onerror=rej;
+   document.head.appendChild(s);
+  });
+ }
+ // สร้าง wrapper 80mm (302px @96dpi)
+ const wrap = document.createElement('div');
+ wrap.style.cssText=[
+  'position:fixed','top:-9999px','left:-9999px',
+  'width:302px','background:#fff',
+  'font-family:Sarabun,sans-serif','color:#1A0F08',
+  'padding:12px','box-sizing:border-box','line-height:1.5'
+ ].join(';');
+ wrap.innerHTML = buildReceiptHTML();
+ document.body.appendChild(wrap);
+ try {
+  const canvas = await html2canvas(wrap,{
+   scale:3, useCORS:true, backgroundColor:'#ffffff',
+   width:302, windowWidth:302
+  });
+  // download
+  const link = document.createElement('a');
+  const d = new Date();
+  const fname = `receipt_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}.png`;
+  link.download = fname;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  toast('บันทึกใบเสร็จเป็นรูปแล้ว ✓');
+ } catch(e) {
+  toast('ไม่สามารถบันทึกรูปได้: '+e.message);
+ } finally {
+  document.body.removeChild(wrap);
+ }
+}
+
+function buildReceiptHTML(){
+ const paper = document.getElementById('receiptPaper');
+ const order = previewOrder || {};
+ const op = lastOperator;
+ const posId = DB.posId||'POS-01';
+ const d = order.ts instanceof Date ? order.ts : new Date(order.ts||Date.now());
+ const pad = n=>String(n).padStart(2,'0');
+ const posNum=(DB.posId||'POS-01').replace(/\D/g,'').padStart(2,'0');
+ const orderRef=pad(d.getDate())+pad(d.getMonth()+1)+String(d.getFullYear()).slice(-2)+pad(d.getHours())+pad(d.getMinutes())+posNum;
+ const dateStr=d.toLocaleString('th-TH',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+
+ const items = (order.items||[]).map((i,n)=>{
+  const promo = i.promoId?DB.promos.find(p=>p.id===i.promoId):null;
+  const promoDisc = i.promoDisc||0;
+  const net = i.price*i.qty - promoDisc;
+  const conds=[i.ice,i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:''].filter(Boolean).join(' · ');
+  return `<div style="padding:6px 0;border-bottom:1px dashed #ddd">
+   <div style="display:flex;justify-content:space-between;align-items:flex-start">
+    <div style="flex:1"><span style="font-size:9px;color:#999">${n+1}. </span><strong style="font-size:12px">${i.name}</strong> <span style="font-size:10px;color:#888">(${i.size})</span></div>
+    <div style="text-align:right;flex-shrink:0;padding-left:8px"><span style="font-size:11px">x${i.qty}</span> <strong style="font-size:12px">฿${(i.price*i.qty).toLocaleString()}</strong></div>
+   </div>
+   ${conds?`<div style="font-size:10px;color:#888;padding-left:14px">${conds}</div>`:''}
+   ${promo?`<div style="display:flex;justify-content:space-between;padding-left:14px;border-top:1px dashed #eee;margin-top:3px;padding-top:2px"><span style="font-size:10px;color:#c0392b">% ${promo.name}</span><span style="font-size:10px;color:#c0392b;font-weight:700">-฿${promoDisc}</span></div>`:''}
+   <div style="display:flex;justify-content:space-between;padding-left:14px;border-top:1px dashed #eee;margin-top:2px;padding-top:2px"><span style="font-size:10px;color:#666">รวม</span><strong style="font-size:12px">฿${net.toLocaleString()}</strong></div>
+  </div>`;
+ }).join('');
+
+ return `<div style="font-family:Sarabun,sans-serif;color:#1A0F08;font-size:12px;width:302px;box-sizing:border-box">
+  <div style="text-align:center;margin-bottom:10px">
+   <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px">${DB.shopName||'POS-APP'}</div>
+   <div style="font-size:11px;color:#888">${DB.shopSub||''}</div>
+  </div>
+  <hr style="border:none;border-top:1px dashed #bbb;margin:8px 0">
+  <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">เลขออเดอร์</span><strong style="font-size:11px;letter-spacing:.5px">${orderRef}</strong></div>
+  <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">วันที่</span><span style="font-size:11px">${dateStr}</span></div>
+  ${op?`<div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">รหัสพนักงาน</span><span style="font-size:11px">${op.id}</span></div>
+  <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">ชื่อพนักงาน</span><span style="font-size:11px">${op.name}</span></div>`:''}
+  <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">หมายเลข POS</span><span style="font-size:11px">${posId}</span></div>
+  <hr style="border:none;border-top:1px dashed #bbb;margin:8px 0">
+  ${items}
+  <hr style="border:none;border-top:1px dashed #bbb;margin:8px 0">
+  ${(order.discount||0)>0?`<div style="display:flex;justify-content:space-between;padding:3px 0"><span>รวม</span><span>฿${(order.subTotal||0).toLocaleString()}</span></div>
+  <div style="display:flex;justify-content:space-between;padding:3px 0;color:#c0392b"><span>ส่วนลด</span><span>-฿${(order.discount||0).toLocaleString()}</span></div>`:''}
+  <div style="display:flex;justify-content:space-between;padding:5px 0;border-top:2px solid #333;margin-top:4px">
+   <strong style="font-size:15px">รวมทั้งสิ้น</strong>
+   <strong style="font-size:18px;color:#2A1810">฿${(order.total||0).toLocaleString()}</strong>
+  </div>
+  <div style="text-align:center;font-size:11px;color:#aaa;margin-top:14px;padding-top:8px;border-top:1px dashed #ddd">ขอบคุณที่ใช้บริการ</div>
+ </div>`;
 }
 function printSalesCopy(orderId){
  // Require supervisor PIN first
