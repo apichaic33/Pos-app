@@ -1081,7 +1081,7 @@ textarea.f-input{resize:none;}
   </div>
   <div class="drawer-item" id="dnav-manage" onclick="drawerGo('manage')"> <div class="drawer-item-icon" style="color:var(--esp)"><span class="mi">restaurant_menu</span></div> <span>จัดการเมนู</span> </div> <div class="drawer-item" id="dnav-bills" onclick="drawerGo('bills')"> <div class="drawer-item-icon" style="color:var(--red)"><span class="mi">receipt_long</span></div> <span>จัดการบิล</span> </div> <div class="drawer-item" id="dnav-staff-mgmt" onclick="drawerGo('staff-mgmt')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">group</span></div> <span>พนักงาน</span> </div> <div class="drawer-item" id="dnav-audit" onclick="drawerGo('audit')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">history</span></div> <span>ประวัติ</span> </div> <div class="drawer-item" id="dnav-report" onclick="drawerGo('report')"> <div class="drawer-item-icon" style="color:var(--green)"><span class="mi">trending_up</span></div> <span>รายงาน</span> </div> <div class="drawer-item" id="dnav-stores" onclick="drawerGo('stores')"> <div class="drawer-item-icon" style="color:var(--purple)"><span class="mi">inventory_2</span></div> <span>คลัง</span> </div>
  <div class="drawer-sep"></div>
- <div class="drawer-item" id="dnav-receipt-settings" onclick="openReceiptSettings();closeDrawer();"> <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">receipt_long</span></div> <span>ตั้งค่าใบเสร็จ</span> </div> <div class="drawer-item" id="dnav-app-settings" onclick="drawerGo('app-settings')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">settings</span></div> <span>ตั้งค่าแอพ</span> </div>
+ <div class="drawer-item" id="dnav-app-settings" onclick="drawerGo('app-settings')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">settings</span></div> <span>ตั้งค่าแอพ</span> </div>
  </div> <div class="drawer-foot"> <div class="drawer-sync-badge"> <div class="top-live" id="drawerLive" style="width:7px;height:7px;"></div> <span id="drawerSync">—</span> </div> <button onclick="closeDrawer();openDebugPanel()" style="margin-top:10px;width:100%;padding:8px;border-radius:var(--r2);background:var(--bg-dk);border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:var(--fh);color:var(--t3);display:flex;align-items:center;justify-content:center;gap:6px"><span class="material-symbols-outlined" style="font-size:14px">terminal</span>Debug Panel</button> </div>
 </div> <!-- ORDER PANEL PAGE -->
 <div class="order-panel-page" id="orderPanelPage"> <div class="op-handle-wrap" onclick="closeOrderPanel()"><div class="op-handle"></div></div> <div class="op-topbar"> <button class="op-close" onclick="closeOrderPanel()"><span class="mi" style="font-size:22px">close</span></button> <span class="op-title">รายการออเดอร์</span> <span style="font-size:11px;color:var(--t4)" id="opItemCount">0 รายการ</span> </div> <div class="op-list" id="opList"> <div class="op-empty"><div class="e-icon"><span class="mi" style="font-size:48px;opacity:.35">shopping_cart</span></div><div class="op-empty-title">ยังไม่มีรายการ</div></div> </div> <div class="op-footer"> <div class="op-summary" id="opSummary"> <div class="op-sum-row"><span id="opCount">0 รายการ</span><span id="opSubTotal">฿0</span></div> <div class="op-sum-row" id="discountRow" style="display:none;flex-direction:column;gap:3px;padding:6px 0;background:rgba(184,50,40,.06);border-radius:var(--r2);margin:2px 0;padding:6px 8px;">
@@ -1534,7 +1534,7 @@ function closeDrawer(){
 function updateDrawerForRole(){
  const isMgr = currentOperator && currentOperator.role==='manager';
  // เมนูหลังบ้าน — แสดงเฉพาะ Manager
- const backOfficeMenus = ['dnav-promo','dnav-manage','dnav-bills','dnav-staff-mgmt','dnav-audit','dnav-report','dnav-stores','dnav-optsets','dnav-custom','dnav-receipt-settings'];
+ const backOfficeMenus = ['dnav-promo','dnav-manage','dnav-bills','dnav-staff-mgmt','dnav-audit','dnav-report','dnav-stores','dnav-optsets','dnav-custom'];
  backOfficeMenus.forEach(id=>{
    const el=document.getElementById(id);
    if(el) el.style.display = isMgr ? '' : 'none';
@@ -2439,8 +2439,10 @@ function autoTriggerPrint(){
  doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-   body{margin:0;padding:12px;background:#fff;width:302px;font-family:Sarabun,sans-serif;}
-   @media print{body{padding:4px;}@page{margin:0;size:80mm auto;}}
+   *{box-sizing:border-box;}
+   body{margin:0;padding:8px;background:#fff;width:80mm;max-width:80mm;font-family:Sarabun,sans-serif;font-size:12px;}
+   @page{margin:0;size:80mm auto;}
+   @media print{body{padding:4px;width:80mm;max-width:80mm;}}
   </style>
  </head><body>${html}</body></html>`);
  doc.close();
@@ -2662,7 +2664,7 @@ function buildReceiptHTML(){
   </div>`;
  }).join('');
 
- return `<div style="font-family:Sarabun,sans-serif;color:#1A0F08;font-size:12px;width:302px;box-sizing:border-box">
+ return `<div style="font-family:Sarabun,sans-serif;color:#1A0F08;font-size:12px;width:100%;box-sizing:border-box">
   <div style="text-align:center;margin-bottom:10px">
    <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px">${DB.shopName||'POS-APP'}</div>
    <div style="font-size:11px;color:#888">${DB.shopSub||''}</div>
@@ -2817,7 +2819,12 @@ function printCopyReceipt(){
  const w=window.open('','_blank','width=380,height=700');
  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <style>body{margin:0;padding:12px;background:#fff;}@media print{body{padding:4px;}}</style>
+  <style>
+   *{box-sizing:border-box;}
+   body{margin:0;padding:8px;background:#fff;width:80mm;max-width:80mm;font-family:Sarabun,sans-serif;font-size:12px;}
+   @page{margin:0;size:80mm auto;}
+   @media print{body{padding:4px;width:80mm;max-width:80mm;}}
+  </style>
  </head><body>${html}</body></html>`);
  w.document.close();
  setTimeout(()=>{w.focus();w.print();},400);
@@ -6330,6 +6337,9 @@ function dbgShowDB(){
 <!-- PAGE: APP SETTINGS -->
 <div class="page" id="pg-app-settings">
  <div class="pg-head">
+  <button onclick="drawerGo('order')" style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--bg-lt);box-shadow:var(--neu-out-sm);border:none;cursor:pointer;flex-shrink:0;margin-right:4px">
+   <span class="mi" style="font-size:20px;color:var(--t2)">arrow_back</span>
+  </button>
   <div>
    <div class="pg-title">ตั้งค่าแอพ</div>
    <div class="pg-sub">การตั้งค่าทั่วไป</div>
