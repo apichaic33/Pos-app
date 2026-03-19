@@ -1080,6 +1080,8 @@ textarea.f-input{resize:none;}
    <span>ตัวเลือกเมนู</span>
   </div>
   <div class="drawer-item" id="dnav-manage" onclick="drawerGo('manage')"> <div class="drawer-item-icon" style="color:var(--esp)"><span class="mi">restaurant_menu</span></div> <span>จัดการเมนู</span> </div> <div class="drawer-item" id="dnav-bills" onclick="drawerGo('bills')"> <div class="drawer-item-icon" style="color:var(--red)"><span class="mi">receipt_long</span></div> <span>จัดการบิล</span> </div> <div class="drawer-item" id="dnav-staff-mgmt" onclick="drawerGo('staff-mgmt')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">group</span></div> <span>พนักงาน</span> </div> <div class="drawer-item" id="dnav-audit" onclick="drawerGo('audit')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">history</span></div> <span>ประวัติ</span> </div> <div class="drawer-item" id="dnav-report" onclick="drawerGo('report')"> <div class="drawer-item-icon" style="color:var(--green)"><span class="mi">trending_up</span></div> <span>รายงาน</span> </div> <div class="drawer-item" id="dnav-stores" onclick="drawerGo('stores')"> <div class="drawer-item-icon" style="color:var(--purple)"><span class="mi">inventory_2</span></div> <span>คลัง</span> </div>
+ <div class="drawer-sep"></div>
+ <div class="drawer-item" id="dnav-receipt-settings" onclick="openReceiptSettings();closeDrawer();"> <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">receipt_long</span></div> <span>ตั้งค่าใบเสร็จ</span> </div> <div class="drawer-item" id="dnav-app-settings" onclick="drawerGo('app-settings')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">settings</span></div> <span>ตั้งค่าแอพ</span> </div>
  </div> <div class="drawer-foot"> <div class="drawer-sync-badge"> <div class="top-live" id="drawerLive" style="width:7px;height:7px;"></div> <span id="drawerSync">—</span> </div> <button onclick="closeDrawer();openDebugPanel()" style="margin-top:10px;width:100%;padding:8px;border-radius:var(--r2);background:var(--bg-dk);border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:var(--fh);color:var(--t3);display:flex;align-items:center;justify-content:center;gap:6px"><span class="material-symbols-outlined" style="font-size:14px">terminal</span>Debug Panel</button> </div>
 </div> <!-- ORDER PANEL PAGE -->
 <div class="order-panel-page" id="orderPanelPage"> <div class="op-handle-wrap" onclick="closeOrderPanel()"><div class="op-handle"></div></div> <div class="op-topbar"> <button class="op-close" onclick="closeOrderPanel()"><span class="mi" style="font-size:22px">close</span></button> <span class="op-title">รายการออเดอร์</span> <span style="font-size:11px;color:var(--t4)" id="opItemCount">0 รายการ</span> </div> <div class="op-list" id="opList"> <div class="op-empty"><div class="e-icon"><span class="mi" style="font-size:48px;opacity:.35">shopping_cart</span></div><div class="op-empty-title">ยังไม่มีรายการ</div></div> </div> <div class="op-footer"> <div class="op-summary" id="opSummary"> <div class="op-sum-row"><span id="opCount">0 รายการ</span><span id="opSubTotal">฿0</span></div> <div class="op-sum-row" id="discountRow" style="display:none;flex-direction:column;gap:3px;padding:6px 0;background:rgba(184,50,40,.06);border-radius:var(--r2);margin:2px 0;padding:6px 8px;">
@@ -1090,7 +1092,7 @@ textarea.f-input{resize:none;}
   <span id="opPromoLabel" style="font-size:10px;font-weight:700;color:var(--gold)"></span>
  </div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px;display:flex;align-items:center;gap:5px" onclick="requestVoidOrder()"><span class="mi" style="font-size:16px">delete_sweep</span>ยกเลิก</button> <button class="btn-confirm" style="display:flex;align-items:center;justify-content:center;gap:6px" onclick="confirmOrder()"><span class="mi" style="font-size:18px">receipt_long</span>ยืนยัน ออเดอร์</button> </div> </div>
 </div> <!-- RECEIPT PAGE -->
-<div class="receipt-page" id="receiptPage"> <div class="receipt-topbar"> <span class="receipt-title">ใบเสร็จ</span> <button class="btn btn-secondary btn-sm" onclick="closeReceiptPage()" style="flex-shrink:0"> ปิด</button> </div> <div class="receipt-body"> <div class="receipt-paper" id="receiptPaper" style="width:302px;margin:0 auto"></div> </div> <div class="receipt-footer-actions" style="display:flex;gap:8px;padding:12px 16px"> <button class="btn-new-order" style="flex:1" onclick="newOrderFromReceipt()">ออเดอร์ถัดไป</button> <button class="btn-print" id="btnSaveReceipt" onclick="saveReceiptAsImage()" style="display:flex;align-items:center;gap:5px"><span class="mi" style="font-size:16px">download</span>บันทึกรูป</button> <button onclick="openReceiptSettings()" style="padding:0 12px;border-radius:var(--r3);border:1.5px solid var(--bg-dk);background:var(--bg-lt);color:var(--t3);display:flex;align-items:center;justify-content:center" title="ตั้งค่าใบเสร็จ"><span class="mi" style="font-size:20px">settings</span></button> </div>
+<div class="receipt-page" id="receiptPage"> <div class="receipt-topbar"> <span class="receipt-title">ใบเสร็จ</span> <button class="btn btn-secondary btn-sm" onclick="closeReceiptPage()" style="flex-shrink:0"> ปิด</button> </div> <div class="receipt-body"> <div class="receipt-paper" id="receiptPaper" style="width:302px;margin:0 auto"></div> </div> <div class="receipt-footer-actions" id="receiptFooterActions" style="display:flex;gap:8px;padding:12px 16px"> <button class="btn-new-order" style="flex:1" onclick="newOrderFromReceipt()">ออเดอร์ถัดไป</button> </div>
 </div> <!-- ORDER DETAIL PAGE (slide from right) -->
 <div class="order-detail-page" id="orderDetailPage"> <div class="od-topbar"> <button class="btn btn-secondary btn-sm" onclick="closeOrderDetail()">← กลับ</button> <span class="od-title" id="odTitle">รายละเอียดบิล</span> <div id="odStatusBadge"></div> </div> <div class="od-body" id="odBody"></div>
 </div> <!-- APPROVAL MODAL (Employee ID) -->
@@ -1532,7 +1534,7 @@ function closeDrawer(){
 function updateDrawerForRole(){
  const isMgr = currentOperator && currentOperator.role==='manager';
  // เมนูหลังบ้าน — แสดงเฉพาะ Manager
- const backOfficeMenus = ['dnav-promo','dnav-manage','dnav-bills','dnav-staff-mgmt','dnav-audit','dnav-report','dnav-stores','dnav-optsets','dnav-custom'];
+ const backOfficeMenus = ['dnav-promo','dnav-manage','dnav-bills','dnav-staff-mgmt','dnav-audit','dnav-report','dnav-stores','dnav-optsets','dnav-custom','dnav-receipt-settings'];
  backOfficeMenus.forEach(id=>{
    const el=document.getElementById(id);
    if(el) el.style.display = isMgr ? '' : 'none';
@@ -2233,6 +2235,7 @@ function confirmOrder(){
  renderOrderPanel();updateCartFab();
  closeOrderPanel();
  document.getElementById('receiptPage').classList.add('open');
+ updateReceiptFooter();
  renderProductGrid(activeCat);
  scheduleSync();
  updateSalesBadge();
@@ -2258,15 +2261,25 @@ function confirmOrder(){
    const d=new Date();
    window._pendingReceiptCanvas=canvas;
    window._pendingReceiptFname=`receipt_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}.png`;
-   // แสดง highlight ปุ่มบันทึกรูป ถ้าเปิด autoSave
+   // autoSave เปิด → inject ปุ่ม "บันทึกรูป" ใน footer แล้ว trigger ทันทีเมื่อกด
    if(rcfg.autoSave){
-    const btn=document.getElementById('btnSaveReceipt');
-    if(btn){
-     btn.innerHTML='<span class="mi" style="font-size:16px">photo_library</span>บันทึกรูป!';
-     btn.style.cssText+='background:var(--gold)!important;color:#fff!important;animation:receiptBtnPulse 1s ease-in-out 3';
+    // footer ไม่มีปุ่ม btnSaveReceipt (updateReceiptFooter ซ่อนไว้)
+    // → inject ปุ่ม auto-save พิเศษที่กระพริบแจ้ง user
+    const footer=document.getElementById('receiptFooterActions');
+    if(footer && !document.getElementById('btnAutoSave')){
+     const abtn=document.createElement('button');
+     abtn.id='btnAutoSave';
+     abtn.className='btn-print';
+     abtn.style.cssText='display:flex;align-items:center;gap:5px;background:var(--gold);color:#fff;animation:receiptBtnPulse 1s ease-in-out 3;flex-shrink:0';
+     abtn.innerHTML='<span class="mi" style="font-size:16px">photo_library</span>บันทึกรูป';
+     abtn.onclick=async function(){
+      abtn.disabled=true;
+      abtn.innerHTML='<span class="mi" style="font-size:14px">hourglass_top</span>...';
+      await saveReceiptAsImage();
+      abtn.remove();
+     };
+     footer.appendChild(abtn);
     }
-    // แสดง toast แนะนำ
-    toast('📸 พร้อมบันทึก — กด "บันทึกรูป" เพื่อ save ลง Gallery');
    }
    // Auto-print (ไม่ต้องการ user gesture)
    if(rcfg.autoPrint) autoTriggerPrint();
@@ -2291,6 +2304,7 @@ function openReceiptPreview(){
  ts:new Date()
  };
  renderReceipt(previewOrder);
+ updateReceiptFooter();
  document.getElementById('receiptPage').classList.add('open');
 }
 function closeReceiptPage(){
@@ -2444,6 +2458,26 @@ function autoTriggerPrint(){
  };
 }
 
+// ── Receipt Footer: inject ปุ่มตาม setting ──────────────────────────────────
+function updateReceiptFooter(){
+ const rcfg = getReceiptSettings();
+ const footer = document.getElementById('receiptFooterActions');
+ if(!footer) return;
+ // ลบปุ่มเก่าออก (เก็บแค่ btn-new-order)
+ Array.from(footer.querySelectorAll('.btn-print,.btn-receipt-save,.btn-receipt-settings,#btnAutoSave')).forEach(b=>b.remove());
+ if(!rcfg.autoSave){
+  // ไม่ได้เปิด autoSave → แสดงปุ่มบันทึกรูปแบบ manual
+  const btn = document.createElement('button');
+  btn.className = 'btn-print btn-receipt-save';
+  btn.id = 'btnSaveReceipt';
+  btn.setAttribute('onclick','saveReceiptAsImage()');
+  btn.style.cssText = 'display:flex;align-items:center;gap:5px';
+  btn.innerHTML = '<span class="mi" style="font-size:16px">download</span>บันทึกรูป';
+  footer.appendChild(btn);
+ }
+ // ไม่มีปุ่ม ⚙️ settings อีกต่อไป — ย้ายไป Drawer แล้ว
+}
+
 // ── Receipt Settings Modal ────────────────────────────────────────────────────
 function openReceiptSettings(){
  const cfg = getReceiptSettings();
@@ -2528,6 +2562,8 @@ function receiptSettingToggle(key, val){
  toast(key==='autoSave'
   ? (val ? '✅ บันทึกรูปอัตโนมัติ เปิดแล้ว' : 'บันทึกรูปอัตโนมัติ ปิดแล้ว')
   : (val ? '✅ ปริ้นอัตโนมัติ เปิดแล้ว' : 'ปริ้นอัตโนมัติ ปิดแล้ว'));
+ // sync ปุ่มบน receipt footer ถ้าหน้าใบเสร็จเปิดอยู่
+ if(document.getElementById('receiptPage')?.classList.contains('open')) updateReceiptFooter();
 }
 
 
@@ -5125,6 +5161,75 @@ const LS_ORDER='pos_order_v5'; // pending order items
 const LS_RECEIPT_SETTINGS='pos_receipt_cfg_v1'; // auto-save / auto-print settings
 
 // ── Receipt Settings helpers ──────────────────────────────────────────────
+// ════════════════════════════════════════════════
+// APP SETTINGS PAGE
+// ════════════════════════════════════════════════
+function renderAppSettings(){
+ const cfg = getReceiptSettings();
+ const body = document.getElementById('appSettingsBody');
+ if(!body) return;
+ body.innerHTML=`
+  <!-- ── ส่วน: ใบเสร็จ ── -->
+  <div style="font-size:11px;font-weight:700;color:var(--t4);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px">ใบเสร็จ</div>
+
+  <!-- Auto-save toggle -->
+  <div style="background:var(--bg-lt);border-radius:var(--r3);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px">
+   <div>
+    <div style="font-size:13px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:6px">
+     <span class="mi" style="font-size:16px;color:var(--blue)">photo_library</span>บันทึกรูปอัตโนมัติ
+    </div>
+    <div style="font-size:11px;color:var(--t4);margin-top:3px;line-height:1.5">หลังยืนยันออเดอร์ → ระบบ render รูปไว้รอ<br>กด "บันทึกรูป!" → เลือก "บันทึกในรูปภาพ"<br><span style="color:var(--t5)">ปุ่มบันทึกรูปจะหายไปถ้าปิด option นี้</span></div>
+   </div>
+   <label style="position:relative;width:48px;height:28px;flex-shrink:0">
+    <input type="checkbox" id="as-tog-autoSave" ${cfg.autoSave?'checked':''} style="opacity:0;width:0;height:0;position:absolute"
+     onchange="appSettingToggle('autoSave',this.checked)">
+    <span id="as-tog-autoSave-track" style="position:absolute;inset:0;border-radius:14px;background:${cfg.autoSave?'var(--gold)':'var(--bg-dk)'};transition:.2s;cursor:pointer">
+     <span id="as-tog-autoSave-thumb" style="position:absolute;top:4px;left:${cfg.autoSave?'24px':'4px'};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:.2s"></span>
+    </span>
+   </label>
+  </div>
+
+  <!-- Auto-print toggle -->
+  <div style="background:var(--bg-lt);border-radius:var(--r3);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px">
+   <div>
+    <div style="font-size:13px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:6px">
+     <span class="mi" style="font-size:16px;color:var(--esp)">print</span>ปริ้นอัตโนมัติ
+    </div>
+    <div style="font-size:11px;color:var(--t4);margin-top:3px">ส่งคำสั่งปริ้นทันทีหลังยืนยัน<br>ต้องเชื่อมต่อเครื่องปริ้นก่อน</div>
+   </div>
+   <label style="position:relative;width:48px;height:28px;flex-shrink:0">
+    <input type="checkbox" id="as-tog-autoPrint" ${cfg.autoPrint?'checked':''} style="opacity:0;width:0;height:0;position:absolute"
+     onchange="appSettingToggle('autoPrint',this.checked)">
+    <span id="as-tog-autoPrint-track" style="position:absolute;inset:0;border-radius:14px;background:${cfg.autoPrint?'var(--gold)':'var(--bg-dk)'};transition:.2s;cursor:pointer">
+     <span id="as-tog-autoPrint-thumb" style="position:absolute;top:4px;left:${cfg.autoPrint?'24px':'4px'};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:.2s"></span>
+    </span>
+   </label>
+  </div>
+
+  <!-- ── ส่วน: ข้อมูลแอพ ── -->
+  <div style="font-size:11px;font-weight:700;color:var(--t4);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px">ข้อมูลแอพ</div>
+  <div style="background:var(--bg-lt);border-radius:var(--r3);padding:14px 16px;font-size:12px;color:var(--t3);line-height:2">
+   <div style="display:flex;justify-content:space-between"><span>เวอร์ชัน</span><span style="font-weight:700;color:var(--t1)">v5.0</span></div>
+   <div style="display:flex;justify-content:space-between"><span>ชื่อร้าน</span><span style="font-weight:700;color:var(--t1)">${DB.shopName||'—'}</span></div>
+   <div style="display:flex;justify-content:space-between"><span>POS ID</span><span style="font-weight:700;color:var(--t1)">${DB.posId||'POS-01'}</span></div>
+  </div>
+ `;
+}
+
+function appSettingToggle(key, val){
+ const cfg = getReceiptSettings();
+ cfg[key] = val;
+ setReceiptSettings(cfg);
+ // อัปเดต toggle UI
+ const track = document.getElementById('as-tog-'+key+'-track');
+ const thumb  = document.getElementById('as-tog-'+key+'-thumb');
+ if(track) track.style.background = val ? 'var(--gold)' : 'var(--bg-dk)';
+ if(thumb) thumb.style.left = val ? '24px' : '4px';
+ toast(key==='autoSave'
+  ? (val ? '✅ บันทึกรูปอัตโนมัติ เปิดแล้ว' : 'บันทึกรูปอัตโนมัติ ปิดแล้ว')
+  : (val ? '✅ ปริ้นอัตโนมัติ เปิดแล้ว' : 'ปริ้นอัตโนมัติ ปิดแล้ว'));
+}
+
 function getReceiptSettings(){
  try{
   const raw=localStorage.getItem(LS_RECEIPT_SETTINGS);
@@ -5536,7 +5641,7 @@ let mgrSession = null; // {emp, expiry(timestamp)}
 const MGR_TIMEOUT = 10 * 60 * 1000; // 10 นาที
 
 // หน้าที่ต้องการสิทธิ์ manager (ยกเว้น order, sales)
-const PROTECTED_PAGES = ['promo','manage','report','stores','bills','audit','staff-mgmt','optsets','custom'];
+const PROTECTED_PAGES = ['promo','manage','report','stores','bills','audit','staff-mgmt','optsets','custom','app-settings'];
 
 function isMgrActive(){
  return mgrSession && Date.now() < mgrSession.expiry;
@@ -5700,6 +5805,7 @@ function _goPageDirect(p){
  if(p==='staff-mgmt') renderStaffMgmt();
  if(p==='custom') renderCustomMgr();
  if(p==='optsets') renderOptionSets();
+ if(p==='app-settings') renderAppSettings();
 }
 
 
@@ -6220,6 +6326,19 @@ function dbgShowDB(){
  dbgLog(`  dirty: ${ls!==null?'⚠️ dirty':'✅ clean'}`,'#AAAAAA');
 }
 </script>
+
+<!-- PAGE: APP SETTINGS -->
+<div class="page" id="pg-app-settings">
+ <div class="pg-head">
+  <div>
+   <div class="pg-title">ตั้งค่าแอพ</div>
+   <div class="pg-sub">การตั้งค่าทั่วไป</div>
+  </div>
+ </div>
+ <div class="scroll-body" id="appSettingsBody" style="padding:16px">
+  <!-- render โดย renderAppSettings() -->
+ </div>
+</div>
 
 <!-- Debug Panel Modal -->
 <div class="modal-overlay" id="modal-debug" style="z-index:9999">
