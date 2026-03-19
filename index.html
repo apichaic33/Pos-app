@@ -390,7 +390,7 @@ img{max-width:100%;}
 .op-item-price{font-size:13px;font-weight:700;color:var(--cara);flex-shrink:0;min-width:50px;text-align:right;font-family:var(--fh);}
 
 .op-empty{text-align:center;padding:60px 24px;color:var(--t4);}
-.op-empty .e-icon{font-size:32px;margin-bottom:12px;opacity:.4;display:flex;align-items:center;justify-content:center;}
+.op-empty .e-icon{font-size:48px;margin-bottom:12px;opacity:.4;}
 .op-empty-title{font-size:14px;font-weight:700;color:var(--t3);font-family:var(--fh);}
 
 /* order summary footer */
@@ -673,7 +673,7 @@ textarea.f-input{resize:none;}
 .expiry-near{background:var(--gold-lt);border-radius:var(--r2);padding:1px 6px;font-size:9px;font-weight:700;color:var(--gold);}
 .expiry-out{background:var(--red-lt);border-radius:var(--r2);padding:1px 6px;font-size:9px;font-weight:700;color:var(--red);}
 .empty-state{text-align:center;padding:48px 24px;color:var(--t4);}
-.empty-state .e-icon{font-size:32px;margin-bottom:12px;opacity:.5;display:flex;align-items:center;justify-content:center;}
+.empty-state .e-icon{font-size:40px;margin-bottom:12px;opacity:.5;}
 .empty-state .e-title{font-size:14px;font-weight:700;color:var(--t3);margin-bottom:4px;font-family:var(--fh);}
 .empty-state .e-sub{font-size:12px;line-height:1.5;}
 
@@ -1047,7 +1047,7 @@ textarea.f-input{resize:none;}
 <div class="drawer" id="drawer"> <div class="drawer-head"> <div class="drawer-logo">POS<span>·</span>APP</div> <div class="drawer-sub">ระบบบริหารร้านกาแฟ v5</div> <div id="drawerUserInfo" style="font-size:11px;color:var(--cara);font-weight:700;margin-top:6px;font-family:var(--fh)"></div> <button onclick="logoutUser()" style="margin-top:8px;padding:6px 14px;border-radius:var(--rf);background:var(--red-lt);color:var(--red);font-size:11px;font-weight:700;font-family:var(--fh)">ออกจากระบบ</button> </div> <div class="drawer-body"> <!-- Manager session badge --> <div id="mgrSessionBadge" style="display:none;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(90deg,rgba(43,94,167,.12),transparent);border-bottom:1px solid rgba(43,94,167,.15);margin-bottom:4px"> <span class="mi" style="font-size:20px;color:var(--blue)">shield_person</span> <div style="flex:1"> <div style="font-size:10px;font-weight:700;color:var(--blue)">Manager Mode</div> <div id="mgrBadgeName" style="font-size:11px;color:var(--t2)"></div> </div> <div style="text-align:right"> <div id="mgrBadgeTime" style="font-size:11px;font-weight:700;color:var(--blue);font-family:var(--fh)">10:00</div> <button onclick="mgrLogout()" style="font-size:9px;color:var(--red);background:var(--red-lt);border:none;border-radius:var(--rf);padding:2px 6px;margin-top:2px;cursor:pointer;font-weight:700">ออก</button> </div> </div> <div class="drawer-item active" id="dnav-order" onclick="drawerGo('order')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">point_of_sale</span></div> <span>รับออเดอร์</span> </div> <div class="drawer-item" id="dnav-sales" onclick="drawerGo('sales')"> <div class="drawer-item-icon" style="color:var(--blue)"><span class="mi">bar_chart</span></div> <span>รายการขายวันนี้</span> </div> <div class="drawer-sep"></div> <div class="drawer-item" id="dnav-promo" onclick="drawerGo('promo')"> <div class="drawer-item-icon" style="color:var(--gold)"><span class="mi">sell</span></div> <span>โปรโมชั่น</span> </div> <div class="drawer-item" id="dnav-manage" onclick="drawerGo('manage')"> <div class="drawer-item-icon" style="color:var(--esp)"><span class="mi">restaurant_menu</span></div> <span>จัดการเมนู</span> </div> <div class="drawer-item" id="dnav-bills" onclick="drawerGo('bills')"> <div class="drawer-item-icon" style="color:var(--red)"><span class="mi">receipt_long</span></div> <span>จัดการบิล</span> </div> <div class="drawer-item" id="dnav-staff-mgmt" onclick="drawerGo('staff-mgmt')"> <div class="drawer-item-icon" style="color:var(--cara)"><span class="mi">group</span></div> <span>พนักงาน</span> </div> <div class="drawer-item" id="dnav-audit" onclick="drawerGo('audit')"> <div class="drawer-item-icon" style="color:var(--t3)"><span class="mi">history</span></div> <span>ประวัติ</span> </div> <div class="drawer-item" id="dnav-report" onclick="drawerGo('report')"> <div class="drawer-item-icon" style="color:var(--green)"><span class="mi">trending_up</span></div> <span>รายงาน</span> </div> <div class="drawer-item" id="dnav-stores" onclick="drawerGo('stores')"> <div class="drawer-item-icon" style="color:var(--purple)"><span class="mi">inventory_2</span></div> <span>คลัง</span> </div>
  </div> <div class="drawer-foot"> <div class="drawer-sync-badge"> <div class="top-live" id="drawerLive" style="width:7px;height:7px;"></div> <span id="drawerSync">—</span> </div> <button onclick="closeDrawer();openDebugPanel()" style="margin-top:10px;width:100%;padding:8px;border-radius:var(--r2);background:var(--bg-dk);border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:var(--fh);color:var(--t3);display:flex;align-items:center;justify-content:center;gap:6px"><span class="material-symbols-outlined" style="font-size:14px">terminal</span>Debug Panel</button> </div>
 </div> <!-- ORDER PANEL PAGE -->
-<div class="order-panel-page" id="orderPanelPage"> <div class="op-handle-wrap" onclick="closeOrderPanel()"><div class="op-handle"></div></div> <div class="op-topbar"> <button class="op-close" onclick="closeOrderPanel()"></button> <span class="op-title">รายการออเดอร์</span> <span style="font-size:11px;color:var(--t4)" id="opItemCount">0 รายการ</span> </div> <div class="op-list" id="opList"> <div class="op-empty"> <div class="e-icon"><span class="mi" style="font-size:32px">shopping_cart</span></div> <div class="op-empty-title">ยังไม่มีรายการ</div> </div> </div> <div class="op-footer"> <div class="op-summary" id="opSummary"> <div class="op-sum-row"><span id="opCount">0 รายการ</span><span id="opSubTotal">฿0</span></div> <div class="op-sum-row" id="discountRow" style="display:none;flex-direction:column;gap:3px;padding:6px 0;background:rgba(184,50,40,.06);border-radius:var(--r2);margin:2px 0;padding:6px 8px;">
+<div class="order-panel-page" id="orderPanelPage"> <div class="op-handle-wrap" onclick="closeOrderPanel()"><div class="op-handle"></div></div> <div class="op-topbar"> <button class="op-close" onclick="closeOrderPanel()"></button> <span class="op-title">รายการออเดอร์</span> <span style="font-size:11px;color:var(--t4)" id="opItemCount">0 รายการ</span> </div> <div class="op-list" id="opList"> <div class="op-empty"> <div class="e-icon">🛒</div> <div class="op-empty-title">ยังไม่มีรายการ</div> </div> </div> <div class="op-footer"> <div class="op-summary" id="opSummary"> <div class="op-sum-row"><span id="opCount">0 รายการ</span><span id="opSubTotal">฿0</span></div> <div class="op-sum-row" id="discountRow" style="display:none;flex-direction:column;gap:3px;padding:6px 0;background:rgba(184,50,40,.06);border-radius:var(--r2);margin:2px 0;padding:6px 8px;">
   <div style="display:flex;justify-content:space-between;align-items:center">
    <span style="font-size:11px;font-weight:700;color:var(--t3)">ส่วนลด</span>
    <span id="opDiscountAmt" style="font-size:13px;font-weight:800;color:var(--red)">-฿0</span>
@@ -1464,7 +1464,7 @@ function renderOrder(){
 
 function renderCatPills(){
  const cats=[['all','ทั้งหมด'],['coffee','กาแฟ'],['tea','ชา'],['cocoa','โกโก้'],['other','อื่นๆ']];
- const icons={all:'apps',coffee:'coffee',tea:'local_cafe',cocoa:'emoji_food_beverage',custom:'tune',other:'more_horiz'};
+ const icons={all:'apps',coffee:'coffee',tea:'local_cafe',cocoa:'emoji_food_beverage',other:'more_horiz'};
  document.getElementById('catRow').innerHTML=cats.map(([v,l])=>
    `<button class="cat-pill ${activeCat===v?'active':''}" onclick="filterCat(this,'${v}')">
      <span style='font-family:"Material Symbols Outlined";font-size:14px;font-weight:normal;vertical-align:-2px;margin-right:3px'>${icons[v]||'circle'}</span>${l}</button>`
@@ -1488,7 +1488,7 @@ function renderPromoRibbon(){
 function renderProductGrid(cat){
  const list=cat==='all'?DB.menus.filter(m=>m.status==='active'):DB.menus.filter(m=>m.cat===cat&&m.status==='active');
  const grid=document.getElementById('orderGrid');
- if(!list.length){grid.innerHTML=`<div class="empty-state" style="grid-column:span 2"><div class="e-icon"><span class="mi" style="font-size:32px">local_cafe</span></div><div class="e-title">ไม่มีเมนูในหมวดนี้</div></div>`;return;}
+ if(!list.length){grid.innerHTML=`<div class="empty-state" style="grid-column:span 2"><div class="e-icon">☕</div><div class="e-title">ไม่มีเมนูในหมวดนี้</div></div>`;return;}
  grid.innerHTML=list.map(m=>`
  <div class="prod-card fade-up" style="position:relative">
    <div class="prod-img" style="background:${m.color};border-radius:var(--r3) var(--r3) 0 0;font-size:28px">${m.icon}</div>
@@ -1645,7 +1645,7 @@ function addFromModal(){
  if(!emp){toast('ไม่พบรหัส'+empId);return;}
  const staffType = document.getElementById('pdStaffType').value;
  const logEntry = {
- id:'tmp-'+Date.now(),menuId:pdItem.id,menuName:pdItem.name,
+ id:DB.nextId++,menuId:pdItem.id,menuName:pdItem.name,
  staff:emp.name,empId:emp.id,type:staffType,qty:pdQtyVal,
  ts:Date.now(),note:document.getElementById('pdNote').value,
  isWelfare:true
@@ -1739,7 +1739,7 @@ function renderOrderPanel(){
  const list=document.getElementById('opList');
  const itemCountEl=document.getElementById('opItemCount');
  if(!orderItems.length){
- list.innerHTML=`<div class="op-empty"><div class="e-icon"><span class="mi" style="font-size:32px">shopping_cart</span></div><div class="op-empty-title">ยังไม่มีรายการ</div><div style="font-size:12px;color:var(--t4);margin-top:6px">กดเพิ่มเมนูจากหน้า ORDER</div></div>`;
+ list.innerHTML=`<div class="op-empty"><div class="e-icon">🛒</div><div class="op-empty-title">ยังไม่มีรายการ</div><div style="font-size:12px;color:var(--t4);margin-top:6px">กดเพิ่มเมนูจากหน้า ORDER</div></div>`;
  if(itemCountEl) itemCountEl.textContent='0 รายการ';
  updateOrderSummary();
  return;
@@ -1998,7 +1998,7 @@ function confirmOrder(){
  const discount=orderItems.reduce((s,i)=>s+(i.autoPromoDisc||i.promoDisc||0),0);
  const total=Math.max(0,subTotal-discount);
  const order={
- id:null,
+ id:'ORD-TMP-'+Date.now(),
  items:orderItems.map(i=>({
   menuId:i.menuId,name:i.name,size:i.size,qty:i.qty,price:i.price,
   sweet:i.sweet,ice:i.ice,strength:i.strength||'50%',note:i.note,
@@ -2035,7 +2035,7 @@ function confirmOrder(){
  });
  if(typeof currentOperator!=='undefined'&&currentOperator) lastOperator=currentOperator;
  AUD.orderNew(order.id, order.total, order.items.length);
- previewOrder={id:'#'+String(order.id).padStart(4,'0'),items:order.items.map(i=>({...i,color:DB.menus.find(m=>m.id===i.menuId)?.color||'#2C1810'})),subTotal,discount,total,ts:new Date(),orderId:order.id};
+ previewOrder={id:'#'+String(order.id),items:order.items.map(i=>({...i,color:DB.menus.find(m=>m.id===i.menuId)?.color||'#2C1810'})),subTotal,discount,total,ts:new Date(),orderId:order.id};
  renderReceipt(previewOrder);
  orderItems=[]; orderDiscount=0;
  localStorage.removeItem(LS_ORDER);
@@ -2058,7 +2058,7 @@ function openReceiptPreview(){
  const discount=orderItems.reduce((s,i)=>s+(i.promoDisc||0),0);
  const total=Math.max(0,subTotal-discount);
  previewOrder={
- id:'#PREVIEW',
+ id:'#'+String(DB.nextId).padStart(4,'0'),
  items:[...orderItems],
  subTotal,discount,total,
  ts:new Date()
@@ -2235,7 +2235,7 @@ function renderManage(cat){
  </div> <div style="text-align:right;flex-shrink:0"> <div style="display:flex;align-items:center;gap:6px"> <div style="font-size:16px;font-weight:800;color:var(--cara);font-family:var(--fh)">฿${m.price}</div> ${m.recipeId?'<span style="font-size:9px;background:var(--blue-lt);color:var(--blue);border-radius:var(--rf);padding:2px 6px;font-weight:700"> มีสูตร</span>':''}
  </div> <span class="badge ${m.status==='active'?'badge-green':'badge-gray'}" style="font-size:9px">${m.status==='active'?'เปิด':'ปิด'}</span> </div> </div> <div style="display:flex;border-top:1px solid rgba(176,154,133,.12)"> <button class="btn btn-secondary" style="flex:1;border-radius:0;padding:10px;font-size:12px;font-weight:600;border-right:1px solid rgba(176,154,133,.12)"
  onclick="editMenu(${m.id})"> แก้ไข</button> <button class="btn btn-danger" style="flex:1;border-radius:0;padding:10px;font-size:12px;font-weight:600"
- onclick="delMenu(${m.id})"> ลบ</button> </div> </div>`}).join('') : '<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">restaurant_menu</span></div><div class="e-title">ยังไม่มีเมนู</div></div>');
+ onclick="delMenu(${m.id})"> ลบ</button> </div> </div>`}).join('') : '<div class="empty-state"><div class="e-icon">🍵</div><div class="e-title">ยังไม่มีเมนู</div></div>');
 }
 function catLabel(c){return{coffee:'กาแฟ',tea:'ชา',cocoa:'โกโก้',custom:'Custom',other:'อื่นๆ'}[c]||c;}
 function toggleCustomFields(){
@@ -2411,14 +2411,14 @@ function saveMenu(){
  if(hasIngredients){
  const existRec = DB.recipes.find(r=>r.menuId===id);
  if(existRec){ existRec.ingredients=[...menuRecipeIngredients]; }
- else{ const rid='tmp-'+Date.now(); DB.recipes.push({id:rid,menuId:id,name:data.name+'Recipe',cupsPerBatch:1,ingredients:[...menuRecipeIngredients]}); m.recipeId=rid; }
+ else{ const rid=DB.nextId++; DB.recipes.push({id:rid,menuId:id,name:data.name+'Recipe',cupsPerBatch:1,ingredients:[...menuRecipeIngredients]}); m.recipeId=rid; }
  }
  toast('อัพเดตเมนูแล้ว');
  } else {
- const newId='tmp-'+Date.now();
+ const newId=DB.nextId++;
  const menuObj={...data,id:newId,sold:0};
  if(hasIngredients){
- const rid='tmp-'+Date.now(); DB.recipes.push({id:rid,menuId:newId,name:data.name+'Recipe',cupsPerBatch:1,ingredients:[...menuRecipeIngredients]}); menuObj.recipeId=rid;
+ const rid=DB.nextId++; DB.recipes.push({id:rid,menuId:newId,name:data.name+'Recipe',cupsPerBatch:1,ingredients:[...menuRecipeIngredients]}); menuObj.recipeId=rid;
  }
  DB.menus.push(menuObj);
  toast('เพิ่มเมนูใหม่แล้ว');
@@ -2469,7 +2469,7 @@ function getPromoTag(p){
 function renderPromos(type){
  const list=type==='all'?DB.promos:DB.promos.filter(p=>p.type===type);
  document.getElementById('promoCount').textContent=DB.promos.filter(p=>p.active).length+'ใช้งาน / '+DB.promos.length+'ทั้งหมด';
- const typeInfo={pct:{label:'<span class="mi" style="font-size:18px">percent</span>',bg:'#FEF8E4',col:'#B8860B'},fixed:{label:'<span class="mi" style="font-size:18px">currency_baht</span>',bg:'var(--green-lt)',col:'var(--green)'},buy:{label:'<span class="mi" style="font-size:18px">redeem</span>',bg:'var(--blue-lt)',col:'var(--blue)'},freeN:{label:'<span class="mi" style="font-size:18px">card_giftcard</span>',bg:'rgba(200,130,106,.15)',col:'var(--cara)'},min:{label:'<span class="mi" style="font-size:18px">shopping_cart_checkout</span>',bg:'var(--purple-lt)',col:'var(--purple)'},bundle:{label:'<span class="mi" style="font-size:18px">inventory_2</span>',bg:'rgba(45,122,79,.15)',col:'var(--green)'}};
+ const typeInfo={pct:{label:'%',bg:'#FEF8E4',col:'#B8860B'},fixed:{label:'฿',bg:'var(--green-lt)',col:'var(--green)'},buy:{label:'X+Y',bg:'var(--blue-lt)',col:'var(--blue)'},freeN:{label:'N+1',bg:'rgba(200,130,106,.15)',col:'var(--cara)'},min:{label:'MIN',bg:'var(--purple-lt)',col:'var(--purple)'},bundle:{label:'PKG',bg:'rgba(45,122,79,.15)',col:'var(--green)'}};
  const today=new Date().toISOString().split('T')[0];
  document.getElementById('promoList').innerHTML=list.map(p=>{
  const ti=typeInfo[p.type]||typeInfo.pct;
@@ -2478,7 +2478,7 @@ function renderPromos(type){
  <span class="badge badge-blue">${p.start} — ${p.end||'ไม่จำกัด'}</span> </div> </div> <label class="toggle"><input type="checkbox" ${p.active?'checked':''} onchange="togglePromo(${p.id},this.checked)"><span class="toggle-slider"></span></label> </div> <div class="pc-foot"> <div class="pc-stats">ใช้แล้ว <strong>${p.used}</strong> ครั้ง · ลดรวม <strong>฿${p.discount.toLocaleString()}</strong></div> </div> <div style="display:flex;border-top:1px solid rgba(176,154,133,.12)"> <button class="btn btn-secondary" style="flex:1;border-radius:0;padding:10px;font-size:12px;font-weight:600;border-right:1px solid rgba(176,154,133,.12)"
  onclick="editPromo(${p.id})"> แก้ไข</button> <button class="btn btn-danger" style="flex:1;border-radius:0;padding:10px;font-size:12px;font-weight:600"
  onclick="delPromo(${p.id})"> ลบ</button> </div> </div>`;
- }).join('')||'<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">sell</span></div><div class="e-title">ยังไม่มีโปรโมชั่น</div></div>';
+ }).join('')||'<div class="empty-state"><div class="e-icon">🏷️</div><div class="e-title">ยังไม่มีโปรโมชั่น</div></div>';
 }
 function togglePromo(id,val){
  const p=DB.promos.find(x=>x.id===id);
@@ -2534,7 +2534,7 @@ function savePromo(){
  };
  if(!data.name){toast('กรุณาใส่ชื่อโปรโมชั่น');return;}
  if(id){const p=DB.promos.find(x=>x.id===id);Object.assign(p,data);toast('อัพเดตแล้ว');}
- else{DB.promos.push({...data,id:null,active:false,used:0,discount:0});toast('สร้างโปรโมชั่นแล้ว');}
+ else{DB.promos.push({...data,id:DB.nextId++,active:false,used:0,discount:0});toast('สร้างโปรโมชั่นแล้ว');}
  closeModal('modal-add-promo');renderPromos(promoFilterTab);
  document.getElementById('promoModalTitle').textContent='สร้างโปรโมชั่น';
  document.getElementById('promoEditId').value='';
@@ -2737,7 +2737,7 @@ function logStaffDrink(){
  const type=document.getElementById('staffType').value;
  const note=document.getElementById('staffNote').value;
  if(!m)return;
- DB.staffLogs.push({id:'tmp-'+Date.now(),menuId,menuName:m.name,staff:name,type,qty,ts:Date.now(),note});
+ DB.staffLogs.push({id:DB.nextId++,menuId,menuName:m.name,staff:name,type,qty,ts:Date.now(),note});
  AUD.welfare(m.name, qty, '—', name, type);
  closeModal('modal-staff');
  toast(`บันทึก ${m.name} x${qty} (${name})`);
@@ -2756,7 +2756,7 @@ let currentOperator = null; // {id, name} ของพนักงานที�
 function addAudit(type, action, detail, icon='•', bg='rgba(176,154,133,.1)', severity='low', empOverride=null){
  const emp = empOverride || currentOperator;
  DB.auditLog.unshift({
- id: null,
+ id: 'AUD-TMP-'+Date.now(),
  type, action, detail, icon, bg, severity,
  empId: emp ? emp.id : '—',
  empName: emp ? emp.name : 'ไม่ระบุ',
@@ -2768,18 +2768,18 @@ function addAudit(type, action, detail, icon='•', bg='rgba(176,154,133,.1)', s
 
 /* shortcut helpers */
 const AUD = {
- itemAdd: (name,size,qty,price) => addAudit('item_add', `เพิ่มเมนู`, `${name} (${size}) x${qty} · ฿${price*qty}`, '<span class=\"mi\" style=\"font-size:16px\">add_circle</span>', 'rgba(45,122,79,.12)', 'low'),
- itemEdit: (name,size,from,to,price) => addAudit('item_edit', `แก้จำนวน`, `${name} (${size}) ${from}→${to} · ฿${price*to}`, '<span class=\"mi\" style=\"font-size:16px\">edit</span>', 'rgba(184,134,11,.11)', 'low'),
- itemDel: (name,size,qty,price) => addAudit('item_remove', `ลบเมนูออก`, `${name} (${size}) x${qty} · ฿${price*qty}`, '<span class=\"mi\" style=\"font-size:16px\">remove_circle</span>', 'rgba(184,50,40,.12)', 'med'),
- orderNew: (id,total,items) => addAudit('order_confirm', `ยืนยันบิล`, `#${id} · ${items} รายการ · ฿${total}`, '<span class=\"mi\" style=\"font-size:16px\">receipt_long</span>', 'rgba(45,122,79,.12)', 'low'),
- orderVoid: (id,reason,by) => addAudit('order_void', `ยกเลิกบิล`, `#${id} · เหตุผล: ${reason}`, '<span class=\"mi\" style=\"font-size:16px\">cancel</span>', 'rgba(184,50,40,.14)', 'high', by),
- voidReq: (id,reason) => addAudit('void_request', `ขอยกเลิกบิล`, `#${id} · เหตุผล: ${reason}`, '<span class=\"mi\" style=\"font-size:16px\">pending_actions</span>', 'rgba(184,134,11,.12)', 'med'),
- voidApprove:(id,by) => addAudit('void_approve', `อนุมัติยกเลิกบิล`, `#${id}`, '<span class=\"mi\" style=\"font-size:16px\">check_circle</span>', 'rgba(184,50,40,.14)', 'high', by),
- voidReject: (id,by) => addAudit('void_reject', `ปฏิเสธยกเลิกบิล`, `#${id}`, '<span class=\"mi\" style=\"font-size:16px\">do_not_disturb_on</span>', 'rgba(184,50,40,.12)', 'med', by),
- preVoid: (summary) => addAudit('order_void', `ยกเลิก (ก่อนบันทึก)`, `รายการ: ${summary}`, '<span class=\"mi\" style=\"font-size:16px\">cancel</span>', 'rgba(184,50,40,.14)', 'high'),
- welfare: (name,qty,empId,empName,type) => addAudit('welfare', `สวัสดิการ`, `${name} x${qty} · ${type}`, '<span class=\"mi\" style=\"font-size:16px\">volunteer_activism</span>', 'rgba(43,94,167,.12)', 'low', {id:empId,name:empName}),
- login: (emp) => addAudit('login', `เข้าสู่ระบบ`, `Session ${SESSION_ID}`, '<span class=\"mi\" style=\"font-size:16px\">login</span>', 'rgba(43,94,167,.12)', 'low', emp),
- approvalFail: (id,who) => addAudit('auth_fail', `รหัสอนุมัติผิด`, `ใช้รหัส: ${who} · ไม่มีในระบบหรือไม่มีสิทธิ์`, '<span class=\"mi\" style=\"font-size:16px\">lock</span>', 'rgba(184,50,40,.14)', 'high'),
+ itemAdd: (name,size,qty,price) => addAudit('item_add', `เพิ่มเมนู`, `${name} (${size}) x${qty} · ฿${price*qty}`, '', 'rgba(45,122,79,.12)', 'low'),
+ itemEdit: (name,size,from,to,price) => addAudit('item_edit', `แก้จำนวน`, `${name} (${size}) ${from}→${to} · ฿${price*to}`, '', 'rgba(184,134,11,.11)', 'low'),
+ itemDel: (name,size,qty,price) => addAudit('item_remove', `ลบเมนูออก`, `${name} (${size}) x${qty} · ฿${price*qty}`, '', 'rgba(184,50,40,.12)', 'med'),
+ orderNew: (id,total,items) => addAudit('order_confirm', `ยืนยันบิล`, `#${id} · ${items} รายการ · ฿${total}`, '', 'rgba(45,122,79,.12)', 'low'),
+ orderVoid: (id,reason,by) => addAudit('order_void', `ยกเลิกบิล`, `#${id} · เหตุผล: ${reason}`, '', 'rgba(184,50,40,.14)', 'high', by),
+ voidReq: (id,reason) => addAudit('void_request', `ขอยกเลิกบิล`, `#${id} · เหตุผล: ${reason}`, '', 'rgba(184,134,11,.12)', 'med'),
+ voidApprove:(id,by) => addAudit('void_approve', `อนุมัติยกเลิกบิล`, `#${id}`, '', 'rgba(184,50,40,.14)', 'high', by),
+ voidReject: (id,by) => addAudit('void_reject', `ปฏิเสธยกเลิกบิล`, `#${id}`, '', 'rgba(184,50,40,.12)', 'med', by),
+ preVoid: (summary) => addAudit('order_void', `ยกเลิก (ก่อนบันทึก)`, `รายการ: ${summary}`, '', 'rgba(184,50,40,.14)', 'high'),
+ welfare: (name,qty,empId,empName,type) => addAudit('welfare', `สวัสดิการ`, `${name} x${qty} · ${type}`, '', 'rgba(43,94,167,.12)', 'low', {id:empId,name:empName}),
+ login: (emp) => addAudit('login', `เข้าสู่ระบบ`, `Session ${SESSION_ID}`, '', 'rgba(43,94,167,.12)', 'low', emp),
+ approvalFail: (id,who) => addAudit('auth_fail', `รหัสอนุมัติผิด`, `ใช้รหัส: ${who} · ไม่มีในระบบหรือไม่มีสิทธิ์`, '', 'rgba(184,50,40,.14)', 'high'),
 };
 
 let auditFilter='all';
@@ -2799,7 +2799,7 @@ function renderAuditLog(filter){
  document.getElementById('auditSub').textContent = `${list.length} รายการ`;
  const el = document.getElementById('auditList');
  if(!list.length){
- el.innerHTML='<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">history</span></div><div class="e-title">ยังไม่มีประวัติ</div></div>'; return;
+ el.innerHTML='<div class="empty-state"><div class="e-icon">📋</div><div class="e-title">ยังไม่มีประวัติ</div></div>'; return;
  }
  el.innerHTML = list.map(e=>{
  const d = new Date(e.ts);
@@ -2807,7 +2807,7 @@ function renderAuditLog(filter){
  const date = d.toLocaleDateString('th-TH',{day:'numeric',month:'short'});
  const sevClass = e.severity==='high' ? 'audit-severity-high' : e.severity==='med' ? 'audit-severity-med' : '';
  return `
- <div class="audit-item ${sevClass}"> <div class="audit-icon" style="background:${e.bg||'rgba(176,154,133,.1)'}"> ${e.icon||'<span class=\'mi\' style=\'font-size:16px\'>circle</span>'} </div> <div class="audit-info"> <div class="audit-action">${e.action}</div> <div class="audit-detail">${e.detail||'—'}</div> <div class="audit-emp"> ${e.empName||'—'} ${e.empId&&e.empId!=='—'?`(${e.empId})`:''}
+ <div class="audit-item ${sevClass}"> <div class="audit-icon" style="background:${e.bg||'rgba(176,154,133,.1)'}"> <span>${e.icon||'•'}</span> </div> <div class="audit-info"> <div class="audit-action">${e.action}</div> <div class="audit-detail">${e.detail||'—'}</div> <div class="audit-emp"> ${e.empName||'—'} ${e.empId&&e.empId!=='—'?`(${e.empId})`:''}
  <span style="opacity:.5;margin:0 3px">·</span> <span style="opacity:.6">${e.sessionId||''}</span> </div> </div> <div class="audit-time">${time}<br><span style="font-size:8px">${date}</span></div> </div>`;
  }).join('');
 }
@@ -2943,7 +2943,7 @@ function renderStaffMgmt(tab){
  // TAB: รายชื่อ
  if(!list.length){
  document.getElementById('staffMgmtContent').innerHTML = tabBar +
- `<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">group</span></div><div class="e-title">ยังไม่มีพนักงาน</div><div class="e-sub">กดปุ่ม + เพิ่มพนักงานคนแรก</div></div>`;
+ `<div class="empty-state"><div class="e-icon">👥</div><div class="e-title">ยังไม่มีพนักงาน</div><div class="e-sub">กดปุ่ม + เพิ่มพนักงานคนแรก</div></div>`;
  return;
  }
  const roleLabel={cashier:'แคชเชียร์',manager:'ผู้จัดการ'};
@@ -2986,7 +2986,7 @@ function renderStaffLoginHistory(filterEmpId, dateFrom, dateTo){
  </div>`;
 
  if(!loginLogs.length) return filterBadge + dateFilter +
- `<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">history</span></div><div class="e-title">ยังไม่มีประวัติ</div></div>`;
+ `<div class="empty-state"><div class="e-icon">📋</div><div class="e-title">ยังไม่มีประวัติ</div></div>`;
 
  const rows = loginLogs.map(a=>{
  const emp = DB.employees.find(e=>String(e.id)===String(a.empId));
@@ -3221,15 +3221,15 @@ function renderBillManagement(filter){
 
  const el = document.getElementById('billMgList');
  if(!orders.length){
- el.innerHTML='<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">receipt_long</span></div><div class="e-title">ยังไม่มีบิล</div></div>'; return;
+ el.innerHTML='<div class="empty-state"><div class="e-icon">🧾</div><div class="e-title">ยังไม่มีบิล</div></div>'; return;
  }
  el.innerHTML = orders.map(o=>{
  const t = new Date(o.ts).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
- const hasPending = DB.pendingVoids.some(v=>v.orderId===o.id&&v.status==='pending');
+ const hasPending = DB.pendingVoids.some(v=>String(v.orderId)===String(o.id)&&v.status==='pending');
  const statusClass = o.status==='voided' ? 'voided' : hasPending ? 'pending' : 'active';
  const statusLabel = o.status==='voided' ? 'ยกเลิกแล้ว' : hasPending ? 'รออนุมัติ' : 'ปกติ';
  return `
- <div class="bill-item" onclick="openOrderDetail(${o.id})"> <div class="bill-head"> <div class="bill-status-dot ${statusClass}"></div> <div class="bill-info"> <div class="bill-id">บิล #${o.id} · ${t}</div> <div class="bill-meta">${o.items.reduce((s,i)=>s+i.qty,0)} แก้ว · ${statusLabel}${o.voidApprovedBy?' · ผู้อนุมัติ: '+o.voidApprovedBy:''}</div> </div> <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"> <div class="bill-amt ${o.status==='voided'?'voided':''}">฿${o.total.toLocaleString()}</div> ${o.status==='active'&&!hasPending
+ <div class="bill-item" onclick="openOrderDetail('${o.id}')"> <div class="bill-head"> <div class="bill-status-dot ${statusClass}"></div> <div class="bill-info"> <div class="bill-id">บิล #${o.id} · ${t}</div> <div class="bill-meta">${o.items.reduce((s,i)=>s+i.qty,0)} แก้ว · ${statusLabel}${o.voidApprovedBy?' · ผู้อนุมัติ: '+o.voidApprovedBy:''}</div> </div> <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"> <div class="bill-amt ${o.status==='voided'?'voided':''}">฿${o.total.toLocaleString()}</div> ${o.status==='active'&&!hasPending
  ?`<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();requestBillVoid(${o.id})">ยกเลิกบิล</button>`:''}
  </div> </div> </div>`;
  }).join('');
@@ -3249,7 +3249,7 @@ function requestBillVoid(orderId){
  (ok, requester)=>{
  if(ok){
  DB.pendingVoids.push({
- id: null, orderId, reason: reason.trim(),
+ id: DB.nextId++, orderId, reason: reason.trim(),
  requestTs: Date.now(), status: 'pending',
  requestBy: `${requester.name} (${requester.id})`
  });
@@ -3309,10 +3309,10 @@ function rejectVoid(voidId){
  ORDER DETAIL (view only)
  */
 function openOrderDetail(orderId){
- const order = DB.orders.find(o=>o.id===orderId); if(!order) return;
+ const order = DB.orders.find(o=>String(o.id)===String(orderId)); if(!order) return;
  document.getElementById('odTitle').textContent = `บิล #${order.id}`;
  const isVoided = order.status==='voided';
- const hasPending = DB.pendingVoids.some(v=>v.orderId===order.id&&v.status==='pending');
+ const hasPending = DB.pendingVoids.some(v=>String(v.orderId)===String(order.id)&&v.status==='pending');
  const badgeEl = document.getElementById('odStatusBadge');
  if(isVoided) badgeEl.innerHTML=`<span class="od-badge voided">ยกเลิกแล้ว</span>`;
  else if(hasPending)badgeEl.innerHTML=`<span class="od-badge" style="background:var(--gold-lt);color:var(--gold)">รออนุมัติ</span>`;
@@ -3356,7 +3356,7 @@ function switchStoreTab(btn,tab){
  const addBtn = babStores.querySelectorAll('.bab-btn')[1];
  if(!addBtn) return;
  const labels={ingredient:'เพิ่มวัตถุดิบ',package:'เพิ่มบรรจุภัณฑ์',equipment:'เพิ่มอุปกรณ์',blend:'สร้างสูตรเบลนด์',recipe:'คำนวณสูตร',uselog:'บันทึกการใช้',po:'สั่งซื้อ',alert:''};
- const icons={ingredient:'eco',package:'package_2',equipment:'blender',blend:'science',recipe:'calculate',uselog:'edit_note',po:'local_shipping',alert:'notifications'};
+ const icons={ingredient:'add',package:'add',equipment:'add',blend:'science',recipe:'calculate',uselog:'edit_note',po:'local_shipping',alert:'notifications'};
  const label=labels[tab]||'เพิ่ม';
  if(tab==='alert'){babStores.style.display='none';return;}
  else{babStores.classList.add('show');}
@@ -3388,7 +3388,7 @@ function renderStores(tab){
  const data={ingredient:DB.ingredients,package:DB.packages,equipment:DB.equipment}[tab]||[];
  const today=new Date().toISOString().split('T')[0];
  const soon=new Date();soon.setDate(soon.getDate()+7);const soonStr=soon.toISOString().split('T')[0];
- if(!data.length){el.innerHTML=`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">inventory_2</span></div><div class="e-title">ยังไม่มีรายการ</div><div class="e-sub">กดปุ่ม + เพิ่มรายการ</div></div>`;return;}
+ if(!data.length){el.innerHTML=`<div class="empty-state"><div class="e-icon">📦</div><div class="e-title">ยังไม่มีรายการ</div><div class="e-sub">กดปุ่ม + เพิ่มรายการ</div></div>`;return;}
  el.innerHTML='<div style="padding:12px 16px 80px">'+data.map(item=>{
  const lowStock=item.qty<=item.min;
  const expiring=item.expiry&&item.expiry<=soonStr;
@@ -3440,7 +3440,7 @@ function renderRecipeTab(){
  const linked = DB.recipes.filter(r=>r.menuId);
  const standalone = DB.recipes.filter(r=>!r.menuId);
  const allRecs = [...linked,...standalone];
- if(!allRecs.length)return`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">menu_book</span></div><div class="e-title">ยังไม่มีสูตร</div><div class="e-sub">เพิ่มสูตรผ่านหน้าจัดการเมนู</div></div>`;
+ if(!allRecs.length)return`<div class="empty-state"><div class="e-icon">📝</div><div class="e-title">ยังไม่มีสูตร</div><div class="e-sub">เพิ่มสูตรผ่านหน้าจัดการเมนู</div></div>`;
  return`<div style="padding:12px 16px 80px">`+allRecs.map(rec=>{
  const menu=rec.menuId?DB.menus.find(m=>m.id===rec.menuId):null;
  const cost=calcRecipeCostPerCup(rec);
@@ -3450,7 +3450,7 @@ function renderRecipeTab(){
  }).join('')+'</div>';
 }
 function renderUseLogTab(){
- if(!DB.useLogs.length)return`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">edit_note</span></div><div class="e-title">ยังไม่มีบันทึก</div><div class="e-sub">กดปุ่ม + บันทึกการใช้</div></div>`;
+ if(!DB.useLogs.length)return`<div class="empty-state"><div class="e-icon">✏️</div><div class="e-title">ยังไม่มีบันทึก</div><div class="e-sub">กดปุ่ม + บันทึกการใช้</div></div>`;
  return`<div style="padding:12px 0 80px">`+DB.useLogs.slice().reverse().map(l=>`
  <div class="store-item"> <span class="badge badge-blue">${{staff:'พนักงาน',test:'ทดลอง',expired:'หมดอายุ',damaged:'เสียหาย',other:'อื่นๆ'}[l.reason]||l.reason}</span> <div class="si-info" style="margin-left:4px"><div class="si-name">${l.itemName}</div><div class="si-meta">${l.note||''}</div></div> <div style="text-align:right"><div style="font-size:12px;font-weight:700;color:var(--red)">-${l.qty} ${l.unit}</div><div style="font-size:9px;color:var(--t4)">${new Date(l.ts).toLocaleDateString('th-TH')}</div></div> </div>`
  ).join('')+'</div>';
@@ -3496,7 +3496,7 @@ function saveStoreItem(){
  };
  if(!data.name){toast('กรุณาใส่ชื่อ');return;}
  if(id){const item=arr.find(x=>x.id===id);Object.assign(item,data);toast('อัพเดตแล้ว');}
- else{arr.push({...data,id:null});toast('เพิ่มรายการแล้ว');}
+ else{arr.push({...data,id:DB.nextId++});toast('เพิ่มรายการแล้ว');}
  closeModal('modal-store-item');
  // อัปเดต cost ของเมนูที่ใช้วัตถุดิบนี้
  if(type==='ingredient'){
@@ -3553,7 +3553,7 @@ function saveRecipe(){
  if(ingId&&qty)ings.push({ingId,qty});
  });
  let totalCost=0;ings.forEach(r=>{const ing=DB.ingredients.find(i=>i.id===r.ingId);if(ing)totalCost+=(ing.cost/1000)*r.qty;});
- DB.recipes.push({id:null,name,cups,ings,costPerCup:totalCost.toFixed(2),ts:Date.now()});
+ DB.recipes.push({id:DB.nextId++,name,cups,ings,costPerCup:totalCost.toFixed(2),ts:Date.now()});
  closeModal('modal-recipe');renderStores('recipe');toast('บันทึกสูตรแล้ว');scheduleSync();
 }
 
@@ -3572,7 +3572,7 @@ function saveUseLog(){
  const reason=document.getElementById('useLogReason').value;
  const note=document.getElementById('useLogNote').value;
  ing.qty=Math.max(0,ing.qty-qty);
- DB.useLogs.push({id:null,ingId,itemName:ing.name,unit:ing.unit,qty,reason,note,ts:Date.now()});
+ DB.useLogs.push({id:DB.nextId++,ingId,itemName:ing.name,unit:ing.unit,qty,reason,note,ts:Date.now()});
  closeModal('modal-use-log');renderStores('uselog');toast(`บันทึก ${ing.name} -${qty}${ing.unit}`);scheduleSync();
 }
 
@@ -3690,7 +3690,7 @@ function saveBlendFormula(){
   const b=DB.blends.find(x=>x.id===id);
   if(b){Object.assign(b,data);toast('อัปเดตสูตรแล้ว');}
  } else {
-  DB.blends.push({...data,id:null,stock:[]});
+  DB.blends.push({...data,id:DB.nextId++,stock:[]});
   toast('✅ สร้างสูตรเบลนด์แล้ว');
  }
  closeModal('modal-blend');renderStores('blend');scheduleSync();
@@ -3790,7 +3790,7 @@ function confirmBatch(){
  const mult=parseFloat(document.getElementById('batchMultiplier').value)||1;
  getBlendIngs(b).forEach(ig=>{const ing=DB.ingredients.find(x=>x.id===ig.ingId);if(ing)ing.qty=Math.max(0,ing.qty-ig.qty*mult);});
  const expDate=new Date();expDate.setDate(expDate.getDate()+b.shelfDays);
- const batchId='tmp-'+Date.now();
+ const batchId=DB.nextId++;
  b.stock.push({batchId,qty:b.yieldPerBatch*mult,produced:new Date().toISOString().split('T')[0],expiry:expDate.toISOString().split('T')[0],cost:b.totalCostPerBatch*mult});
  DB.blendBatches.push({id:batchId,blendId,multiplier:mult,qty:b.yieldPerBatch*mult,produced:new Date().toISOString().split('T')[0],expiry:expDate.toISOString().split('T')[0],totalCost:b.totalCostPerBatch*mult,ts:Date.now()});
  closeModal('modal-batch');renderStores('blend');toast(`ผลิต ${b.name} x${mult} batch สำเร็จ`);scheduleSync();
@@ -3809,7 +3809,7 @@ function renderPOTab(){
  </div>`;
  }
  // existing POs
- if(!pos.length&&!lowItems.length) return`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">local_shipping</span></div><div class="e-title">ไม่มีรายการสั่งซื้อ</div><div class="e-sub">กดปุ่ม + เพื่อสร้างใบสั่งซื้อ</div></div>`;
+ if(!pos.length&&!lowItems.length) return`<div class="empty-state"><div class="e-icon">🚚</div><div class="e-title">ไม่มีรายการสั่งซื้อ</div><div class="e-sub">กดปุ่ม + เพื่อสร้างใบสั่งซื้อ</div></div>`;
  if(pos.length){
  html+=`<div style="padding:0 0 80px"><div style="font-size:10px;font-weight:700;color:var(--t4);padding:6px 16px">รายการสั่งซื้อทั้งหมด</div>`;
  html+=pos.map(po=>{
@@ -3851,13 +3851,13 @@ function savePO(){
  const unit=opt.dataset.unit||'หน่วย';
  const unitCost=parseFloat(opt.dataset.cost)||0;
  if(!qty){toast('กรุณาใส่จำนวน');return;}
- const po={id:null,ingId,itemName:name,qty,unit,unitCost,totalCost:Math.round(qty*unitCost),status:'pending',note:document.getElementById('poNote').value||'',ts:Date.now()};
+ const po={id:DB.nextId++,ingId,itemName:name,qty,unit,unitCost,totalCost:Math.round(qty*unitCost),status:'pending',note:document.getElementById('poNote').value||'',ts:Date.now()};
  DB.purchaseOrders.push(po);
  closeModal('modal-po');
  renderStores('po'); toast(`สร้างใบสั่ง ${name} x${qty}${unit}`); scheduleSync();
 }
 function quickCreatePO(ingId,name,qty,unitCost,unit){
- const po={id:null,ingId,itemName:name,qty,unit,unitCost,totalCost:Math.round(qty*unitCost),status:'pending',note:'',ts:Date.now()};
+ const po={id:DB.nextId++,ingId,itemName:name,qty,unit,unitCost,totalCost:Math.round(qty*unitCost),status:'pending',note:'',ts:Date.now()};
  DB.purchaseOrders.push(po);
  renderStores('po'); toast(`สร้างใบสั่ง ${name} x${qty}${unit}`); scheduleSync();
 }
@@ -3885,7 +3885,7 @@ function renderAlertTab(){
  const lowStock=[...DB.ingredients,...DB.packages].filter(i=>i.qty<=i.min&&i.status==='active');
  const damaged=allItems.filter(i=>i.status==='damaged');
  if(!expired.length&&!expiring.length&&!lowStock.length&&!damaged.length)
- return`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">check_circle</span></div><div class="e-title">ทุกอย่างปกติ</div><div class="e-sub">ไม่มีการแจ้งเตือน</div></div>`;
+ return`<div class="empty-state"><div class="e-icon">✅</div><div class="e-title">ทุกอย่างปกติ</div><div class="e-sub">ไม่มีการแจ้งเตือน</div></div>`;
  const section=(icon,title,col,items,extra='')=>{
  if(!items.length)return'';
  return`<div style="margin:0 16px 12px;background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);overflow:hidden"> <div style="padding:8px 12px;background:${col}22;border-bottom:1px solid ${col}33"> <span style="font-size:11px;font-weight:700;color:${col}">${icon} ${title} (${items.length})</span> </div> ${items.map(i=>`<div style="display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid rgba(140,123,107,.1)"> <span style="font-size:12px;color:var(--t2)">${i.name}</span> <span style="font-size:11px;color:${col}">${i.expiry?i.expiry:i.qty+'/'+i.min+' '+i.unit}</span> </div>`).join('')}
@@ -3929,14 +3929,14 @@ function renderSalesToday(){
 
  const listEl=document.getElementById('salesTodayList');
  if(!allOrders.length){
- listEl.innerHTML='<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:32px">wb_sunny</span></div><div class="e-title">ยังไม่มีออเดอร์วันนี้</div><div class="e-sub">เริ่มรับออเดอร์ได้เลย!</div></div>';
+ listEl.innerHTML='<div class="empty-state"><div class="e-icon">🌅</div><div class="e-title">ยังไม่มีออเดอร์วันนี้</div><div class="e-sub">เริ่มรับออเดอร์ได้เลย!</div></div>';
  return;
  }
  listEl.innerHTML=allOrders.slice().reverse().map(function(o){
  var timeStr=new Date(o.ts).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
  var isVoided=o.status==='voided';
  var orderProfit=isVoided?0:o.items.reduce(function(ss,i){var m=DB.menus.find(function(x){return x.id===i.menuId;});return ss+(m?(m.price-m.cost)*i.qty:0);},0);
- var hasPending=DB.pendingVoids.some(function(v){return v.orderId===o.id&&v.status==='pending';});
+ var hasPending=DB.pendingVoids.some(function(v){return String(v.orderId)===String(o.id)&&v.status==='pending';});
  var statusBadge='';
  if(isVoided) statusBadge='<span style="background:var(--red-lt);color:var(--red);font-size:9px;font-weight:700;padding:2px 6px;border-radius:var(--rf)">ยกเลิก</span>';
  else if(hasPending) statusBadge='<span style="background:var(--gold-lt);color:var(--gold);font-size:9px;font-weight:700;padding:2px 6px;border-radius:var(--rf)">รออนุมัติ</span>';
@@ -4062,8 +4062,19 @@ async function syncToSheet(){
  const dirty=localStorage.getItem(LS_DIRTY);if(!dirty||!isOnline)return;
  showSyncStatus('กำลัง sync...');
  const result=await apiFetch({action:'syncAll',db:DB});
- if(result&&result.ok){localStorage.setItem(LS_DIRTY,'');localStorage.setItem(LS_LASTSYNC,new Date().toISOString());showSyncStatus(' '+new Date().toLocaleTimeString('th-TH'));}
- else showSyncStatus('Sync failed');
+ if(result&&result.ok){
+  localStorage.setItem(LS_DIRTY,'');
+  localStorage.setItem(LS_LASTSYNC,new Date().toISOString());
+  showSyncStatus('\u2714 '+new Date().toLocaleTimeString('th-TH'));
+  // อัปเดต id จริงจาก GAS: reload orders หลัง sync
+  const fresh=await apiGet({action:'getAll'});
+  if(fresh&&Array.isArray(fresh.orders)&&fresh.orders.length){
+    DB.orders=fresh.orders;
+    saveLocal();
+    if(typeof updateSalesBadge==='function') updateSalesBadge();
+    if(typeof renderBillManagement==='function') renderBillManagement(typeof billFilter!=='undefined'?billFilter:'today');
+  }
+} else showSyncStatus('Sync failed');
 }
 async function loadFromSheet(){
  showSyncStatus('กำลังโหลด...');
@@ -4104,8 +4115,8 @@ async function loadFromSheet(){
  return true;
 }
 
-/* recalcNextId — no-op ใน v2.0 (ID generate โดย GAS server-side) */
-function recalcNextId(){ /* deprecated — GAS generates all IDs now */ }
+/* recalcNextId — no-op v2.0: GAS generates all IDs server-side */
+function recalcNextId(){}
 
 /* โหลดข้อมูลพนักงานจาก Google Sheet แยกต่างหาก */
 async function loadEmployeesFromSheet(){
