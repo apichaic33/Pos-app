@@ -2367,7 +2367,7 @@ function renderMenuCustomCheckboxes(selectedKeys){
  if(!el) return;
  const opts = (DB.customOptions||[]);
  if(!opts.length){
-  el.innerHTML='<div style="font-size:12px;color:var(--t4);padding:4px 0">ยังไม่มี Custom Options — <a href="#" onclick="event.preventDefault();closeModal('modal-add-menu');drawerGo('custom')" style="color:var(--blue)">ไปเพิ่มได้เลย</a></div>';
+  el.innerHTML='<div style="font-size:12px;color:var(--t4);padding:4px 0">ยังไม่มี Custom Options — <a href="#" onclick="event.preventDefault();closeModal(\"modal-add-menu\");drawerGo(\"custom\")" style="color:var(--blue)">ไปเพิ่มได้เลย</a></div>';
   return;
  }
  el.innerHTML = opts.map(o=>{
