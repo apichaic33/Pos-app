@@ -3319,7 +3319,7 @@ function _filterOrders(days){
  const d    = new Date(); d.setHours(0,0,0,0);
  const since = days===1 ? d.getTime() : now - days*86400000;
  return DB.orders.filter(o=>{
-  if(o.status==='void') return false;
+  if(o.status==='voided'||o.status==='void') return false; // void/voided both excluded
   return _ts(o.ts) >= since;
  });
 }
@@ -3392,7 +3392,7 @@ function renderBarChart(days){
  for(let i=numDays-1;i>=0;i--){
   const d=new Date(); d.setDate(d.getDate()-i); d.setHours(0,0,0,0);
   const dayStart=d.getTime(), dayEnd=dayStart+86400000;
-  const dayOrders=DB.orders.filter(o=>o.status!=='void' && _ts(o.ts)>=dayStart && _ts(o.ts)<dayEnd);
+  const dayOrders=DB.orders.filter(o=>o.status!=='voided'&&o.status!=='void' && _ts(o.ts)>=dayStart && _ts(o.ts)<dayEnd);
   const st = _calcOrderStats(dayOrders);
   bars.push({day:dayNames[d.getDay()], date:d.getDate(), rev:st.sales, prof:st.profit, cnt:st.count});
  }
