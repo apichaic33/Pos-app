@@ -1688,7 +1688,7 @@ function addFromModal(){
 }
 function quickAdd(id){
  const m=DB.menus.find(x=>x.id===id);if(!m)return;
- addToOrder(m.id,m.name,m.sizes[0]||'M',1,m.price,'','ปกติ','ปกติ',m.color,m.icon);
+ addToOrder(m.id,m.name,m.sizes[0]||'M',1,m.price,'','50%','มีน้ำแข็ง',m.color,m.icon);
  toast(`+ ${m.name}`);
 }
 
@@ -1716,6 +1716,7 @@ function updateCartFab(){
  const cnt=document.getElementById('cartFabCount');
  if(count>0){fab.classList.add('show');cnt.textContent=count;}
  else{fab.classList.remove('show');}
+ saveOrderItems(); // persist pending order
 }
 
 /* 
@@ -1746,14 +1747,14 @@ function renderOrderPanel(){
  // ── Auto-calculate promos ──
  calcAutoPromo();
  const totalCount=orderItems.reduce((s,i)=>s+i.qty,0);
- if(itemCountEl) itemCountEl.textContent=totalCount+'รายการ';
+ if(itemCountEl) itemCountEl.textContent=totalCount+' รายการ';
  const CUST_LABELS={extraShot:'เพิ่มช็อต',extraMatcha:'เพิ่มมัทฉะ',extraCocoa:'เพิ่มโกโก้'};
  list.innerHTML=orderItems.map(i=>{
  const promo=i.autoPromoId?DB.promos.find(x=>x.id===i.autoPromoId):null;
  const noteParts=(i.note||'').split(' · ');
  const customTags=Object.values(CUST_LABELS).filter(v=>noteParts.includes(v));
  const otherNote=noteParts.filter(p=>!Object.values(CUST_LABELS).includes(p)).join(' · ');
- const metaLine=[i.size,i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:'',i.ice,otherNote].filter(Boolean).join(' · ');
+ const metaLine=[i.size,i.sweet&&i.sweet!=='50%'&&i.sweet!=='ปกติ'?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:'',i.ice&&i.ice!=='ปกติ'?i.ice:'',otherNote].filter(Boolean).join(' · ');
  const disc=i.autoPromoDisc||0;
  const rawTotal=i.price*i.qty;
  const netTotal=rawTotal-disc;
@@ -1893,17 +1894,36 @@ function calcAutoPromo(){
    }
 
    // ─── Bundle: ซื้อ N ชิ้น ราคาพิเศษ X บาท ─────
+   // เงื่อนไข: เป็น set เท่านั้น ขวดที่เกินจาก set คิดราคาเต็ม
    case 'bundle':{
     const n=Math.max(1,p.val||2);
     const bundlePrice=p.val2||0;
-    if(totalQty<n||!bundlePrice) break;
-    const sets=Math.floor(totalQty/n);
-    const normalTotal=orderItems.reduce((s,i)=>s+i.price*Math.min(i.qty,n*sets),0);
-    const totalDisc=Math.max(0,normalTotal-bundlePrice*sets);
+    const coveredBundle=orderItems.filter(i=>promoCovers(p,i));
+    const coveredQtyBundle=coveredBundle.reduce((s,i)=>s+i.qty,0);
+    if(coveredQtyBundle<n||!bundlePrice) break;
+    const sets=Math.floor(coveredQtyBundle/n);
+    // จำนวนชิ้นที่อยู่ใน set (ส่วนที่เกินคิดเต็ม)
+    const inSetQty=sets*n;
+    // ราคาปกติของชิ้นที่อยู่ใน set
+    // กระจาย inSetQty ให้แต่ละ item ตามลำดับ
+    let remaining=inSetQty;
+    let normalSetTotal=0;
+    const inSetMap={}; // itemKey → qty ที่อยู่ใน set
+    orderItems.filter(i=>promoCovers(p,i)).forEach(i=>{
+     if(remaining<=0){inSetMap[i.key]=0;return;}
+     const take=Math.min(remaining,i.qty);
+     inSetMap[i.key]=take;
+     normalSetTotal+=i.price*take;
+     remaining-=take;
+    });
+    const totalDisc=Math.max(0,normalSetTotal-bundlePrice*sets);
     if(totalDisc<=0) break;
+    // กระจายส่วนลดตามสัดส่วนเฉพาะชิ้นที่อยู่ใน set
     orderItems.forEach(i=>{
      if(!promoCovers(p,i)) return;
-     const share=Math.round((i.price*i.qty/normalTotal)*totalDisc);
+     const qtyInSet=inSetMap[i.key]||0;
+     if(!qtyInSet) return;
+     const share=Math.round((i.price*qtyInSet/normalSetTotal)*totalDisc);
      if(share>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=share; }
     });
     break;
@@ -1964,6 +1984,7 @@ function clearOrderConfirm(){
  if(!orderItems.length)return;
  if(confirm('ล้างออเดอร์ทั้งหมด?')){
  orderItems=[]; orderDiscount=0;
+ localStorage.removeItem(LS_ORDER);
  renderOrderPanel();updateCartFab();
  toast('ล้างออเดอร์แล้ว');
  }
@@ -2017,6 +2038,7 @@ function confirmOrder(){
  previewOrder={id:'#'+String(order.id).padStart(4,'0'),items:order.items.map(i=>({...i,color:DB.menus.find(m=>m.id===i.menuId)?.color||'#2C1810'})),subTotal,discount,total,ts:new Date(),orderId:order.id};
  renderReceipt(previewOrder);
  orderItems=[]; orderDiscount=0;
+ localStorage.removeItem(LS_ORDER);
  renderOrderPanel();updateCartFab();
  closeOrderPanel();
  document.getElementById('receiptPage').classList.add('open');
@@ -2088,7 +2110,7 @@ function renderReceipt(order){
  const netPrice = subTotal - promoDisc;
 
  // เงื่อนไขเครื่องดื่ม
- const condParts = [i.ice, i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'', otherNote].filter(Boolean);
+ const condParts = [i.ice, i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'', i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:'', otherNote].filter(Boolean);
  const condLine = condParts.length
  ? `<div style="font-size:10px;color:var(--t4);padding:1px 0 2px 16px;line-height:1.5">${condParts.join(' · ')}</div>` : '';
 
@@ -2534,7 +2556,7 @@ function renderReport(days){
  const totalSales=filtered.reduce((s,o)=>s+o.total,0);
  const totalOrders=filtered.length;
  const avgOrder=totalOrders?Math.round(totalSales/totalOrders):0;
- const profit=filtered.reduce((s,o)=>s+o.items.reduce((ss,i)=>{const m=DB.menus.find(x=>x.id===i.menuId);return ss+(m?(m.price-m.cost)*i.qty:0);},0),0);
+ const profit=filtered.reduce((s,o)=>s+o.items.reduce((ss,i)=>{const m=DB.menus.find(x=>x.id===i.menuId);return ss+(m?(i.price-m.cost)*i.qty-(i.promoDisc||0):0);},0),0);
  document.getElementById('reportDate').textContent=days===1?'วันนี้':`${days} วันย้อนหลัง`;
  document.getElementById('rTotalSales').textContent='฿'+totalSales.toLocaleString();
  document.getElementById('rProfit').textContent='฿'+profit.toLocaleString();
@@ -3168,6 +3190,7 @@ function requestVoidOrder(){
  DB.auditLog[0].empId = approver.id;
  DB.auditLog[0].empName = approver.name;
  orderItems=[]; orderDiscount=0;
+ localStorage.removeItem(LS_ORDER);
  renderOrderPanel(); updateCartFab(); closeOrderPanel();
  toast(`ยกเลิกแล้ว อนุมัติโดย ${approver.name}`);
  }
@@ -3895,7 +3918,7 @@ function renderSalesToday(){
  const allOrders=getTodayOrders();
  const activeOrders=allOrders.filter(o=>o.status!=='voided');
  const total=activeOrders.reduce((s,o)=>s+o.total,0);
- const profit=activeOrders.reduce((s,o)=>s+o.items.reduce((ss,i)=>{const m=DB.menus.find(x=>x.id===i.menuId);return ss+(m?(m.price-m.cost)*i.qty:0);},0),0);
+ const profit=activeOrders.reduce((s,o)=>s+o.items.reduce((ss,i)=>{const m=DB.menus.find(x=>x.id===i.menuId);return ss+(m?(i.price-m.cost)*i.qty-(i.promoDisc||0):0);},0),0);
  const voidedCount=allOrders.filter(o=>o.status==='voided').length;
 
  document.getElementById('salesTodayTotal').textContent='฿'+total.toLocaleString();
@@ -3996,6 +4019,29 @@ function toggleBillDetail(id){
 const SCRIPT_URL='https://pos-app-proxy.laboon-pos-app.workers.dev';
 // APP_SECRET ถูกย้ายไปเก็บใน Cloudflare Worker Environment Variables แล้ว ✅
 const LS_KEY='pos_db_v5';const LS_DIRTY='pos_dirty_v5';const LS_LASTSYNC='pos_lastsync_v5';
+const LS_ORDER='pos_order_v5'; // pending order items
+
+function saveOrderItems(){
+ try{
+  if(orderItems.length>0){
+   localStorage.setItem(LS_ORDER,JSON.stringify(orderItems));
+  } else {
+   localStorage.removeItem(LS_ORDER);
+  }
+ }catch(e){}
+}
+function loadOrderItems(){
+ try{
+  const raw=localStorage.getItem(LS_ORDER);
+  if(!raw)return;
+  const saved=JSON.parse(raw);
+  if(Array.isArray(saved)&&saved.length>0){
+   orderItems=saved;
+   updateCartFab();
+   toast('มีรายการออเดอร์ค้างอยู่ '+orderItems.reduce((s,i)=>s+i.qty,0)+' รายการ');
+  }
+ }catch(e){localStorage.removeItem(LS_ORDER);}
+}
 let isOnline=navigator.onLine;
 window.addEventListener('online',()=>{isOnline=true;updateSyncUI();syncToSheet();});
 window.addEventListener('offline',()=>{isOnline=false;updateSyncUI();});
@@ -4062,7 +4108,7 @@ async function loadFromSheet(){
 function recalcNextId(){
  const allArrays = [DB.menus, DB.ingredients, DB.packages, DB.equipment,
    DB.orders, DB.promos, DB.recipes, DB.useLogs,
-   DB.purchaseOrders, DB.blends, DB.blendBatches, DB.employees, DB.auditLog];
+   DB.purchaseOrders, DB.blends, DB.blendBatches, DB.employees, DB.auditLog, DB.staffLogs];
  let maxId = DB.nextId || 1;
  allArrays.forEach(arr => {
    if(!Array.isArray(arr)) return;
@@ -4218,6 +4264,7 @@ async function loginSubmit(){
  updateDrawerForRole();
  goPage('order');
  renderOrder();
+ loadOrderItems(); // restore pending order items
  toast('ยินดีต้อนรับ '+emp.name);
  addAudit('login','เข้าสู่ระบบ','พนักงาน '+emp.id+' / '+emp.name,'','rgba(43,94,167,.1)','low',emp);
  updateDrawerUser();
