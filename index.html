@@ -2429,7 +2429,8 @@ function buildReceiptHTML(){
  </div>`;
 }
 function printSalesCopy(orderId){
- openPinModal('พิมพ์สำเนาใบเสร็จ','ใส่รหัส Manager เพื่อยืนยัน','manager',(emp)=>{
+ openPinModal('พิมพ์สำเนาใบเสร็จ','ใส่รหัส Manager เพื่อยืนยัน','manager',(ok,emp)=>{
+  if(!ok||!emp) return;
   const order=DB.orders.find(o=>String(o.id)===String(orderId));
   if(!order){toast('ไม่พบออเดอร์');return;}
   showCopyOptions(order,emp);
@@ -2470,6 +2471,7 @@ function buildCopyReceiptHTML(order, emp){
    <div style="display:flex;justify-content:space-between;gap:8px;padding:2px 0"><span style="color:#888;font-size:11px;flex-shrink:0">เลขออเดอร์</span><strong style="font-size:10px;text-align:right;word-break:break-all">${order.id}</strong></div>
    <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">วันที่</span><span style="font-size:11px">${dateStr}</span></div>
    <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">อนุมัติโดย</span><span style="font-size:11px">${emp.id} ${emp.name}</span></div>
+   <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">ผู้ทำรายการ</span><span style="font-size:11px">${order.empId||''} ${order.empName||lastOperator&&lastOperator.name||''}</span></div>
    <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">หมายเลข POS</span><span style="font-size:11px">${DB.posId||'POS-01'}</span></div>
    <hr style="border:none;border-top:1px dashed #bbb;margin:8px 0">
    ${itemHTML}
