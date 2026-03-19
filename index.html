@@ -3922,7 +3922,7 @@ function renderBillManagement(filter){
  const pvEl = document.getElementById('pendingVoidsList');
  if(pendingVoids.length){
  pvEl.innerHTML = pendingVoids.map(v=>`
- <div class="void-pending-banner"> <div class="vpb-title"> รอการอนุมัติยกเลิกบิล #${v.orderId}</div> <div class="vpb-sub">เหตุผล: ${v.reason}${v.requestBy?' · ขอโดย: '+v.requestBy:''}</div> <div class="vpb-actions"> <button class="btn btn-dark btn-sm" onclick="approveVoid(${v.id})"> อนุมัติ (รหัสผู้จัดการ)</button> <button class="btn btn-secondary btn-sm" onclick="rejectVoid(${v.id})"> ปฏิเสธ</button> </div> </div>`).join('');
+ <div class="void-pending-banner"> <div class="vpb-title"> รอการอนุมัติยกเลิกบิล #${v.orderId}</div> <div class="vpb-sub">เหตุผล: ${v.reason}${v.requestBy?' · ขอโดย: '+v.requestBy:''}</div> <div class="vpb-actions"> <button class="btn btn-dark btn-sm" onclick="approveVoid('${v.id}')"> อนุมัติ (รหัสผู้จัดการ)</button> <button class="btn btn-secondary btn-sm" onclick="rejectVoid('${v.id}')"> ปฏิเสธ</button> </div> </div>`).join('');
  } else { pvEl.innerHTML=''; }
 
  const el = document.getElementById('billMgList');
@@ -3936,7 +3936,7 @@ function renderBillManagement(filter){
  const statusLabel = o.status==='voided' ? 'ยกเลิกแล้ว' : hasPending ? 'รออนุมัติ' : 'ปกติ';
  return `
  <div class="bill-item" onclick="openOrderDetail('${o.id}')"> <div class="bill-head"> <div class="bill-status-dot ${statusClass}"></div> <div class="bill-info"> <div class="bill-id">บิล #${o.id} · ${t}</div> <div class="bill-meta">${o.items.reduce((s,i)=>s+i.qty,0)} แก้ว · ${statusLabel}${o.voidApprovedBy?' · ผู้อนุมัติ: '+o.voidApprovedBy:''}</div> </div> <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"> <div class="bill-amt ${o.status==='voided'?'voided':''}">฿${o.total.toLocaleString()}</div> ${o.status==='active'&&!hasPending
- ?`<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();requestBillVoid(${o.id})">ยกเลิกบิล</button>`:''}
+ ?`<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();requestBillVoid('${o.id}')">ยกเลิกบิล</button>`:''}
  </div> </div> </div>`;
  }).join('');
 }
@@ -4684,7 +4684,7 @@ function renderSalesToday(){
  +'<span style="font-size:11px;font-weight:700;color:var(--t2)">รวมทั้งสิ้น</span>'
  +'<span style="font-size:14px;font-weight:800;color:var(--cara);font-family:var(--fh)">฿'+o.total.toLocaleString()+'</span>'
  +'</div>'
- +(!isVoided?'<div style="border-top:1px solid rgba(176,154,133,.12);margin-top:6px"><button class="btn btn-secondary" style="width:100%;border-radius:var(--r3);padding:9px;font-size:12px;font-weight:600;margin-top:6px" onclick="event.stopPropagation();printSalesCopy('+o.id+')">พิมพ์ใบเสร็จ</button></div>':'')
+ +(!isVoided?'<div style="border-top:1px solid rgba(176,154,133,.12);margin-top:6px"><button class="btn btn-secondary" style="width:100%;border-radius:var(--r3);padding:9px;font-size:12px;font-weight:600;margin-top:6px" onclick="event.stopPropagation();printSalesCopy(\''+o.id+'\')" ">พิมพ์ใบเสร็จ</button></div>':'')
  +'</div>';
  return '<div style="margin:0 16px 10px;background:var(--bg);border-radius:var(--r4);box-shadow:var(--neu-out-sm);overflow:hidden;opacity:'+opacity+'">'
  +'<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer" onclick="toggleBillDetail(\''+detailId+'\')">'
