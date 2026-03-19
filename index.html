@@ -2517,9 +2517,11 @@ function showCopyOptions(order,emp){
 async function saveCopyAsImage(){
  const sheet=document.getElementById('copy-options-sheet');
  if(!sheet){toast('เกิดข้อผิดพลาด');return;}
+ // copy ข้อมูลออกมาก่อน remove sheet
  const order=sheet._order;
  const emp=sheet._emp;
- if(sheet) sheet.remove();
+ if(!order||!emp){toast('ไม่พบข้อมูลใบเสร็จ');return;}
+ sheet.remove();
  if(!window.html2canvas){
   await new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s);});
  }
@@ -2539,7 +2541,7 @@ async function saveCopyAsImage(){
   });
   const link=document.createElement('a');
   const d=new Date();
-  link.download=`copy_receipt_${orderId}_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.png`;
+  link.download=`copy_receipt_${order.id}_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.png`;
   link.href=canvas.toDataURL('image/png');link.click();
   toast('บันทึกสำเนาใบเสร็จแล้ว ✓');
  }catch(e){toast('บันทึกไม่ได้: '+e.message);}
@@ -2549,9 +2551,11 @@ async function saveCopyAsImage(){
 function printCopyReceipt(){
  const sheet=document.getElementById('copy-options-sheet');
  if(!sheet){toast('เกิดข้อผิดพลาด');return;}
+ // copy ข้อมูลออกมาก่อน remove sheet
  const order=sheet._order;
  const emp=sheet._emp;
- if(sheet) sheet.remove();
+ if(!order||!emp){toast('ไม่พบข้อมูลใบเสร็จ');return;}
+ sheet.remove();
  const html=buildCopyReceiptHTML(order,emp);
  const w=window.open('','_blank','width=380,height=700');
  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
