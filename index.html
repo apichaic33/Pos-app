@@ -1531,7 +1531,7 @@ function closeDrawer(){
 function updateDrawerForRole(){
  const isMgr = currentOperator && currentOperator.role==='manager';
  // เมนูหลังบ้าน — แสดงเฉพาะ Manager
- const backOfficeMenus = ['dnav-promo','dnav-manage','dnav-bills','dnav-staff-mgmt','dnav-audit','dnav-report','dnav-stores'];
+ const backOfficeMenus = ['dnav-promo','dnav-manage','dnav-bills','dnav-staff-mgmt','dnav-audit','dnav-report','dnav-stores','dnav-optsets','dnav-custom'];
  backOfficeMenus.forEach(id=>{
    const el=document.getElementById(id);
    if(el) el.style.display = isMgr ? '' : 'none';
@@ -3041,7 +3041,7 @@ function saveOptSetItem(){
   set.items.push(newItem);
  }
  closeModal('modal-optset-item');
- scheduleSync();
+ saveLocal(); scheduleSync();
  renderOptionSets();
  // อัปเดต popup ถ้าเปิดอยู่
  if(document.getElementById('modal-product')&&document.getElementById('modal-product').classList.contains('open')){
@@ -3067,7 +3067,7 @@ function delOptSetItem(key, idx){
  if(!confirm('ลบ "'+lbl+'" ?')) return;
  DB.optionSets[key].items.splice(idx,1);
  if(DB.optionSets[key].default===lbl) DB.optionSets[key].default=getOptLabel(DB.optionSets[key].items[0]||'');
- scheduleSync(); renderOptionSets();
+ saveLocal(); scheduleSync(); renderOptionSets();
 }
 
 function moveOptSetItem(key, idx, dir){
@@ -3075,12 +3075,12 @@ function moveOptSetItem(key, idx, dir){
  const newIdx = idx+dir;
  if(newIdx<0||newIdx>=items.length) return;
  [items[idx],items[newIdx]]=[items[newIdx],items[idx]];
- scheduleSync(); renderOptionSets();
+ saveLocal(); scheduleSync(); renderOptionSets();
 }
 
 function setOptSetDefault(key, val){
  DB.optionSets[key].default = val;
- scheduleSync(); renderOptionSets();
+ saveLocal(); scheduleSync(); renderOptionSets();
  toast('"'+val+'" เป็นค่า default แล้ว');
 }
 
@@ -4742,10 +4742,10 @@ async function loadFromSheet(){
  }
 
  // ─── โหลดสำเร็จ ─────────────────────────────────────────
- const _LOCAL_ONLY = ['optionSets','customOptions'];
- Object.keys(result).forEach(k=>{
+  Object.keys(result).forEach(k=>{
   if(!(k in DB)) return;
-  if(_LOCAL_ONLY.includes(k)) return;
+  // ไม่ overwrite ด้วย null/undefined จาก GAS
+  if(result[k] === null || result[k] === undefined) return;
   DB[k]=result[k];
  });
  if(!DB.customOptions) DB.customOptions=[];
@@ -5050,7 +5050,7 @@ let mgrSession = null; // {emp, expiry(timestamp)}
 const MGR_TIMEOUT = 10 * 60 * 1000; // 10 นาที
 
 // หน้าที่ต้องการสิทธิ์ manager (ยกเว้น order, sales)
-const PROTECTED_PAGES = ['promo','manage','report','stores','bills','audit','staff-mgmt'];
+const PROTECTED_PAGES = ['promo','manage','report','stores','bills','audit','staff-mgmt','optsets','custom'];
 
 function isMgrActive(){
  return mgrSession && Date.now() < mgrSession.expiry;
