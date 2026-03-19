@@ -766,6 +766,7 @@ textarea.f-input{resize:none;}
  .prod-grid{grid-template-columns:repeat(3,1fr);}
 }
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@keyframes receiptBtnPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(196,153,78,.7);}50%{transform:scale(1.04);box-shadow:0 0 0 8px rgba(196,153,78,0);}}
 .fade-up{animation:fadeUp .28s ease forwards;}
 
 /* APPROVAL MODAL */
@@ -1089,7 +1090,7 @@ textarea.f-input{resize:none;}
   <span id="opPromoLabel" style="font-size:10px;font-weight:700;color:var(--gold)"></span>
  </div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px;display:flex;align-items:center;gap:5px" onclick="requestVoidOrder()"><span class="mi" style="font-size:16px">delete_sweep</span>ยกเลิก</button> <button class="btn-confirm" style="display:flex;align-items:center;justify-content:center;gap:6px" onclick="confirmOrder()"><span class="mi" style="font-size:18px">receipt_long</span>ยืนยัน ออเดอร์</button> </div> </div>
 </div> <!-- RECEIPT PAGE -->
-<div class="receipt-page" id="receiptPage"> <div class="receipt-topbar"> <span class="receipt-title">ใบเสร็จ</span> <button class="btn btn-secondary btn-sm" onclick="closeReceiptPage()" style="flex-shrink:0"> ปิด</button> </div> <div class="receipt-body"> <div class="receipt-paper" id="receiptPaper" style="width:302px;margin:0 auto"></div> </div> <div class="receipt-footer-actions"> <button class="btn-new-order" onclick="newOrderFromReceipt()">ออเดอร์ถัดไป</button> <button class="btn-print" onclick="saveReceiptAsImage()style="display:flex;align-items:center;gap:5px"><span class="mi" style="font-size:16px">download</span>บันทึกรูป</button> </div>
+<div class="receipt-page" id="receiptPage"> <div class="receipt-topbar"> <span class="receipt-title">ใบเสร็จ</span> <button class="btn btn-secondary btn-sm" onclick="closeReceiptPage()" style="flex-shrink:0"> ปิด</button> </div> <div class="receipt-body"> <div class="receipt-paper" id="receiptPaper" style="width:302px;margin:0 auto"></div> </div> <div class="receipt-footer-actions" style="display:flex;gap:8px;padding:12px 16px"> <button class="btn-new-order" style="flex:1" onclick="newOrderFromReceipt()">ออเดอร์ถัดไป</button> <button class="btn-print" id="btnSaveReceipt" onclick="saveReceiptAsImage()" style="display:flex;align-items:center;gap:5px"><span class="mi" style="font-size:16px">download</span>บันทึกรูป</button> <button onclick="openReceiptSettings()" style="padding:0 12px;border-radius:var(--r3);border:1.5px solid var(--bg-dk);background:var(--bg-lt);color:var(--t3);display:flex;align-items:center;justify-content:center" title="ตั้งค่าใบเสร็จ"><span class="mi" style="font-size:20px">settings</span></button> </div>
 </div> <!-- ORDER DETAIL PAGE (slide from right) -->
 <div class="order-detail-page" id="orderDetailPage"> <div class="od-topbar"> <button class="btn btn-secondary btn-sm" onclick="closeOrderDetail()">← กลับ</button> <span class="od-title" id="odTitle">รายละเอียดบิล</span> <div id="odStatusBadge"></div> </div> <div class="od-body" id="odBody"></div>
 </div> <!-- APPROVAL MODAL (Employee ID) -->
@@ -2235,6 +2236,42 @@ function confirmOrder(){
  renderProductGrid(activeCat);
  scheduleSync();
  updateSalesBadge();
+ // ── Pre-render canvas ล่วงหน้า (รอ user gesture ก่อน share) ──────────────
+ window._pendingReceiptCanvas = null;
+ window._pendingReceiptFname  = null;
+ const rcfg = getReceiptSettings();
+ setTimeout(async ()=>{
+  try{
+   if(!window.html2canvas){
+    await new Promise((res,rej)=>{
+     const s=document.createElement('script');
+     s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+     s.onload=res; s.onerror=rej; document.head.appendChild(s);
+    });
+   }
+   const wrap=document.createElement('div');
+   wrap.style.cssText=['position:fixed','top:-9999px','left:-9999px','width:302px','background:#fff','font-family:Sarabun,sans-serif','color:#1A0F08','padding:12px','box-sizing:border-box','line-height:1.5'].join(';');
+   wrap.innerHTML=buildReceiptHTML();
+   document.body.appendChild(wrap);
+   const canvas=await html2canvas(wrap,{scale:3,useCORS:true,backgroundColor:'#ffffff',width:302,windowWidth:302});
+   document.body.removeChild(wrap);
+   const d=new Date();
+   window._pendingReceiptCanvas=canvas;
+   window._pendingReceiptFname=`receipt_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}.png`;
+   // แสดง highlight ปุ่มบันทึกรูป ถ้าเปิด autoSave
+   if(rcfg.autoSave){
+    const btn=document.getElementById('btnSaveReceipt');
+    if(btn){
+     btn.innerHTML='<span class="mi" style="font-size:16px">photo_library</span>บันทึกรูป!';
+     btn.style.cssText+='background:var(--gold)!important;color:#fff!important;animation:receiptBtnPulse 1s ease-in-out 3';
+    }
+    // แสดง toast แนะนำ
+    toast('📸 พร้อมบันทึก — กด "บันทึกรูป" เพื่อ save ลง Gallery');
+   }
+   // Auto-print (ไม่ต้องการ user gesture)
+   if(rcfg.autoPrint) autoTriggerPrint();
+  }catch(e){ console.warn('receipt pre-render failed:',e); }
+ }, 400);
 }
 
 /* 
@@ -2338,7 +2375,162 @@ function printReceipt(){
  saveReceiptAsImage();
 }
 
-// ── helper: แปลง canvas → บันทึกลง Gallery ผ่าน Web Share API ──────────────
+// ── Auto-save ใบเสร็จ (ไม่แสดง Share Sheet — บันทึก silent) ─────────────────
+async function autoSaveReceiptSilent(){
+ if(!window.html2canvas){
+  await new Promise((res,rej)=>{
+   const s=document.createElement('script');
+   s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+   s.onload=res; s.onerror=rej; document.head.appendChild(s);
+  });
+ }
+ const wrap=document.createElement('div');
+ wrap.style.cssText=[
+  'position:fixed','top:-9999px','left:-9999px',
+  'width:302px','background:#fff',
+  'font-family:Sarabun,sans-serif','color:#1A0F08',
+  'padding:12px','box-sizing:border-box','line-height:1.5'
+ ].join(';');
+ wrap.innerHTML=buildReceiptHTML();
+ document.body.appendChild(wrap);
+ try{
+  const canvas=await html2canvas(wrap,{
+   scale:3,useCORS:true,backgroundColor:'#ffffff',
+   width:302,windowWidth:302
+  });
+  const d=new Date();
+  const fname=`receipt_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}.png`;
+  // Auto-save: ใช้ Share API (iOS) หรือ download (Android/Desktop)
+  // ต้องเป็น user-gesture context → share sheet จะขึ้น
+  await saveImageToGallery(canvas, fname);
+ }catch(e){
+  console.warn('auto-save receipt failed:',e);
+ }finally{
+  document.body.removeChild(wrap);
+ }
+}
+
+// ── Auto-print (ถ้ามีเครื่องปริ้น) ──────────────────────────────────────────
+function autoTriggerPrint(){
+ // ── ใช้ hidden iframe แทน window.open() → ไม่ถูกบล็อก popup ──────────────
+ const existIframe = document.getElementById('_printFrame');
+ if(existIframe) existIframe.remove();
+ const html = buildReceiptHTML();
+ const iframe = document.createElement('iframe');
+ iframe.id = '_printFrame';
+ iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:302px;height:600px;border:none;visibility:hidden';
+ document.body.appendChild(iframe);
+ const doc = iframe.contentDocument || iframe.contentWindow.document;
+ doc.open();
+ doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+   body{margin:0;padding:12px;background:#fff;width:302px;font-family:Sarabun,sans-serif;}
+   @media print{body{padding:4px;}@page{margin:0;size:80mm auto;}}
+  </style>
+ </head><body>${html}</body></html>`);
+ doc.close();
+ // รอ font + layout โหลด แล้วปริ้น
+ iframe.onload = function(){
+  setTimeout(()=>{
+   try{
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    toast('🖨️ ส่งคำสั่งปริ้นแล้ว');
+   }catch(e){ toast('ปริ้นไม่ได้: '+e.message); }
+   // ลบ iframe หลังปริ้น 3 วินาที
+   setTimeout(()=>{ if(iframe.parentNode) iframe.remove(); }, 3000);
+  }, 300);
+ };
+}
+
+// ── Receipt Settings Modal ────────────────────────────────────────────────────
+function openReceiptSettings(){
+ const cfg = getReceiptSettings();
+ const existing = document.getElementById('receipt-settings-sheet');
+ if(existing) existing.remove();
+ const sheet = document.createElement('div');
+ sheet.id = 'receipt-settings-sheet';
+ sheet.style.cssText='position:fixed;inset:0;z-index:9500;display:flex;align-items:flex-end;justify-content:center;background:rgba(20,12,6,.55);backdrop-filter:blur(4px)';
+ sheet.innerHTML=`
+  <div style="background:var(--bg);border-radius:var(--r4) var(--r4) 0 0;width:100%;max-width:480px;padding:0 0 max(env(safe-area-inset-bottom),24px)">
+   <div style="width:36px;height:4px;background:var(--bg-dk);border-radius:2px;margin:12px auto 8px"></div>
+   <div style="padding:16px 24px 4px;display:flex;align-items:center;gap:10px">
+    <span class="mi" style="font-size:22px;color:var(--gold)">receipt_long</span>
+    <div>
+     <div style="font-size:16px;font-weight:800;color:var(--t1)">ตั้งค่าใบเสร็จ</div>
+     <div style="font-size:11px;color:var(--t4);margin-top:1px">หลังยืนยันออเดอร์</div>
+    </div>
+   </div>
+   <div style="padding:16px 24px;display:flex;flex-direction:column;gap:12px">
+
+    <!-- Auto-save toggle -->
+    <div style="background:var(--bg-lt);border-radius:var(--r3);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+     <div>
+      <div style="font-size:13px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:6px">
+       <span class="mi" style="font-size:16px;color:var(--blue)">photo_library</span>บันทึกรูปอัตโนมัติ
+      </div>
+      <div style="font-size:11px;color:var(--t4);margin-top:3px">บันทึกใบเสร็จลง Gallery ทันทีหลังยืนยัน</div>
+     </div>
+     <label style="position:relative;width:48px;height:28px;flex-shrink:0">
+      <input type="checkbox" id="tog-autoSave" ${cfg.autoSave?'checked':''} style="opacity:0;width:0;height:0;position:absolute"
+       onchange="receiptSettingToggle('autoSave',this.checked)">
+      <span id="tog-autoSave-track" style="position:absolute;inset:0;border-radius:14px;background:${cfg.autoSave?'var(--gold)':'var(--bg-dk)'};transition:.2s;cursor:pointer">
+       <span id="tog-autoSave-thumb" style="position:absolute;top:4px;left:${cfg.autoSave?'24px':'4px'};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:.2s"></span>
+      </span>
+     </label>
+    </div>
+
+    <!-- Auto-print toggle -->
+    <div style="background:var(--bg-lt);border-radius:var(--r3);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+     <div>
+      <div style="font-size:13px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:6px">
+       <span class="mi" style="font-size:16px;color:var(--esp)">print</span>ปริ้นอัตโนมัติ
+      </div>
+      <div style="font-size:11px;color:var(--t4);margin-top:3px">เปิด print dialog ทันทีหลังยืนยัน (ต้องเชื่อมต่อเครื่องปริ้น)</div>
+     </div>
+     <label style="position:relative;width:48px;height:28px;flex-shrink:0">
+      <input type="checkbox" id="tog-autoPrint" ${cfg.autoPrint?'checked':''} style="opacity:0;width:0;height:0;position:absolute"
+       onchange="receiptSettingToggle('autoPrint',this.checked)">
+      <span id="tog-autoPrint-track" style="position:absolute;inset:0;border-radius:14px;background:${cfg.autoPrint?'var(--gold)':'var(--bg-dk)'};transition:.2s;cursor:pointer">
+       <span id="tog-autoPrint-thumb" style="position:absolute;top:4px;left:${cfg.autoPrint?'24px':'4px'};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:.2s"></span>
+      </span>
+     </label>
+    </div>
+
+    <!-- Info box -->
+    <div style="background:rgba(43,94,167,.07);border-radius:var(--r3);padding:10px 14px;font-size:11px;color:var(--blue);line-height:1.7">
+     <strong>📱 วิธีทำงาน:</strong><br>
+     หลังยืนยันออเดอร์ → ระบบ render รูปไว้รอ<br>
+     กด <em>"บันทึกรูป!"</em> (ปุ่มจะกระพริบ) → เลือก <em>"บันทึกในรูปภาพ"</em><br>
+     <strong>🖨️ ปริ้นอัตโนมัติ:</strong> ส่งคำสั่งปริ้นทันที ไม่ต้องกดเพิ่ม
+    </div>
+
+    <button onclick="document.getElementById('receipt-settings-sheet').remove()"
+     style="margin-top:4px;padding:14px;border-radius:var(--r3);border:none;background:var(--gold);color:#fff;font-size:14px;font-weight:700;font-family:var(--ff);width:100%;cursor:pointer">
+     ปิด
+    </button>
+   </div>
+  </div>`;
+ sheet.addEventListener('click',e=>{ if(e.target===sheet) sheet.remove(); });
+ document.body.appendChild(sheet);
+}
+
+function receiptSettingToggle(key, val){
+ const cfg = getReceiptSettings();
+ cfg[key] = val;
+ setReceiptSettings(cfg);
+ // อัปเดต toggle UI
+ const track = document.getElementById('tog-'+key+'-track');
+ const thumb = document.getElementById('tog-'+key+'-thumb');
+ if(track) track.style.background = val ? 'var(--gold)' : 'var(--bg-dk)';
+ if(thumb) thumb.style.left = val ? '24px' : '4px';
+ toast(key==='autoSave'
+  ? (val ? '✅ บันทึกรูปอัตโนมัติ เปิดแล้ว' : 'บันทึกรูปอัตโนมัติ ปิดแล้ว')
+  : (val ? '✅ ปริ้นอัตโนมัติ เปิดแล้ว' : 'ปริ้นอัตโนมัติ ปิดแล้ว'));
+}
+
+
 async function saveImageToGallery(canvas, fname){
  return new Promise(async (resolve)=>{
   canvas.toBlob(async (blob)=>{
@@ -2370,6 +2562,19 @@ async function saveImageToGallery(canvas, fname){
 }
 
 async function saveReceiptAsImage(){
+ // ── ใช้ canvas ที่ pre-render ไว้ถ้ามี (เร็วกว่า + ทันที user gesture) ──
+ if(window._pendingReceiptCanvas && window._pendingReceiptFname){
+  const canvas = window._pendingReceiptCanvas;
+  const fname  = window._pendingReceiptFname;
+  window._pendingReceiptCanvas = null;
+  window._pendingReceiptFname  = null;
+  // reset ปุ่ม
+  const btn=document.getElementById('btnSaveReceipt');
+  if(btn){ btn.innerHTML='<span class="mi" style="font-size:16px">download</span>บันทึกรูป'; btn.style.cssText=btn.style.cssText.replace(/animation[^;]+;?/g,''); }
+  await saveImageToGallery(canvas, fname);
+  return;
+ }
+ // ── Fallback: render ใหม่ (กรณีกดช้า / canvas expired) ──
  if(!window.html2canvas){
   await new Promise((res,rej)=>{
    const s=document.createElement('script');
@@ -2379,26 +2584,18 @@ async function saveReceiptAsImage(){
   });
  }
  const wrap = document.createElement('div');
- wrap.style.cssText=[
-  'position:fixed','top:-9999px','left:-9999px',
-  'width:302px','background:#fff',
-  'font-family:Sarabun,sans-serif','color:#1A0F08',
-  'padding:12px','box-sizing:border-box','line-height:1.5'
- ].join(';');
+ wrap.style.cssText=['position:fixed','top:-9999px','left:-9999px','width:302px','background:#fff','font-family:Sarabun,sans-serif','color:#1A0F08','padding:12px','box-sizing:border-box','line-height:1.5'].join(';');
  wrap.innerHTML = buildReceiptHTML();
  document.body.appendChild(wrap);
  try {
-  const canvas = await html2canvas(wrap,{
-   scale:3, useCORS:true, backgroundColor:'#ffffff',
-   width:302, windowWidth:302
-  });
+  const canvas = await html2canvas(wrap,{scale:3,useCORS:true,backgroundColor:'#ffffff',width:302,windowWidth:302});
   const d = new Date();
   const fname = `receipt_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}.png`;
   await saveImageToGallery(canvas, fname);
  } catch(e) {
   toast('ไม่สามารถบันทึกรูปได้: '+e.message);
  } finally {
-  document.body.removeChild(wrap);
+  if(wrap.parentNode) document.body.removeChild(wrap);
  }
 }
 
@@ -4925,6 +5122,18 @@ const SCRIPT_URL='https://pos-app-proxy.laboon-pos-app.workers.dev';
 // APP_SECRET ถูกย้ายไปเก็บใน Cloudflare Worker Environment Variables แล้ว ✅
 const LS_KEY='pos_db_v5';const LS_DIRTY='pos_dirty_v5';const LS_LASTSYNC='pos_lastsync_v5';
 const LS_ORDER='pos_order_v5'; // pending order items
+const LS_RECEIPT_SETTINGS='pos_receipt_cfg_v1'; // auto-save / auto-print settings
+
+// ── Receipt Settings helpers ──────────────────────────────────────────────
+function getReceiptSettings(){
+ try{
+  const raw=localStorage.getItem(LS_RECEIPT_SETTINGS);
+  return raw ? JSON.parse(raw) : {autoSave:false, autoPrint:false};
+ }catch(e){ return {autoSave:false, autoPrint:false}; }
+}
+function setReceiptSettings(cfg){
+ localStorage.setItem(LS_RECEIPT_SETTINGS, JSON.stringify(cfg));
+}
 
 function saveOrderItems(){
  try{
