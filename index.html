@@ -635,6 +635,11 @@ textarea.f-input{resize:none;}
 .stat-card{background:var(--bg);border-radius:var(--r4);padding:13px 12px;box-shadow:var(--neu-out-sm);}
 .sc-label{font-size:9px;font-weight:700;color:var(--t4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;font-family:var(--fh);}
 .sc-val{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--t1);letter-spacing:-.5px;}
+.sc-val.c-cara{color:var(--cara);}
+.sc-val.c-green{color:var(--green);}
+.sc-val.c-red{color:var(--red);}
+.sc-val.c-blue{color:var(--blue);}
+.sc-val.c-gold{color:var(--gold);}
 .sc-trend{font-size:10px;margin-top:3px;font-weight:700;}
 .sc-trend.up{color:var(--green);}
 .sc-trend.dn{color:var(--red);}
@@ -940,7 +945,7 @@ textarea.f-input{resize:none;}
   <button class="tab-btn" onclick="switchReportPeriod(this,30)">
     <span class="mi" style="font-size:16px;display:block;margin:0 auto 2px">calendar_month</span>30 วัน
   </button>
-</div> <div class="scroll-body" style="padding-bottom:20px"> <div class="stat-cards" id="statCards"> <div class="stat-card"><div class="sc-label">ยอดขาย</div><div class="sc-val" id="rTotalSales">฿0</div><div class="sc-trend up" id="rSalesTrend"></div></div> <div class="stat-card"><div class="sc-label">กำไร</div><div class="sc-val" id="rProfit">฿0</div><div class="sc-trend up" id="rProfitTrend"></div></div> <div class="stat-card"><div class="sc-label">รายการขาย</div><div class="sc-val" id="rOrders">0</div></div> <div class="stat-card"><div class="sc-label">เฉลี่ย/ออเดอร์</div><div class="sc-val" id="rAvg">฿0</div></div> </div> <span class="sec-label">สรุปยอด</span> <div id="paymentSummary"></div> <span class="sec-label">ยอดขายรายวัน</span> <div class="chart-bar-row" id="barChart"></div> <span class="sec-label">ยอดขายรายชั่วโมง</span> <div id="hourlySales"></div> <span class="sec-label">เมนูขายดี</span> <div id="topList"></div> <span class="sec-label">เครื่องดื่มพนักงาน</span> <div id="staffLog" style="padding:0 16px"></div> <span class="sec-label">ประสิทธิภาพโปรโมชั่น</span> <div id="promoPerf" style="padding:0 16px 20px"></div> </div> </div> <!-- PAGE: STORES --> <div class="page" id="pg-stores"> <div class="pg-head"> <div> <div class="pg-title">คลังสินค้า</div> <div class="pg-sub" id="storesSub"></div> </div> </div> <div style="padding:10px 16px 0;flex-shrink:0">
+</div> <div class="scroll-body" style="padding-bottom:20px"> <div class="stat-cards" id="statCards"> <div class="stat-card"><div class="sc-label">ยอดขาย</div><div class="sc-val c-cara" id="rTotalSales">฿0</div><div class="sc-trend up" id="rSalesTrend"></div></div> <div class="stat-card"><div class="sc-label">กำไร</div><div class="sc-val c-green" id="rProfit">฿0</div><div class="sc-trend up" id="rProfitTrend"></div></div> <div class="stat-card"><div class="sc-label">รายการขาย</div><div class="sc-val c-blue" id="rOrders">0</div></div> <div class="stat-card"><div class="sc-label">เฉลี่ย/ออเดอร์</div><div class="sc-val c-gold" id="rAvg">฿0</div></div> </div> <span class="sec-label">สรุปยอด</span> <div id="paymentSummary"></div> <span class="sec-label">ยอดขายรายวัน</span> <div class="chart-bar-row" id="barChart"></div> <span class="sec-label">ยอดขายรายชั่วโมง</span> <div id="hourlySales"></div> <span class="sec-label">เมนูขายดี</span> <div id="topList"></div> <span class="sec-label">เครื่องดื่มพนักงาน</span> <div id="staffLog" style="padding:0 16px"></div> <span class="sec-label">ประสิทธิภาพโปรโมชั่น</span> <div id="promoPerf" style="padding:0 16px 20px"></div> <span class="sec-label">รายการยกเลิก</span> <div id="voidReport" style="padding:0 16px 20px"></div> </div> </div> <!-- PAGE: STORES --> <div class="page" id="pg-stores"> <div class="pg-head"> <div> <div class="pg-title">คลังสินค้า</div> <div class="pg-sub" id="storesSub"></div> </div> </div> <div style="padding:10px 16px 0;flex-shrink:0">
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="storesTabs">
     <button class="s-tab active" onclick="switchStoreTab(this,'ingredient')" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--esp)"><span style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>eco</span>วัตถุดิบ</button>
     <button class="s-tab" onclick="switchStoreTab(this,'package')" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>package_2</span>บรรจุภัณฑ์</button>
@@ -1495,6 +1500,7 @@ let DB = {
  shopName: '', // ← ชื่อร้าน
  shopSub: '', // ← คำอธิบายร้าน
  posId: 'POS-01', // ← หมายเลข POS
+ otpEmail: '', // ← email สำหรับ OTP recovery
  appConfig: {theme:'warm',locale:'th-TH',dateFormat:'short'}, // ← app settings
  menus: [],
  promos: [],
@@ -1662,12 +1668,12 @@ function openProductModal(id){
  document.getElementById('pdImg').style.color='rgba(255,255,255,.9)';
  document.getElementById('pdImg').textContent=pdItem.icon;
  document.getElementById('pdDesc').textContent=pdItem.desc;
- document.getElementById('pdMeta').textContent=`${pdItem.vol}ml · ฿${pdItem.price}`;
+ document.getElementById('pdMeta').textContent=`${pdItem.vol}ml · ฿${(pdItem.price||0).toLocaleString()}`;
  document.getElementById('pdQty').textContent='1';
  document.getElementById('pdNote').value='';
  const unitEl2=document.getElementById('pdUnitPrice');
- if(unitEl2) unitEl2.textContent='฿'+pdItem.price;
- document.getElementById('pdPrice').textContent='฿'+pdItem.price;
+ if(unitEl2) unitEl2.textContent='฿'+(pdItem.price||0).toLocaleString();
+ document.getElementById('pdPrice').textContent='฿'+(pdItem.price||0).toLocaleString();
  // Reset staff toggle
  document.getElementById('pdIsStaff').checked=false;
  document.getElementById('staffFields').style.display='none';
@@ -1798,7 +1804,7 @@ function updatePdPrice(){
  const unitPrice = pdItem.price + customExtraPrice2 + optSurcharge;
  const total=unitPrice * pdQtyVal;
  const unitEl=document.getElementById('pdUnitPrice');
- if(unitEl) unitEl.textContent='฿'+unitPrice+(optSurcharge>0?` (+฿${optSurcharge} option)`:'');
+ if(unitEl) unitEl.textContent='฿'+(unitPrice||0).toLocaleString()+(optSurcharge>0?` (+฿${optSurcharge.toLocaleString()} option)`:'');
  document.getElementById('pdPrice').textContent='฿'+total.toLocaleString();
 }
 function changePdQty(d){
@@ -3066,7 +3072,7 @@ function getBlendCost(b){
 function renderMenuRecipeRows(){
  // รวม ingredients + blends เป็นตัวเลือกเดียวกัน
  const allItems = [
-  ...DB.ingredients.map(i=>({id:'ing_'+i.id, label:i.name+' (฿'+i.cost+'/'+i.unit+')', type:'ing', ref:i})),
+  ...DB.ingredients.map(i=>({id:'ing_'+i.id, label:i.name+' (฿'+(i.cost||0).toLocaleString()+'/'+i.unit+')', type:'ing', ref:i})),
   ...(DB.blends||[]).map(b=>{
    const stock=(b.stock||[]).reduce((s,x)=>s+x.qty,0);
    // คำนวณ cost จริงจากวัตถุดิบ ถ้า totalCostPerBatch = 0
@@ -3125,9 +3131,9 @@ function recalcMenuCost(){
  });
  cost = Math.round(cost * 10) / 10;
  document.getElementById('menuCost').value = cost || '';
- document.getElementById('recipeCostCalc').textContent = '฿'+cost.toFixed(1);
+ document.getElementById('recipeCostCalc').textContent = '฿'+(cost||0).toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1});
  const price = parseFloat(document.getElementById('menuPrice').value)||0;
- document.getElementById('recipePriceRef').textContent = '฿'+price;
+ document.getElementById('recipePriceRef').textContent = '฿'+(price||0).toLocaleString();
  const margin = price>0 ? Math.round((price-cost)/price*100) : 0;
  const marginEl = document.getElementById('recipeMarginCalc');
  marginEl.textContent = margin+'%';
@@ -3209,15 +3215,15 @@ function switchPromoTab(btn,type){
 }
 function getPromoDesc(p){
  if(p.type==='pct')return`ลด ${p.val}%`;
- if(p.type==='fixed')return`ลด ฿${p.val}`;
+ if(p.type==='fixed')return`ลด ฿${(p.val||0).toLocaleString()}`;
  if(p.type==='buy')return`ซื้อ ${p.val} แถม ${p.val2}`;
  if(p.type==='freeN')return`ซื้อ ${p.val} ฟรี 1 (ราคาต่ำสุด)`;
- if(p.type==='min')return`ซื้อครบ ฿${p.val} ลด ${p.val2}%`;
+ if(p.type==='min')return`ซื้อครบ ฿${(p.val||0).toLocaleString()} ลด ${p.val2}%`;
  return '';
 }
 function getPromoTag(p){
  if(p.type==='pct')return`-${p.val}%`;
- if(p.type==='fixed')return`-฿${p.val}`;
+ if(p.type==='fixed')return`-฿${(p.val||0).toLocaleString()}`;
  if(p.type==='buy')return`${p.val}+${p.val2}`;
  if(p.type==='freeN')return`${p.val}+1`;
  return '';
@@ -3358,8 +3364,8 @@ function renderReport(days){
  document.getElementById('rAvg').textContent        = '฿'+avgOrder.toLocaleString();
 
  // เพิ่ม stat: จำนวนแก้ว + ส่วนลดรวม
- _upsertStatCard('rCups',   'แก้วทั้งหมด', s.cups+' แก้ว');
- _upsertStatCard('rDisc',   'ส่วนลดรวม',   '฿'+s.discount.toLocaleString());
+ _upsertStatCard('rCups',   'แก้วทั้งหมด', s.cups+' แก้ว', 'c-blue');
+ _upsertStatCard('rDisc',   'ส่วนลดรวม',   '฿'+s.discount.toLocaleString(), 'c-red');
 
  renderBarChart(days);
  renderTopProducts(orders);
@@ -3367,17 +3373,19 @@ function renderReport(days){
  renderHourlySales(orders);
  renderStaffLogSummary();
  renderPromoPerf(orders);
+ renderVoidReport(days);
 }
 
 // inject stat card ถ้ายังไม่มี
-function _upsertStatCard(id, label, val){
+function _upsertStatCard(id, label, val, colorClass){
  const container = document.getElementById('statCards');
  if(!container) return;
  let card = document.getElementById(id);
  if(!card){
   card = document.createElement('div');
   card.className='stat-card';
-  card.innerHTML=`<div class="sc-label">${label}</div><div class="sc-val" id="${id}-val">—</div>`;
+  const cls=colorClass?'sc-val '+colorClass:'sc-val';
+  card.innerHTML=`<div class="sc-label">${label}</div><div class="${cls}" id="${id}-val">—</div>`;
   container.appendChild(card);
  }
  const v = document.getElementById(id+'-val');
@@ -3561,6 +3569,83 @@ function renderPromoPerf(orders){
   </div>`;
  }).join('')+'</div>';
 }
+// ── รายการยกเลิก ──────────────────────────────────────────────────────────
+function renderVoidReport(days){
+ days=days||reportDays||1;
+ const el=document.getElementById('voidReport');
+ if(!el) return;
+ const now=Date.now();
+ const d=new Date(); d.setHours(0,0,0,0);
+ const since=days===1?d.getTime():now-days*86400000;
+ const voided=DB.orders.filter(o=>(o.status==='voided'||o.status==='void')&&_ts(o.voidTs||o.ts)>=since);
+ if(!voided.length){
+  el.innerHTML='<div style="font-size:12px;color:var(--t4)">ไม่มีรายการยกเลิกในช่วงนี้</div>';
+  return;
+ }
+ const typeCfg={
+  customer:{label:'ลูกค้ายกเลิก',color:'var(--red)',bg:'var(--red-lt)',icon:'cancel'},
+  staff:{label:'ข้อผิดพลาดร้าน',color:'var(--orange,#e8770a)',bg:'rgba(232,119,10,.12)',icon:'warning'},
+  test:{label:'ทดสอบระบบ',color:'var(--gold)',bg:'var(--gold-lt,rgba(255,198,0,.12))',icon:'science'}
+ };
+ // นับตามประเภท
+ const counts={customer:0,staff:0,test:0};
+ let totalLoss=0;
+ voided.forEach(o=>{
+  const t=o.voidType||'customer';
+  counts[t]=(counts[t]||0)+1;
+  if(t!=='test') totalLoss+=o.total||0;
+ });
+ const realVoids=counts.customer+counts.staff;
+ const voidRate=DB.orders.filter(o=>_ts(o.ts||0)>=since).length;
+ const rate=voidRate>0?Math.round(realVoids/voidRate*100):0;
+ // summary row
+ const summaryHtml=`
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px">
+   <div style="background:var(--red-lt);border-radius:var(--r3);padding:9px 10px;text-align:center">
+    <div style="font-size:16px;font-weight:800;color:var(--red)">${counts.customer}</div>
+    <div style="font-size:9px;color:var(--t4)">ลูกค้ายกเลิก</div>
+   </div>
+   <div style="background:rgba(232,119,10,.12);border-radius:var(--r3);padding:9px 10px;text-align:center">
+    <div style="font-size:16px;font-weight:800;color:var(--orange,#e8770a)">${counts.staff}</div>
+    <div style="font-size:9px;color:var(--t4)">ข้อผิดพลาดร้าน</div>
+   </div>
+   <div style="background:var(--gold-lt,rgba(255,198,0,.12));border-radius:var(--r3);padding:9px 10px;text-align:center">
+    <div style="font-size:16px;font-weight:800;color:var(--gold)">${counts.test}</div>
+    <div style="font-size:9px;color:var(--t4)">ทดสอบระบบ</div>
+   </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:10px;font-size:11px">
+   <div style="flex:1;background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:8px 10px">
+    <span style="color:var(--t4)">Void Rate จริง</span>
+    <strong style="float:right;color:${rate>10?'var(--red)':'var(--t1)'}">${rate}%</strong>
+   </div>
+   <div style="flex:1;background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:8px 10px">
+    <span style="color:var(--t4)">มูลค่าที่เสีย</span>
+    <strong style="float:right;color:var(--red)">฿${totalLoss.toLocaleString()}</strong>
+   </div>
+  </div>`;
+ // รายการ
+ const listHtml=voided.sort((a,b)=>_ts(b.voidTs||b.ts)-_ts(a.voidTs||a.ts)).map(o=>{
+  const t=o.voidType||'customer';
+  const cfg=typeCfg[t]||typeCfg.customer;
+  const dt=new Date(_ts(o.voidTs||o.ts));
+  const timeStr=dt.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  return `<div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:10px 12px;margin-bottom:7px;display:flex;align-items:center;gap:10px;border-left:3px solid ${cfg.color}">
+   <span class="mi" style="color:${cfg.color};font-size:18px">${cfg.icon}</span>
+   <div style="flex:1;min-width:0">
+    <div style="font-size:12px;font-weight:700;color:var(--t1)">บิล #${o.id}</div>
+    <div style="font-size:10px;color:var(--t4);margin-top:1px">${o.voidReason||'—'}</div>
+   </div>
+   <div style="text-align:right;flex-shrink:0">
+    <div style="font-size:11px;font-weight:700;color:${t==='test'?'var(--t4)':`${cfg.color}`};text-decoration:${t==='test'?'line-through':'none'}">฿${(o.total||0).toLocaleString()}</div>
+    <span style="font-size:9px;font-weight:700;background:${cfg.bg};color:${cfg.color};padding:1px 6px;border-radius:var(--rf)">${cfg.label}</span>
+    <div style="font-size:9px;color:var(--t4);margin-top:1px">${timeStr}</div>
+   </div>
+  </div>`;
+ }).join('');
+ el.innerHTML=summaryHtml+listHtml;
+}
+
 
 /* ══════════════════════════════════════════════
    OPTION SETS MANAGER
@@ -3683,7 +3768,7 @@ function saveOptSetItem(){
   if(key==='sweet')    document.getElementById('pdSweet').innerHTML    = _neuToggleHtml(_sweet.items,'sweet',pdSweet);
   if(key==='strength') document.getElementById('pdStrength').innerHTML = _neuToggleHtml(_str.items,'strength',pdStrength);
  }
- toast((isEdit?'แก้ไข':'เพิ่ม')+' "'+label+'" แล้ว'+(price>0?' (+฿'+price+')':''));
+ toast((isEdit?'แก้ไข':'เพิ่ม')+' "'+label+'" แล้ว'+(price>0?' (+฿'+(price||0).toLocaleString()+')':''));
 }
 
 function addOptSetItem(key){
@@ -3918,7 +4003,7 @@ function applySelectedPromo(){
  } else {
  orderDiscount=0;
  }
- descEl.textContent=`${promo.name}: ลด ฿${orderDiscount}`;
+ descEl.textContent=`${promo.name}: ลด ฿${(orderDiscount||0).toLocaleString()}`;
  descEl.style.display='block';
  } else {
  orderDiscount=0; if(descEl) descEl.style.display='none';
@@ -3985,10 +4070,10 @@ function addAudit(type, action, detail, icon='•', bg='rgba(176,154,133,.1)', s
 
 /* shortcut helpers */
 const AUD = {
- itemAdd: (name,size,qty,price) => addAudit('item_add', `เพิ่มเมนู`, `${name} (${size}) x${qty} · ฿${price*qty}`, '', 'rgba(45,122,79,.12)', 'low'),
- itemEdit: (name,size,from,to,price) => addAudit('item_edit', `แก้จำนวน`, `${name} (${size}) ${from}→${to} · ฿${price*to}`, '', 'rgba(184,134,11,.11)', 'low'),
- itemDel: (name,size,qty,price) => addAudit('item_remove', `ลบเมนูออก`, `${name} (${size}) x${qty} · ฿${price*qty}`, '', 'rgba(184,50,40,.12)', 'med'),
- orderNew: (id,total,items) => addAudit('order_confirm', `ยืนยันบิล`, `#${id} · ${items} รายการ · ฿${total}`, '', 'rgba(45,122,79,.12)', 'low'),
+ itemAdd: (name,size,qty,price) => addAudit('item_add', `เพิ่มเมนู`, `${name} (${size}) x${qty} · ฿${((price||0)*(qty||0)).toLocaleString()}`, '', 'rgba(45,122,79,.12)', 'low'),
+ itemEdit: (name,size,from,to,price) => addAudit('item_edit', `แก้จำนวน`, `${name} (${size}) ${from}→${to} · ฿${((price||0)*(to||0)).toLocaleString()}`, '', 'rgba(184,134,11,.11)', 'low'),
+ itemDel: (name,size,qty,price) => addAudit('item_remove', `ลบเมนูออก`, `${name} (${size}) x${qty} · ฿${((price||0)*(qty||0)).toLocaleString()}`, '', 'rgba(184,50,40,.12)', 'med'),
+ orderNew: (id,total,items) => addAudit('order_confirm', `ยืนยันบิล`, `#${id} · ${items} รายการ · ฿${(total||0).toLocaleString()}`, '', 'rgba(45,122,79,.12)', 'low'),
  orderVoid: (id,reason,by) => addAudit('order_void', `ยกเลิกบิล`, `#${id} · เหตุผล: ${reason}`, '', 'rgba(184,50,40,.14)', 'high', by),
  voidReq: (id,reason) => addAudit('void_request', `ขอยกเลิกบิล`, `#${id} · เหตุผล: ${reason}`, '', 'rgba(184,134,11,.12)', 'med'),
  voidApprove:(id,by) => addAudit('void_approve', `อนุมัติยกเลิกบิล`, `#${id}`, '', 'rgba(184,50,40,.14)', 'high', by),
@@ -4514,6 +4599,14 @@ function openVoidModal(orderId){
   <div style="font-size:16px;font-weight:800;color:var(--t1);font-family:var(--fh);margin-bottom:4px">ยกเลิกออเดอร์</div>
   <div style="font-size:11px;color:var(--t4);margin-bottom:14px">ต้องใช้ PIN ผู้จัดการเท่านั้น</div>
   <div class="f-group" style="margin-bottom:10px">
+   <label class="f-label">ประเภทการยกเลิก</label>
+   <select class="f-input" id="voidTypeSelect" onchange="voidTypeChanged()" style="font-size:13px">
+    <option value="customer">🔴 ลูกค้ายกเลิก</option>
+    <option value="staff">🟠 ข้อผิดพลาดร้าน</option>
+    <option value="test">🟡 ทดสอบระบบ</option>
+   </select>
+  </div>
+  <div class="f-group" style="margin-bottom:10px">
    <label class="f-label">เหตุผล</label>
    <input class="f-input" id="voidReasonInput" placeholder="ระบุเหตุผลการยกเลิก">
   </div>
@@ -4537,6 +4630,14 @@ function openVoidModal(orderId){
 }
 
 let _voidPin='';
+function voidTypeChanged(){
+ const t=document.getElementById('voidTypeSelect');
+ const r=document.getElementById('voidReasonInput');
+ if(!t||!r)return;
+ const hints={customer:'เช่น ลูกค้าเปลี่ยนใจ',staff:'เช่น กดเมนูผิด',test:'ทดสอบระบบ POS'};
+ r.placeholder=hints[t.value]||'ระบุเหตุผลการยกเลิก';
+ if(t.value==='test')r.value=r.value||'ทดสอบระบบ';
+}
 function voidPinKey(k){ if(_voidPin.length>=4)return; _voidPin+=String(k); updateVoidDots(); }
 function voidPinClear(){ _voidPin=_voidPin.slice(0,-1); updateVoidDots(); }
 function updateVoidDots(){ for(let i=0;i<4;i++){const d=document.getElementById('vpd'+i);if(d)d.classList.toggle('filled',i<_voidPin.length);} }
@@ -4568,6 +4669,7 @@ async function submitVoidRequest(orderId){
  const order=DB.orders.find(o=>String(o.id)===String(orderId));
  if(order){
   order.status='voided';order.voidReason=reason.trim();
+  order.voidType=(document.getElementById('voidTypeSelect')||{}).value||'customer';
   order.voidTs=Date.now();order.voidApprovedBy=mgr.name+' ('+mgr.id+')';
  }
  AUD.voidReq(orderId,reason.trim());
@@ -4593,6 +4695,7 @@ function approveVoid(voidId){
  if(order){
  order.status = 'voided';
  order.voidReason = voidReq.reason;
+ order.voidType = voidReq.voidType || 'customer';
  order.voidTs = Date.now();
  order.voidApprovedBy = `${approver.name} (${approver.id})`;
  order.items.forEach(i=>{const m=DB.menus.find(x=>x.id===i.menuId);if(m)m.sold=Math.max(0,m.sold-i.qty);});
@@ -4721,7 +4824,7 @@ function renderStores(tab){
      <div style="flex:1;min-width:0">
        <div style="font-size:13px;font-weight:700;color:var(--t1)">${item.name}</div>
        <div style="font-size:10px;color:var(--t4);margin-top:3px;display:flex;gap:5px;flex-wrap:wrap;align-items:center">
-         <span>฿${item.cost}/${item.unit}</span>
+         <span>฿${(item.cost||0).toLocaleString()}/${item.unit}</span>
          ${item.expiry?`<span>· หมดอายุ ${item.expiry}</span>`:''}
          ${badge}${statusBadge}
        </div>
@@ -5536,6 +5639,7 @@ function renderAppSettings(){
   ${_editField('shopName','ชื่อร้าน',DB.shopName,'ชื่อร้านของคุณ','แสดงบนใบเสร็จ และหน้าแอพ')}
   ${_editField('shopSub','ชื่อรอง / Tagline',DB.shopSub,'เช่น ร้านชา-กาแฟ','แสดงใต้ชื่อร้านบนใบเสร็จ')}
   ${_editField('posId','POS ID',DB.posId,'เช่น POS-01','ใช้ระบุเครื่อง POS ในรายงาน')}
+  ${_editField('otpEmail','Email สำหรับ OTP Recovery',DB.otpEmail||'','อีเมล Manager','ใช้รับรหัส OTP เมื่อลืม PIN')}
   <button onclick="appSaveShopInfo()"
    style="width:100%;padding:12px;border-radius:var(--r3);border:none;background:var(--cara);color:#fff;font-size:13px;font-weight:700;font-family:var(--fh);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:4px">
    <span class="mi" style="font-size:16px">save</span>บันทึกข้อมูลร้าน
@@ -5608,13 +5712,16 @@ function appFieldEdit(id, val){
 
 // ── บันทึกข้อมูลร้าน ────────────────────────────────────────────────────────
 function appSaveShopInfo(){
- const name = (document.getElementById('as-shopName')?.value||'').trim();
- const sub  = (document.getElementById('as-shopSub')?.value||'').trim();
- const pos  = (document.getElementById('as-posId')?.value||'').trim();
+ const name  = (document.getElementById('as-shopName')?.value||'').trim();
+ const sub   = (document.getElementById('as-shopSub')?.value||'').trim();
+ const pos   = (document.getElementById('as-posId')?.value||'').trim();
+ const email = (document.getElementById('as-otpEmail')?.value||'').trim();
  if(!name){ toast('กรุณากรอกชื่อร้าน'); return; }
+ if(email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)){ toast('รูปแบบ Email ไม่ถูกต้อง'); return; }
  DB.shopName = name;
  DB.shopSub  = sub || name;
  DB.posId    = pos || 'POS-01';
+ DB.otpEmail = email;
  saveLocal(); scheduleSync();
  toast('✅ บันทึกข้อมูลร้านแล้ว — กำลัง sync...');
  // อัปเดต info row
