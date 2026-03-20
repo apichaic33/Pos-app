@@ -652,8 +652,8 @@ textarea.f-input{resize:none;}
 .date-nav-label{font-family:var(--fh);font-size:16px;font-weight:700;color:var(--t1);}
 .date-nav-sub{font-size:10px;color:var(--t4);margin-top:1px;}
 
-.donut-wrap{display:flex;flex-direction:column;align-items:center;padding:12px 16px 8px;position:relative;}
-.donut-svg{width:180px;height:180px;filter:drop-shadow(3px 3px 8px rgba(165,148,132,.35)) drop-shadow(-2px -2px 5px rgba(255,255,255,.7));}
+.donut-wrap{display:flex;flex-direction:column;align-items:center;padding:12px 16px 8px;position:relative;min-height:200px;}
+.donut-svg{width:180px;height:180px;min-width:180px;min-height:180px;filter:drop-shadow(3px 3px 8px rgba(165,148,132,.35)) drop-shadow(-2px -2px 5px rgba(255,255,255,.7));}
 .donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;padding-top:12px;}
 .donut-amount{font-family:var(--fh);font-size:22px;font-weight:800;color:var(--cara);letter-spacing:-.5px;}
 .donut-sub{font-size:10px;color:var(--t4);margin-top:2px;}
@@ -666,7 +666,7 @@ textarea.f-input{resize:none;}
 .pill-tab:last-child{border-radius:0 var(--rf) var(--rf) 0;}
 .pill-tab.active{background:var(--cara);color:#fff;border-color:var(--cara);box-shadow:0 3px 12px var(--cara-glow);}
 
-.stat-card-v2{background:var(--bg);border-radius:var(--r4);padding:14px 14px 12px;box-shadow:var(--neu-out-sm);display:flex;flex-direction:column;gap:4px;}
+.stat-card-v2{background:var(--bg);border-radius:var(--r4);padding:14px 14px 12px;box-shadow:var(--neu-out-sm);display:flex;flex-direction:column;gap:4px;min-height:70px;}
 .scv2-top{display:flex;align-items:center;gap:6px;}
 .scv2-trend{display:inline-flex;align-items:center;gap:2px;font-size:10px;font-weight:700;font-family:var(--fh);padding:2px 6px;border-radius:var(--rf);}
 .scv2-trend.up{color:var(--green);background:var(--green-lt);}
@@ -675,8 +675,8 @@ textarea.f-input{resize:none;}
 .scv2-val{font-family:var(--fh);font-size:18px;font-weight:800;letter-spacing:-.5px;}
 .scv2-label{font-size:9px;font-weight:600;color:var(--t4);text-transform:uppercase;letter-spacing:.5px;font-family:var(--fh);}
 
-.line-chart-wrap{padding:0 16px 8px;}
-.line-chart-svg{width:100%;height:120px;}
+.line-chart-wrap{padding:0 16px 8px;min-height:120px;}
+.line-chart-svg{width:100%;height:120px;min-height:100px;}
 .chart-bar-row{display:flex;gap:4px;align-items:flex-end;height:80px;padding:0 16px;margin-bottom:12px;}
 .cb-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
 .cb-bar{width:100%;border-radius:4px 4px 0 0;background:var(--bg-dk);box-shadow:var(--neu-out-xs);min-height:4px;transition:height .4s;}
@@ -979,7 +979,7 @@ textarea.f-input{resize:none;}
   <button class="tab-btn" onclick="switchReportPeriod(this,30)">
     <span class="mi" style="font-size:16px;display:block;margin:0 auto 2px">calendar_month</span>30 วัน
   </button>
-</div></div> <div class="scroll-body" style="padding-bottom:20px"> <!-- Donut Chart --> <div class="donut-wrap" id="donutWrap"> <svg class="donut-svg" viewBox="0 0 180 180" id="donutSvg"></svg> <div class="donut-center"> <div class="donut-amount" id="donutAmount">฿0</div> <div class="donut-sub">ยอดขายรวม</div> <button class="donut-detail-btn" onclick="scrollToReportDetail()">รายละเอียด</button> </div> </div> <!-- Stat Cards 2x2 with trend --> <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 16px 8px" id="statCardsV2"> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendSales"></span></div> <div class="scv2-val" style="color:var(--cara)" id="rTotalSales">฿0</div> <div class="scv2-label">ยอดขาย (Gross)</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendNet"></span></div> <div class="scv2-val" style="color:var(--green)" id="rProfit">฿0</div> <div class="scv2-label">กำไร (Net)</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendDisc"></span></div> <div class="scv2-val" style="color:var(--red)" id="rDiscount">฿0</div> <div class="scv2-label">ส่วนลด</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendCups"></span></div> <div class="scv2-val" style="color:var(--blue)" id="rCups">0</div> <div class="scv2-label">จำนวนแก้ว</div> </div> </div> <!-- Line Chart --> <span class="sec-label">ยอดขายรายวัน</span> <div class="line-chart-wrap" id="lineChartWrap"><svg class="line-chart-svg" id="lineChartSvg"></svg></div> <span class="sec-label">ยอดขายรายชั่วโมง</span> <div id="hourlySales"></div> <span class="sec-label">เมนูขายดี</span> <div id="topList"></div> <span class="sec-label">เครื่องดื่มพนักงาน</span> <div id="staffLog" style="padding:0 16px"></div> <span class="sec-label">ประสิทธิภาพโปรโมชั่น</span> <div id="promoPerf" style="padding:0 16px 20px"></div> <span class="sec-label">รายการยกเลิก</span> <div id="voidReport" style="padding:0 16px 20px"></div> <!-- hidden old containers for compat --> <div style="display:none"><div id="statCards"></div><div id="paymentSummary"></div><div class="chart-bar-row" id="barChart"></div><div id="rOrders"></div><div id="rAvg"></div></div> </div> </div> <!-- PAGE: STORES --> <div class="page" id="pg-stores"> <div class="pg-head"> <div> <div class="pg-title">คลังสินค้า</div> <div class="pg-sub" id="storesSub"></div> </div> </div> <div style="padding:10px 16px 0;flex-shrink:0">
+</div></div> <div class="scroll-body" style="padding-bottom:20px"> <!-- Donut Chart --> <div class="donut-wrap" id="donutWrap"> <div id="donutSvgWrap"><svg class="donut-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" id="donutSvg"><circle cx="90" cy="90" r="72" fill="none" stroke="#D8D0C8" stroke-width="14" opacity=".3"/></svg></div> <div class="donut-center"> <div class="donut-amount" id="donutAmount">฿0</div> <div class="donut-sub">ยอดขายรวม</div> <button class="donut-detail-btn" onclick="scrollToReportDetail()">รายละเอียด</button> </div> </div> <!-- Stat Cards 2x2 with trend --> <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 16px 8px" id="statCardsV2"> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendSales"></span></div> <div class="scv2-val" style="color:var(--cara)" id="rTotalSales">฿0</div> <div class="scv2-label">ยอดขาย (Gross)</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendNet"></span></div> <div class="scv2-val" style="color:var(--green)" id="rProfit">฿0</div> <div class="scv2-label">กำไร (Net)</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendDisc"></span></div> <div class="scv2-val" style="color:var(--red)" id="rDiscount">฿0</div> <div class="scv2-label">ส่วนลด</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendCups"></span></div> <div class="scv2-val" style="color:var(--blue)" id="rCups">0</div> <div class="scv2-label">จำนวนแก้ว</div> </div> </div> <!-- Line Chart --> <span class="sec-label">ยอดขายรายวัน</span> <div class="line-chart-wrap" id="lineChartWrap"><div id="lineChartSvgWrap"><svg class="line-chart-svg" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg" id="lineChartSvg"></svg></div></div> <span class="sec-label">ยอดขายรายชั่วโมง</span> <div id="hourlySales"></div> <span class="sec-label">เมนูขายดี</span> <div id="topList"></div> <span class="sec-label">เครื่องดื่มพนักงาน</span> <div id="staffLog" style="padding:0 16px"></div> <span class="sec-label">ประสิทธิภาพโปรโมชั่น</span> <div id="promoPerf" style="padding:0 16px 20px"></div> <span class="sec-label">รายการยกเลิก</span> <div id="voidReport" style="padding:0 16px 20px"></div> <!-- hidden old containers for compat --> <div style="display:none"><div id="statCards"></div><div id="paymentSummary"></div><div class="chart-bar-row" id="barChart"></div><div id="rOrders"></div><div id="rAvg"></div></div> </div> </div> <!-- PAGE: STORES --> <div class="page" id="pg-stores"> <div class="pg-head"> <div> <div class="pg-title">คลังสินค้า</div> <div class="pg-sub" id="storesSub"></div> </div> </div> <div style="padding:10px 16px 0;flex-shrink:0">
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="storesTabs">
     <button class="s-tab active" onclick="switchStoreTab(this,'ingredient')" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--esp)"><span style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>eco</span>วัตถุดิบ</button>
     <button class="s-tab" onclick="switchStoreTab(this,'package')" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>package_2</span>บรรจุภัณฑ์</button>
@@ -3416,10 +3416,12 @@ function _calcOrderStats(orders){
 }
 
 function renderReport(days){
+ try{
  days = days||reportDays||1;
  const range  = _getReportRange(days, reportDateOffset);
  const orders = _filterOrdersRange(range.since, range.until);
  const s      = _calcOrderStats(orders);
+ console.log('[Report] days=',days,'offset=',reportDateOffset,'orders=',orders.length,'sales=',s.sales);
 
  // prev period for trend
  const pOff = reportDateOffset - (days===1?1:days);
@@ -3434,10 +3436,15 @@ function renderReport(days){
  _renderDonut(s);
 
  // ── Stat Cards v2 with trend ──
- document.getElementById('rTotalSales').textContent = '฿'+s.sales.toLocaleString();
- document.getElementById('rProfit').textContent     = '฿'+s.profit.toLocaleString();
- document.getElementById('rDiscount').textContent   = '-฿'+s.discount.toLocaleString();
- document.getElementById('rCups').textContent       = s.cups;
+ const elSales=document.getElementById('rTotalSales');
+ const elProfit=document.getElementById('rProfit');
+ const elDisc=document.getElementById('rDiscount');
+ const elCups=document.getElementById('rCups');
+ console.log('[Report] stat card els:', !!elSales, !!elProfit, !!elDisc, !!elCups);
+ if(elSales) elSales.textContent = '฿'+s.sales.toLocaleString();
+ if(elProfit) elProfit.textContent = '฿'+s.profit.toLocaleString();
+ if(elDisc) elDisc.textContent = '-฿'+s.discount.toLocaleString();
+ if(elCups) elCups.textContent = s.cups;
 
  _setTrend('trendSales', s.sales, ps.sales);
  _setTrend('trendNet',   s.profit, ps.profit);
@@ -3457,6 +3464,7 @@ function renderReport(days){
  renderStaffLogSummary();
  renderPromoPerf(orders);
  renderVoidReport(days);
+ }catch(e){ console.error('[renderReport] ERROR:',e.message,e.stack); }
 }
 
 function _updateDateNav(days, range){
@@ -3478,13 +3486,13 @@ function _updateDateNav(days, range){
 }
 
 function _renderDonut(s){
- const svg=document.getElementById('donutSvg');
- if(!svg) return;
+ try{
+ const wrap=document.getElementById('donutSvgWrap');
+ if(!wrap) { console.warn('[Donut] wrapper not found'); return; }
  const total=s.sales||1;
  const profit=Math.max(s.profit,0);
  const disc=s.discount;
  const cost=total-profit-disc;
- // segments: profit (green), discount (red), cost (grey)
  const segments=[
   {val:profit, color:'var(--green)'},
   {val:disc,   color:'var(--red)'},
@@ -3497,7 +3505,6 @@ function _renderDonut(s){
  if(!segments.length||s.sales===0){
   arcs=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg-dk)" stroke-width="${stroke}" opacity=".5"/>`;
  } else {
-  // track ring bg
   arcs=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg-dk)" stroke-width="${stroke}" opacity=".18"/>`;
   segments.forEach(sg=>{
    const pct=sg.val/total;
@@ -3507,8 +3514,12 @@ function _renderDonut(s){
    offset+=dash;
   });
  }
- svg.innerHTML=arcs;
- document.getElementById('donutAmount').textContent='฿'+s.sales.toLocaleString();
+ // Use wrapper innerHTML for reliable re-render
+ wrap.innerHTML=`<svg class="donut-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" id="donutSvg">${arcs}</svg>`;
+ const da=document.getElementById('donutAmount');
+ if(da) da.textContent='฿'+s.sales.toLocaleString();
+ console.log('[Donut] rendered, sales=',s.sales);
+ }catch(e){ console.error('[_renderDonut] ERROR:',e); }
 }
 
 function _setTrend(elId, curr, prev, invertColor){
@@ -3533,8 +3544,9 @@ function scrollToReportDetail(){
 }
 
 function _renderLineChart(days){
- const svg=document.getElementById('lineChartSvg');
- if(!svg) return;
+ try{
+ const lineWrap=document.getElementById('lineChartSvgWrap');
+ if(!lineWrap) { console.warn('[LineChart] wrapper not found'); return; }
  days=days||1;
  const numDays=Math.min(days===1?7:days,30);
  const dayNames=['อา','จ','อ','พ','พฤ','ศ','ส'];
@@ -3558,13 +3570,10 @@ function _renderLineChart(days){
   if(i===0){pathD=`M${x},${y}`;areaD=`M${x},${padT+plotH} L${x},${y}`;}
   else {pathD+=` L${x},${y}`;areaD+=` L${x},${y}`;}
   if(i===data.length-1) areaD+=` L${x},${padT+plotH} Z`;
-  // dot on last point
   if(i===data.length-1) dots+=`<circle cx="${x}" cy="${y}" r="4" fill="var(--cara)" stroke="var(--bg)" stroke-width="2"/>`;
-  // x labels
   labels+=`<text x="${x}" y="${H-2}" text-anchor="middle" fill="var(--t4)" font-size="8" font-family="var(--fh)">${d.label}${data.length<=7?' '+d.date:''}</text>`;
  });
 
- // y axis
  const ySteps=4;
  let yLines='';
  for(let i=0;i<=ySteps;i++){
@@ -3574,14 +3583,10 @@ function _renderLineChart(days){
   if(i%2===0) yLines+=`<text x="${padL-4}" y="${y+3}" text-anchor="end" fill="var(--t4)" font-size="7" font-family="var(--fh)">${val>=1000?(val/1000).toFixed(1)+'k':val}</text>`;
  }
 
- svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
- svg.innerHTML=`
-  ${yLines}
-  <defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--cara)" stop-opacity=".18"/><stop offset="100%" stop-color="var(--cara)" stop-opacity="0"/></linearGradient></defs>
-  <path d="${areaD}" fill="url(#areaGrad)"/>
-  <path d="${pathD}" fill="none" stroke="var(--cara)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  ${dots}
-  ${labels}`;
+ const inner=`${yLines}<defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--cara)" stop-opacity=".18"/><stop offset="100%" stop-color="var(--cara)" stop-opacity="0"/></linearGradient></defs><path d="${areaD}" fill="url(#areaGrad)"/><path d="${pathD}" fill="none" stroke="var(--cara)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>${dots}${labels}`;
+ lineWrap.innerHTML=`<svg class="line-chart-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" id="lineChartSvg">${inner}</svg>`;
+ console.log('[LineChart] rendered, days=',numDays);
+ }catch(e){ console.error('[_renderLineChart] ERROR:',e); }
 }
 
 // inject stat card (legacy compat — redirects to hidden container)
@@ -3734,10 +3739,8 @@ function renderVoidReport(days){
  days=days||reportDays||1;
  const el=document.getElementById('voidReport');
  if(!el) return;
- const now=Date.now();
- const d=new Date(); d.setHours(0,0,0,0);
- const since=days===1?d.getTime():now-days*86400000;
- const voided=DB.orders.filter(o=>(o.status==='voided'||o.status==='void')&&_ts(o.voidTs||o.ts)>=since);
+ const range=_getReportRange(days, reportDateOffset);
+ const voided=DB.orders.filter(o=>(o.status==='voided'||o.status==='void')&&_ts(o.voidTs||o.ts)>=range.since&&_ts(o.voidTs||o.ts)<range.until);
  if(!voided.length){
   el.innerHTML='<div style="font-size:12px;color:var(--t4)">ไม่มีรายการยกเลิกในช่วงนี้</div>';
   return;
@@ -3747,16 +3750,22 @@ function renderVoidReport(days){
   staff:{label:'ข้อผิดพลาดร้าน',color:'var(--orange,#e8770a)',bg:'rgba(232,119,10,.12)',icon:'warning'},
   test:{label:'ทดสอบระบบ',color:'var(--gold)',bg:'var(--gold-lt,rgba(255,198,0,.12))',icon:'science'}
  };
- // นับตามประเภท
+ // normalize old voidType values: 'shop' → 'staff', missing → 'customer'
+ function _normVoidType(o){
+  const t=o.voidType||'customer';
+  if(t==='shop') return 'staff';
+  if(typeCfg[t]) return t;
+  return 'customer';
+ }
  const counts={customer:0,staff:0,test:0};
  let totalLoss=0;
  voided.forEach(o=>{
-  const t=o.voidType||'customer';
+  const t=_normVoidType(o);
   counts[t]=(counts[t]||0)+1;
   if(t!=='test') totalLoss+=o.total||0;
  });
  const realVoids=counts.customer+counts.staff;
- const voidRate=DB.orders.filter(o=>_ts(o.ts||0)>=since).length;
+ const voidRate=DB.orders.filter(o=>_ts(o.ts||0)>=range.since&&_ts(o.ts||0)<range.until).length;
  const rate=voidRate>0?Math.round(realVoids/voidRate*100):0;
  // summary row
  const summaryHtml=`
@@ -3786,7 +3795,7 @@ function renderVoidReport(days){
   </div>`;
  // รายการ
  const listHtml=voided.sort((a,b)=>_ts(b.voidTs||b.ts)-_ts(a.voidTs||a.ts)).map(o=>{
-  const t=o.voidType||'customer';
+  const t=_normVoidType(o);
   const cfg=typeCfg[t]||typeCfg.customer;
   const dt=new Date(_ts(o.voidTs||o.ts));
   const timeStr=dt.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
