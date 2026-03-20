@@ -1830,7 +1830,7 @@ function addFromModal(){
  if(!emp){toast('ไม่พบรหัส'+empId);return;}
  const staffType = document.getElementById('pdStaffType').value;
  const logEntry = {
- id:DB.nextId++,menuId:pdItem.id,menuName:pdItem.name,
+ id:'tmp-'+Date.now(),menuId:pdItem.id,menuName:pdItem.name,
  staff:emp.name,empId:emp.id,type:staffType,qty:pdQtyVal,
  ts:Date.now(),note:document.getElementById('pdNote').value,
  isWelfare:true
@@ -4039,7 +4039,7 @@ function logStaffDrink(){
  const type=document.getElementById('staffType').value;
  const note=document.getElementById('staffNote').value;
  if(!m)return;
- DB.staffLogs.push({id:DB.nextId++,menuId,menuName:m.name,staff:name,type,qty,ts:Date.now(),note});
+ DB.staffLogs.push({id:'tmp-'+Date.now(),menuId,menuName:m.name,staff:name,empId:currentEmp?.id||'',type,qty,ts:Date.now(),note});
  AUD.welfare(m.name, qty, '—', name, type);
  closeModal('modal-staff');
  toast(`บันทึก ${m.name} x${qty} (${name})`);
@@ -5101,16 +5101,16 @@ function saveBlendFormula(){
   type:document.getElementById('blendType').value,
   unit:document.getElementById('blendUnit').value||'ml',
   shelfDays:parseInt(document.getElementById('blendShelf').value)||14,
-  method:document.getElementById('blendMethod').value,
+  ings, // primary field — GAS sheet col: ings
+  method:document.getElementById('blendMethod').value, // วิธีทำ (text)
   yieldPerBatch:parseFloat(document.getElementById('blendYield').value)||0,
   totalCostPerBatch:parseFloat(document.getElementById('blendCost').value)||0,
-  ings
  };
  if(id){
   const b=DB.blends.find(x=>x.id===id);
   if(b){Object.assign(b,data);toast('อัปเดตสูตรแล้ว');}
  } else {
-  DB.blends.push({...data,id:DB.nextId++,stock:[]});
+  DB.blends.push({...data,id:'tmp-'+Date.now(),stock:[]});
   toast('✅ สร้างสูตรเบลนด์แล้ว');
  }
  closeModal('modal-blend');renderStores('blend');scheduleSync();
@@ -6616,6 +6616,37 @@ async function doRecoveryReset(){
  closeModal('modal-recovery');
  toast('Reset PIN สำเร็จ!');
 }
+
+
+// ── Service Worker (inline blob — ไม่ต้องมีไฟล์ sw.js) ───────────────────
+(function registerSW(){
+ if(!('serviceWorker' in navigator)) return;
+ const swCode = `
+  const CACHE='nalincha-pos-v1';
+  const ASSETS=['/Pos-app/'];
+  self.addEventListener('install',e=>{
+   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).catch(()=>{}));
+   self.skipWaiting();
+  });
+  self.addEventListener('activate',e=>{
+   e.waitUntil(caches.keys().then(keys=>Promise.all(
+    keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))
+   )));
+   self.clients.claim();
+  });
+  self.addEventListener('fetch',e=>{
+   if(e.request.method!=='GET') return;
+   e.respondWith(
+    caches.match(e.request).then(cached=>cached||fetch(e.request).catch(()=>cached))
+   );
+  });
+ `;
+ const blob = new Blob([swCode],{type:'application/javascript'});
+ const url  = URL.createObjectURL(blob);
+ navigator.serviceWorker.register(url,{scope:'/Pos-app/'})
+  .then(()=>console.log('[SW] registered (inline)'))
+  .catch(e=>console.warn('[SW] register failed:',e.message));
+})();
 
 window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
 (async function init(){
