@@ -1917,7 +1917,11 @@ function addFromModal(){
 }
 function quickAdd(id){
  const m=DB.menus.find(x=>x.id===id);if(!m)return;
- addToOrder(m.id,m.name,m.sizes[0]||'200ml',1,m.price,'','50%','มีน้ำแข็ง',m.color,m.icon);
+ const os=DB.optionSets||{};
+ const defSweet=(os.sweet&&os.sweet.default)||'50%';
+ const defIce=(os.ice&&os.ice.default)||'มีน้ำแข็ง';
+ const defStr=(os.strength&&os.strength.default)||'50%';
+ addToOrder(m.id,m.name,m.sizes[0]||'200ml',1,m.price,'',defSweet,defIce,m.color,m.icon,0,0,defStr);
  toast(`+ ${m.name}`);
 }
 
@@ -3526,14 +3530,18 @@ function _setTrend(elId, curr, prev, invertColor){
  const el=document.getElementById(elId);
  if(!el) return;
  if(!prev||prev===0){
-  el.className='scv2-trend';el.innerHTML='';el.style.display='none';return;
+  if(curr>0){
+   el.style.display='';el.className='scv2-trend up';
+   el.innerHTML='<span class="mi">fiber_new</span>ใหม่';
+  } else { el.className='scv2-trend';el.innerHTML='';el.style.display='none'; }
+  return;
  }
  el.style.display='';
  const pct=Math.round(((curr-prev)/prev)*100);
  const isUp=pct>=0;
  const arrow=isUp?'trending_up':'trending_down';
  let cls=isUp?'up':'dn';
- if(invertColor) cls=isUp?'dn':'up'; // discount up = bad
+ if(invertColor) cls=isUp?'dn':'up';
  el.className='scv2-trend '+cls;
  el.innerHTML=`<span class="mi">${arrow}</span>${Math.abs(pct)}%`;
 }
@@ -3803,7 +3811,7 @@ function renderVoidReport(days){
    <span class="mi" style="color:${cfg.color};font-size:18px">${cfg.icon}</span>
    <div style="flex:1;min-width:0">
     <div style="font-size:12px;font-weight:700;color:var(--t1)">บิล #${o.id}</div>
-    <div style="font-size:10px;color:var(--t4);margin-top:1px">${o.voidReason||'—'}</div>
+    <div style="font-size:10px;color:var(--t4);margin-top:1px">${o.voidReason&&isNaN(o.voidReason)?o.voidReason:'ไม่ระบุเหตุผล'}</div>
    </div>
    <div style="text-align:right;flex-shrink:0">
     <div style="font-size:11px;font-weight:700;color:${t==='test'?'var(--t4)':`${cfg.color}`};text-decoration:${t==='test'?'line-through':'none'}">฿${(o.total||0).toLocaleString()}</div>
@@ -5145,7 +5153,7 @@ function saveRecipe(){
  if(ingId&&qty)ings.push({ingId,qty});
  });
  let totalCost=0;ings.forEach(r=>{const ing=DB.ingredients.find(i=>i.id===r.ingId);if(ing)totalCost+=(ing.cost/1000)*r.qty;});
- DB.recipes.push({id:DB.nextId++,name,cups,ingredients:ings,costPerCup:totalCost.toFixed(2),ts:Date.now()});
+ DB.recipes.push({id:DB.nextId++,name,cups,ingredients:ings,costPerCup:Math.round(totalCost*100)/100,ts:Date.now()});
  closeModal('modal-recipe');renderStores('recipe');toast('บันทึกสูตรแล้ว');scheduleSync();
 }
 
@@ -6076,8 +6084,17 @@ async function loadFromSheet(){
  return true;
 }
 
-/* recalcNextId — no-op v2.0: GAS generates all IDs server-side */
-function recalcNextId(){}
+/* recalcNextId — ensure nextId > max existing ID across all collections */
+function recalcNextId(){
+ let maxId=DB.nextId||1;
+ ['menus','orders','promos','recipes','ingredients','packages','equipment',
+  'staffLogs','useLogs','blends','blendBatches','employees','auditLog',
+  'pendingVoids','customOptions','purchaseOrders'].forEach(col=>{
+  if(!Array.isArray(DB[col]))return;
+  DB[col].forEach(item=>{ if(item&&typeof item.id==='number'&&item.id>=maxId) maxId=item.id+1; });
+ });
+ DB.nextId=maxId;
+}
 
 /* โหลดข้อมูลพนักงานจาก Google Sheet แยกต่างหาก */
 async function loadEmployeesFromSheet(){
@@ -6790,33 +6807,30 @@ async function doRecoveryReset(){
 }
 
 
-// ── Service Worker (inline blob — ไม่ต้องมีไฟล์ sw.js) ───────────────────
+// ── Service Worker ───────────────────────────────────────────
 (function registerSW(){
  if(!('serviceWorker' in navigator)) return;
+ // blob URL ไม่ทำงานบน HTTPS — ใช้ไฟล์ sw.js จริงถ้ามี, ถ้าไม่มีก็ skip
+ if(location.protocol==='https:'){
+  navigator.serviceWorker.register('./sw.js',{scope:'./'})
+   .then(()=>console.log('[SW] registered (file)'))
+   .catch(()=>console.log('[SW] sw.js not found — offline mode disabled'));
+  return;
+ }
+ // localhost/file: ใช้ blob ได้
  const swCode = `
   const CACHE='nalincha-pos-v1';
-  const ASSETS=['/Pos-app/'];
-  self.addEventListener('install',e=>{
-   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).catch(()=>{}));
-   self.skipWaiting();
-  });
-  self.addEventListener('activate',e=>{
-   e.waitUntil(caches.keys().then(keys=>Promise.all(
-    keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))
-   )));
-   self.clients.claim();
-  });
+  self.addEventListener('install',e=>{ self.skipWaiting(); });
+  self.addEventListener('activate',e=>{ self.clients.claim(); });
   self.addEventListener('fetch',e=>{
    if(e.request.method!=='GET') return;
-   e.respondWith(
-    caches.match(e.request).then(cached=>cached||fetch(e.request).catch(()=>cached))
-   );
+   e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));
   });
  `;
  const blob = new Blob([swCode],{type:'application/javascript'});
  const url  = URL.createObjectURL(blob);
- navigator.serviceWorker.register(url,{scope:'/Pos-app/'})
-  .then(()=>console.log('[SW] registered (inline)'))
+ navigator.serviceWorker.register(url,{scope:location.pathname})
+  .then(()=>console.log('[SW] registered (blob)'))
   .catch(e=>console.warn('[SW] register failed:',e.message));
 })();
 
