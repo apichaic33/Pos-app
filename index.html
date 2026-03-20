@@ -2258,8 +2258,8 @@ function confirmOrder(){
   if(m){ m.sold+=oi.qty; }
   if(m&&m.recipeId){
    const rec=DB.recipes.find(x=>x.id===m.recipeId);
-   if(rec&&rec.ingredients){
-    rec.ingredients.forEach(row=>{
+   if(rec&&(rec.ingredients||rec.ings)){
+    (rec.ingredients||rec.ings).forEach(row=>{
      if(!row.ingId||!row.qty)return;
      const ing=DB.ingredients.find(x=>x.id===row.ingId);
      if(ing){ ing.qty=Math.max(0,ing.qty-row.qty*oi.qty); }
@@ -3064,7 +3064,7 @@ function editMenu(id){
  // load recipe
  menuRecipeIngredients = [];
  const rec = DB.recipes.find(r=>r.menuId===m.id);
- if(rec){ menuRecipeIngredients = rec.ingredients.map(i=>({...i})); document.getElementById('menuRecipeId').value=rec.id; }
+ if(rec){ menuRecipeIngredients = (rec.ingredients||rec.ings||[]).map(i=>({...i})); document.getElementById('menuRecipeId').value=rec.id; }
  else { document.getElementById('menuRecipeId').value=''; }
  switchMenuTab('info');
  openModal('modal-add-menu');
@@ -5014,9 +5014,11 @@ function renderStores(tab){
  }).join('')+'</div>';
 }
 function calcRecipeCostPerCup(rec){
- if(!rec||!rec.ingredients) return 0;
+ if(!rec) return 0;
+ const rows=rec.ingredients||rec.ings||[];
+ if(!rows.length) return 0;
  let cost=0;
- rec.ingredients.forEach(row=>{
+ rows.forEach(row=>{
  if(!row.ingId||!row.qty)return;
  const ing=DB.ingredients.find(x=>x.id===row.ingId);
  if(!ing||!ing.qty)return;
@@ -5033,9 +5035,10 @@ function renderRecipeTab(){
  return`<div style="padding:12px 16px 80px">`+allRecs.map(rec=>{
  const menu=rec.menuId?DB.menus.find(m=>m.id===rec.menuId):null;
  const cost=calcRecipeCostPerCup(rec);
+ const recIngs=rec.ingredients||rec.ings||[];
  const margin=menu&&menu.price>0?Math.round((menu.price-cost)/menu.price*100):null;
  const mc=margin!==null?(margin>=50?'var(--green)':margin>=30?'var(--gold)':'var(--red)'):'var(--t4)';
- return`<div class="store-item" style="flex-direction:column;align-items:stretch;gap:6px;padding:10px 14px"> <div style="display:flex;align-items:center;gap:8px"> <div style="width:28px;height:28px;border-radius:6px;background:${menu?menu.color:'var(--bg-dk)'};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0">${menu?menu.icon:''}</div> <div style="flex:1"> <div class="si-name">${rec.name}${menu?` <span style="font-size:9px;color:var(--t4);font-weight:400">→ ${menu.name}</span>`:''}</div> <div class="si-meta">${rec.ingredients.length} วัตถุดิบ · ต้นทุน <strong style="color:var(--cara)">฿${cost}</strong>/แก้ว${margin!==null?` · <span style="color:${mc};font-weight:700">Margin ${margin}%</span>`:''}</div> </div> </div> <div style="display:flex;flex-wrap:wrap;gap:4px;padding-left:36px">${rec.ingredients.map(row=>{const ing=DB.ingredients.find(x=>x.id===row.ingId);return ing?`<span style="font-size:9px;background:var(--bg-dk);border-radius:var(--rf);padding:2px 7px;color:var(--t3)">${ing.name} ${row.qty}${ing.unit}</span>`:''}).join('')}</div> </div>`;
+ return`<div class="store-item" style="flex-direction:column;align-items:stretch;gap:6px;padding:10px 14px"> <div style="display:flex;align-items:center;gap:8px"> <div style="width:28px;height:28px;border-radius:6px;background:${menu?menu.color:'var(--bg-dk)'};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0">${menu?menu.icon:''}</div> <div style="flex:1"> <div class="si-name">${rec.name}${menu?` <span style="font-size:9px;color:var(--t4);font-weight:400">→ ${menu.name}</span>`:''}</div> <div class="si-meta">${recIngs.length} วัตถุดิบ · ต้นทุน <strong style="color:var(--cara)">฿${cost}</strong>/แก้ว${margin!==null?` · <span style="color:${mc};font-weight:700">Margin ${margin}%</span>`:''}</div> </div> </div> <div style="display:flex;flex-wrap:wrap;gap:4px;padding-left:36px">${recIngs.map(row=>{const ing=DB.ingredients.find(x=>x.id===row.ingId);return ing?`<span style="font-size:9px;background:var(--bg-dk);border-radius:var(--rf);padding:2px 7px;color:var(--t3)">${ing.name} ${row.qty}${ing.unit}</span>`:''}).join('')}</div> </div>`;
  }).join('')+'</div>';
 }
 function renderUseLogTab(){
@@ -5093,7 +5096,7 @@ function saveStoreItem(){
  if(!m.recipeId)return;
  const rec=DB.recipes.find(x=>x.id===m.recipeId);
  if(!rec)return;
- const uses=rec.ingredients.some(row=>row.ingId===parseInt(document.getElementById('storeEditId').value)||false);
+ const uses=(rec.ingredients||rec.ings||[]).some(row=>row.ingId===parseInt(document.getElementById('storeEditId').value)||false);
  if(uses||true){ // recalc all menus with recipes
  const newCost=calcRecipeCostPerCup(rec);
  if(newCost>0) m.cost=newCost;
@@ -5142,7 +5145,7 @@ function saveRecipe(){
  if(ingId&&qty)ings.push({ingId,qty});
  });
  let totalCost=0;ings.forEach(r=>{const ing=DB.ingredients.find(i=>i.id===r.ingId);if(ing)totalCost+=(ing.cost/1000)*r.qty;});
- DB.recipes.push({id:DB.nextId++,name,cups,ings,costPerCup:totalCost.toFixed(2),ts:Date.now()});
+ DB.recipes.push({id:DB.nextId++,name,cups,ingredients:ings,costPerCup:totalCost.toFixed(2),ts:Date.now()});
  closeModal('modal-recipe');renderStores('recipe');toast('บันทึกสูตรแล้ว');scheduleSync();
 }
 
@@ -6825,6 +6828,8 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  const hasCache = loadLocal();
  await migratePins();
  migrateSizes();
+ // migrate recipe field: ings → ingredients
+ if(DB.recipes) DB.recipes.forEach(r=>{ if(r.ings&&!r.ingredients){ r.ingredients=r.ings; delete r.ings; } });
  if(hasCache){ showSyncStatus('Cache'); }
 
  // 2. โหลดจาก Sheets (รวม employees) — รอให้เสร็จก่อนแสดง login
