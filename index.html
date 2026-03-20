@@ -1169,7 +1169,7 @@ textarea.f-input{resize:none;}
 </div> <!-- 
  MODALS
  --> <!-- MODAL: Add/Edit Menu -->
-<div class="modal-overlay" id="modal-add-menu"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title" id="menuModalTitle" style="display:flex;align-items:center;gap:6px"><span class="mi" style="font-size:18px;color:var(--cara)">restaurant_menu</span>เพิ่มเมนูใหม่</span>  </div> <div class="modal-body"> <input type="hidden" id="menuEditId"> <input type="hidden" id="menuRecipeId" value=""> <!-- Tab bar --> <div class="tab-bar" style="margin-bottom:14px"> <button class="tab-btn active" id="menuTab-info" onclick="switchMenuTab('info')">ข้อมูลเมนู</button> <button class="tab-btn" id="menuTab-recipe" onclick="switchMenuTab('recipe')">สูตร/ต้นทุน</button> </div> <!-- TAB: ข้อมูลเมนู --> <div id="menuSection-info"> <div class="f-row"> <div class="f-group" style="flex:2"><label class="f-label">ชื่อเมนู</label><input class="f-input" id="menuName" placeholder="เช่น Cappuccino"></div> <div class="f-group"><label class="f-label">หมวด</label><select class="f-select" id="menuCat" onchange="toggleCustomFields()"><option value="coffee">กาแฟ</option><option value="tea">ชา</option><option value="cocoa">โกโก้</option><option value="custom"> Custom</option><option value="other">อื่นๆ</option></select></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">ราคา (฿)</label><input class="f-input" id="menuPrice" type="number" placeholder="65" oninput="recalcMenuCost()"></div> <div class="f-group"><label class="f-label">ต้นทุน (฿)</label><input class="f-input" id="menuCost" type="number" placeholder="20" readonly style="background:var(--bg-dk);color:var(--t3)"></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">ปริมาณ (ml)</label><select class="f-select" id="menuVol"><option value="200">200 ml</option><option value="1000">1000 ml</option></select></div> <div class="f-group"><label class="f-label">ตัวย่อ</label><input class="f-input" id="menuIcon" placeholder="C" maxlength="2"></div> </div> <div class="f-group"><label class="f-label">สี</label><div style="display:flex;gap:7px;flex-wrap:wrap" id="colorPicker"><div class="color-dot" style="background:#2C1810" onclick="selectColor('#2C1810',this)"></div><div class="color-dot" style="background:#3D2314" onclick="selectColor('#3D2314',this)"></div><div class="color-dot" style="background:#5C3317" onclick="selectColor('#5C3317',this)"></div><div class="color-dot" style="background:#2D4A3E" onclick="selectColor('#2D4A3E',this)"></div><div class="color-dot" style="background:#2B5EA7" onclick="selectColor('#2B5EA7',this)"></div><div class="color-dot" style="background:#5B3FA0" onclick="selectColor('#5B3FA0',this)"></div><div class="color-dot" style="background:#8B3A3A" onclick="selectColor('#8B3A3A',this)"></div><div class="color-dot" style="background:#3A6B4A" onclick="selectColor('#3A6B4A',this)"></div></div><input type="hidden" id="menuColor" value="#2C1810"></div> <div class="f-group"><label class="f-label">ขนาด</label><div style="display:flex;gap:8px;flex-wrap:wrap" id="sizeCheckboxGroup"><input type="hidden" id="sizeM"><input type="hidden" id="sizeL"><input type="hidden" id="sizeS"></div></div> <div class="f-group"><label class="f-label">สถานะ</label><select class="f-select" id="menuStatus"><option value="active">เปิดขาย</option><option value="inactive">ปิด</option></select></div> <div class="f-group"><label class="f-label">โปรโมชั่น</label><select class="f-select" id="menuPromo"></select></div> <div class="f-group"><label class="f-label">คำอธิบาย</label><textarea class="f-input" id="menuDesc" rows="2" placeholder="อธิบายรสชาติ..."></textarea></div> </div><!-- end menuSection-info --> <!-- TAB: สูตร/ต้นทุน --> <div id="menuSection-recipe" style="display:none"> <div style="background:var(--bg-dk);border-radius:var(--r3);padding:12px;margin-bottom:10px"> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"> <span style="font-size:12px;font-weight:700;color:var(--t2);font-family:var(--fh)">วัตถุดิบต่อ 1 แก้ว</span> <button onclick="addRecipeRow()" style="background:var(--blue-lt);color:var(--blue);border:none;border-radius:var(--rf);padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">+ เพิ่ม</button> </div> <div id="menuRecipeRows"></div> <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(140,123,107,.2)"> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span style="color:var(--t4)">ต้นทุนจากสูตร</span> <span id="recipeCostCalc" style="font-weight:700;color:var(--cara)">฿0</span> </div> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span style="color:var(--t4)">ราคาขาย</span> <span id="recipePriceRef" style="font-weight:700;color:var(--t1)">฿0</span> </div> <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"> <span style="color:var(--green)">Margin</span> <span id="recipeMarginCalc" style="color:var(--green)">0%</span> </div> </div> </div> <div style="font-size:10px;color:var(--t4);padding:0 2px">* ต้นทุนคำนวณจากราคาวัตถุดิบในคลัง บันทึกเพื่ออัปเดต</div> </div> <!-- Custom options section (always visible) --> <div id="customFieldsSection" style="display:none;background:var(--blue-lt);border-radius:var(--r3);padding:10px 12px">
+<div class="modal-overlay" id="modal-add-menu"> <div class="modal-sheet"> <div class="modal-handle"></div> <div class="modal-head"> <span class="modal-title" id="menuModalTitle" style="display:flex;align-items:center;gap:6px"><span class="mi" style="font-size:18px;color:var(--cara)">restaurant_menu</span>เพิ่มเมนูใหม่</span>  </div> <div class="modal-body"> <input type="hidden" id="menuEditId"> <input type="hidden" id="menuRecipeId" value=""> <!-- Tab bar --> <div class="tab-bar" style="margin-bottom:14px"> <button class="tab-btn active" id="menuTab-info" onclick="switchMenuTab('info')">ข้อมูลเมนู</button> <button class="tab-btn" id="menuTab-recipe" onclick="switchMenuTab('recipe')">สูตร/ต้นทุน</button> </div> <!-- TAB: ข้อมูลเมนู --> <div id="menuSection-info"> <div class="f-row"> <div class="f-group" style="flex:2"><label class="f-label">ชื่อเมนู</label><input class="f-input" id="menuName" placeholder="เช่น Cappuccino"></div> <div class="f-group"><label class="f-label">หมวด</label><select class="f-select" id="menuCat" onchange="toggleCustomFields()"><option value="coffee">กาแฟ</option><option value="tea">ชา</option><option value="cocoa">โกโก้</option><option value="custom"> Custom</option><option value="other">อื่นๆ</option></select></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">ราคา (฿)</label><input class="f-input" id="menuPrice" type="number" placeholder="65" oninput="recalcMenuCost()"></div> <div class="f-group"><label class="f-label">ต้นทุน (฿)</label><input class="f-input" id="menuCost" type="number" placeholder="20" readonly style="background:var(--bg-dk);color:var(--t3)"></div> </div> <div class="f-row"> <div class="f-group"><label class="f-label">ปริมาณ (ml)</label><select class="f-select" id="menuVol"><option value="200">200 ml</option><option value="1000">1000 ml</option></select></div> <div class="f-group"><label class="f-label">ตัวย่อ</label><input class="f-input" id="menuIcon" placeholder="C" maxlength="2"></div> </div> <div class="f-group"><label class="f-label">สี</label><div style="display:flex;gap:7px;flex-wrap:wrap" id="colorPicker"><div class="color-dot" style="background:#2C1810" onclick="selectColor('#2C1810',this)"></div><div class="color-dot" style="background:#3D2314" onclick="selectColor('#3D2314',this)"></div><div class="color-dot" style="background:#5C3317" onclick="selectColor('#5C3317',this)"></div><div class="color-dot" style="background:#2D4A3E" onclick="selectColor('#2D4A3E',this)"></div><div class="color-dot" style="background:#2B5EA7" onclick="selectColor('#2B5EA7',this)"></div><div class="color-dot" style="background:#5B3FA0" onclick="selectColor('#5B3FA0',this)"></div><div class="color-dot" style="background:#8B3A3A" onclick="selectColor('#8B3A3A',this)"></div><div class="color-dot" style="background:#3A6B4A" onclick="selectColor('#3A6B4A',this)"></div></div><input type="hidden" id="menuColor" value="#2C1810"></div> <div class="f-group"><label class="f-label">ขนาด</label><div style="display:flex;gap:8px;flex-wrap:wrap" id="sizeCheckboxGroup"><input type="hidden" id="sizeM"><input type="hidden" id="sizeL"><input type="hidden" id="sizeS"></div></div> <div class="f-group"><label class="f-label">สถานะ</label><select class="f-select" id="menuStatus"><option value="active">เปิดขาย</option><option value="inactive">ปิด</option></select></div> <div class="f-group"><label class="f-label">โปรโมชั่น</label><select class="f-select" id="menuPromo"></select></div> <div class="f-group"><label class="f-label">คำอธิบาย</label><textarea class="f-input" id="menuDesc" rows="2" placeholder="อธิบายรสชาติ..."></textarea></div> </div><!-- end menuSection-info --> <!-- TAB: สูตร/ต้นทุน --> <div id="menuSection-recipe" style="display:none"> <div style="background:var(--bg-dk);border-radius:var(--r3);padding:12px;margin-bottom:10px"> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"> <span style="font-size:12px;font-weight:700;color:var(--t2);font-family:var(--fh)">วัตถุดิบต่อ 1 แก้ว</span> <button onclick="addRecipeRow()" style="background:var(--blue-lt);color:var(--blue);border:none;border-radius:var(--rf);padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">+ เพิ่ม</button> </div> <div id="menuRecipeRows"></div> <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(140,123,107,.2)"> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span style="color:var(--t4)">ต้นทุนจากสูตร</span> <span id="recipeCostCalc" style="font-weight:700;color:var(--cara)">฿0</span> </div> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"> <span style="color:var(--t4)">ราคาขาย</span> <span id="recipePriceRef" style="font-weight:700;color:var(--t1)">฿0</span> </div> <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700"> <span style="color:var(--green)">Margin</span> <span id="recipeMarginCalc" style="color:var(--green)">0%</span> </div> </div> </div> <div style="font-size:10px;color:var(--t4);padding:0 2px">* ต้นทุนคำนวณจากราคาวัตถุดิบในคลัง บันทึกเพื่ออัปเดต</div> <!-- Dynamic Cost Modifiers --> <div id="costModSection" style="display:none;background:var(--bg-dk);border-radius:var(--r3);padding:12px;margin-top:10px;margin-bottom:10px"> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"> <span style="font-size:12px;font-weight:700;color:var(--t2);font-family:var(--fh)">ต้นทุนตาม Option</span> <button onclick="toggleCostModDetail()" id="costModToggle" style="background:var(--blue-lt);color:var(--blue);border:none;border-radius:var(--rf);padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer">แก้ไข</button> </div> <div style="font-size:10px;color:var(--t4);margin-bottom:8px">เลือกวัตถุดิบหลักและตัวให้ความหวาน เพื่อคำนวณต้นทุนตามตัวเลือกที่ลูกค้าเลือก</div> <div id="costModDetail" style="display:none"> <div class="f-row" style="margin-bottom:8px"> <div class="f-group" style="flex:1"><label class="f-label" style="font-size:10px">วัตถุดิบหลัก (ชา/กาแฟ)</label><select class="f-select" id="recipePrimaryIng" style="font-size:12px" onchange="updateCostModPreview()"><option value="">-- ไม่ระบุ --</option></select></div> <div class="f-group" style="flex:1"><label class="f-label" style="font-size:10px">ตัวให้ความหวาน</label><select class="f-select" id="recipeSweetIng" style="font-size:12px" onchange="updateCostModPreview()"><option value="">-- ไม่ระบุ --</option></select></div> </div> <div id="costModPreview" style="font-size:11px;color:var(--t3);border-top:1px solid rgba(140,123,107,.15);padding-top:8px"></div> </div> </div> </div> <!-- Custom options section (always visible) --> <div id="customFieldsSection" style="display:none;background:var(--blue-lt);border-radius:var(--r3);padding:10px 12px">
  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
   <div style="font-size:12px;font-weight:700;color:var(--blue);font-family:var(--fh)">ตัวเลือก Custom</div>
   <button onclick="drawerGo('custom')" style="background:var(--blue);color:#fff;border:none;border-radius:var(--rf);padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px"><span class="mi" style="font-size:13px">open_in_new</span>จัดการ</button>
@@ -1927,6 +1927,8 @@ function quickAdd(id){
 
 function addToOrder(menuId,name,size,qty,price,note,sweet,ice,color,icon,promoId,promoDisc,strength){
  const key=`${menuId}-${size}-${sweet}-${ice}-${strength||'50%'}-${note}`;
+ // Dynamic cost per item
+ const dynCost = calcDynamicCost(menuId, size, sweet, strength||'50%');
  const ex=orderItems.find(i=>i.key===key);
  if(ex){
  const prev=ex.qty; ex.qty+=qty;
@@ -1934,9 +1936,10 @@ function addToOrder(menuId,name,size,qty,price,note,sweet,ice,color,icon,promoId
  const discPerUnit=Math.round(promoDisc/qty);
  ex.promoDisc=(ex.promoDisc||0)+discPerUnit*qty;
  }
+ ex.costPerItem=dynCost; // update in case ingredients changed
  AUD.itemEdit(name,size,prev,ex.qty,price);
  } else {
- orderItems.push({key,menuId,name,size,qty,price,note,sweet,ice,strength:strength||'50%',color:color||'#2C1810',icon:icon||'?',promoId:promoId||0,promoDisc:promoDisc||0});
+ orderItems.push({key,menuId,name,size,qty,price,note,sweet,ice,strength:strength||'50%',color:color||'#2C1810',icon:icon||'?',promoId:promoId||0,promoDisc:promoDisc||0,costPerItem:dynCost});
  AUD.itemAdd(name,size,qty,price);
  }
  updateCartFab();
@@ -3085,7 +3088,7 @@ function switchMenuTab(tab){
  document.getElementById('menuSection-'+t).style.display = t===tab?'':'none';
  document.getElementById('menuTab-'+t).classList.toggle('active', t===tab);
  });
- if(tab==='recipe') renderMenuRecipeRows();
+ if(tab==='recipe'){ renderMenuRecipeRows(); showCostModSection(); }
 }
 
 
@@ -3146,6 +3149,139 @@ function addRecipeRow(){
  renderMenuRecipeRows();
 }
 
+// ═══════════════════════════════════════════
+// Dynamic Cost Engine v2
+// คำนวณต้นทุนจริงตาม option ที่เลือก
+// ═══════════════════════════════════════════
+
+// recipe.costModifiers = {
+//   size: { "200ml": 1.0, "1000ml": 1.3 },      // multiplier on base recipe ingredients
+//   sweet: { "0%":0, "25%":0.25, "50%":0.5, "75%":0.75, "100%":1.0 },  // multiplier on sweetener ingredient
+//   strength: { "25%":0.5, "50%":1.0, "75%":1.5, "100%":2.0 }           // multiplier on primary ingredient
+// }
+// recipe.sweetIngId = "ing_5"   — which ingredient is the sweetener
+// recipe.primaryIngId = "ing_3" — which ingredient is the primary (tea/coffee)
+
+function getRecipeBaseCost(recipe){
+ if(!recipe) return 0;
+ const ings = recipe.ingredients || recipe.ings || [];
+ let cost = 0;
+ ings.forEach(row => {
+  if(!row.qty) return;
+  const key = row.itemKey || ('ing_'+(row.ingId||''));
+  if(key.startsWith('blend_')){
+   const blendId = parseInt(key.replace('blend_',''));
+   const blend = (DB.blends||[]).find(x=>x.id===blendId);
+   if(blend){
+    const rc = getBlendCost(blend);
+    const ry = getBlendYield(blend);
+    if(ry>0) cost += (rc/ry) * row.qty;
+   }
+  } else {
+   const ingId = parseInt(key.replace('ing_','')) || row.ingId;
+   const ing = DB.ingredients.find(x=>x.id===ingId);
+   if(!ing) return;
+   if(ing.cost && ing.qty) cost += (ing.cost / ing.qty) * row.qty;
+   else cost += (ing.cost||0) * row.qty;
+  }
+ });
+ return Math.round(cost * 10) / 10;
+}
+
+function calcDynamicCost(menuId, size, sweet, strength){
+ const menu = DB.menus.find(m=>m.id===menuId);
+ if(!menu) return 0;
+ const recipe = DB.recipes.find(r=>r.menuId===menuId);
+ if(!recipe) return Number(menu.cost)||0;
+
+ const mod = recipe.costModifiers;
+ if(!mod) return getRecipeBaseCost(recipe);
+
+ const ings = recipe.ingredients || recipe.ings || [];
+ let cost = 0;
+
+ // size multiplier (applies to ALL ingredients)
+ const sizeMul = (mod.size && mod.size[size]) || 1.0;
+
+ ings.forEach(row => {
+  if(!row.qty) return;
+  const key = row.itemKey || ('ing_'+(row.ingId||''));
+  let unitCost = 0;
+
+  if(key.startsWith('blend_')){
+   const blendId = parseInt(key.replace('blend_',''));
+   const blend = (DB.blends||[]).find(x=>x.id===blendId);
+   if(blend){
+    const rc = getBlendCost(blend);
+    const ry = getBlendYield(blend);
+    if(ry>0) unitCost = rc/ry;
+   }
+  } else {
+   const ingId = parseInt(key.replace('ing_','')) || row.ingId;
+   const ing = DB.ingredients.find(x=>x.id===ingId);
+   if(!ing) return;
+   unitCost = ing.cost && ing.qty ? ing.cost/ing.qty : (ing.cost||0);
+  }
+
+  let qty = row.qty * sizeMul;
+
+  // sweet multiplier (only for sweetener ingredient)
+  if(recipe.sweetIngId && key === recipe.sweetIngId && mod.sweet){
+   const sweetMul = mod.sweet[sweet];
+   if(sweetMul !== undefined) qty = row.qty * sizeMul * sweetMul;
+  }
+
+  // strength multiplier (only for primary ingredient)
+  if(recipe.primaryIngId && key === recipe.primaryIngId && mod.strength){
+   const strMul = mod.strength[strength];
+   if(strMul !== undefined) qty = row.qty * sizeMul * strMul;
+  }
+
+  cost += unitCost * qty;
+ });
+
+ return Math.round(cost * 10) / 10;
+}
+
+// Get default cost modifiers template based on current optionSets
+function getDefaultCostModifiers(){
+ const os = DB.optionSets || {};
+ const mod = {};
+
+ // Size modifiers — auto from items
+ if(os.sizes && os.sizes.items){
+  mod.size = {};
+  const base = os.sizes.default || os.sizes.items[0]?.label || '200ml';
+  os.sizes.items.forEach(item => {
+   const lbl = typeof item==='string' ? item : item.label;
+   mod.size[lbl] = lbl === base ? 1.0 : 1.0; // default all to 1.0, user adjusts
+  });
+ }
+
+ // Sweet modifiers — percent-based
+ if(os.sweet && os.sweet.items){
+  mod.sweet = {};
+  os.sweet.items.forEach(item => {
+   const lbl = typeof item==='string' ? item : item.label;
+   const pct = parseInt(lbl) || 0;
+   mod.sweet[lbl] = pct / 100;
+  });
+ }
+
+ // Strength modifiers — percent-based
+ if(os.strength && os.strength.items){
+  mod.strength = {};
+  const basePct = parseInt(os.strength.default) || 50;
+  os.strength.items.forEach(item => {
+   const lbl = typeof item==='string' ? item : item.label;
+   const pct = parseInt(lbl) || 50;
+   mod.strength[lbl] = pct / basePct;
+  });
+ }
+
+ return mod;
+}
+
 function recalcMenuCost(){
  let cost = 0;
  menuRecipeIngredients.forEach(row=>{
@@ -3176,6 +3312,85 @@ function recalcMenuCost(){
  const marginEl = document.getElementById('recipeMarginCalc');
  marginEl.textContent = margin+'%';
  marginEl.style.color = margin>=50?'var(--green)':margin>=30?'var(--gold)':'var(--red)';
+}
+
+// ── Cost Modifier UI ──
+function showCostModSection(){
+ const hasIngs = menuRecipeIngredients.some(r=>(r.itemKey||r.ingId)&&r.qty);
+ const section = document.getElementById('costModSection');
+ if(section) section.style.display = hasIngs ? 'block' : 'none';
+ if(hasIngs) populateCostModDropdowns();
+}
+
+function populateCostModDropdowns(){
+ const primarySel = document.getElementById('recipePrimaryIng');
+ const sweetSel = document.getElementById('recipeSweetIng');
+ if(!primarySel||!sweetSel) return;
+
+ const opts = menuRecipeIngredients.filter(r=>(r.itemKey||r.ingId)&&r.qty).map(row=>{
+  const key = row.itemKey || ('ing_'+(row.ingId||''));
+  let name = key;
+  if(key.startsWith('ing_')){
+   const ing = DB.ingredients.find(x=>x.id===parseInt(key.replace('ing_','')));
+   if(ing) name = ing.name;
+  } else if(key.startsWith('blend_')){
+   const b = (DB.blends||[]).find(x=>x.id===parseInt(key.replace('blend_','')));
+   if(b) name = '[เบลนด์] '+b.name;
+  }
+  return `<option value="${key}">${name}</option>`;
+ }).join('');
+
+ primarySel.innerHTML = '<option value="">-- ไม่ระบุ --</option>' + opts;
+ sweetSel.innerHTML = '<option value="">-- ไม่ระบุ --</option>' + opts;
+
+ // Load existing values from recipe
+ const editId = parseInt(document.getElementById('menuEditId').value)||null;
+ if(editId){
+  const rec = DB.recipes.find(r=>r.menuId===editId);
+  if(rec){
+   if(rec.primaryIngId) primarySel.value = rec.primaryIngId;
+   if(rec.sweetIngId) sweetSel.value = rec.sweetIngId;
+  }
+ }
+ updateCostModPreview();
+}
+
+function toggleCostModDetail(){
+ const el = document.getElementById('costModDetail');
+ const btn = document.getElementById('costModToggle');
+ if(el.style.display==='none'){
+  el.style.display='block'; btn.textContent='ซ่อน';
+  populateCostModDropdowns();
+ } else {
+  el.style.display='none'; btn.textContent='แก้ไข';
+ }
+}
+
+function updateCostModPreview(){
+ const el = document.getElementById('costModPreview');
+ if(!el) return;
+ const primaryKey = document.getElementById('recipePrimaryIng').value;
+ const sweetKey = document.getElementById('recipeSweetIng').value;
+ const mod = getDefaultCostModifiers();
+ let html = '';
+
+ if(mod.size && Object.keys(mod.size).length>1){
+  html += '<div style="margin-bottom:6px"><strong style="color:var(--t2)">ขนาด:</strong> ';
+  html += Object.entries(mod.size).map(([k,v])=>`${k} = x${v}`).join(', ');
+  html += '</div>';
+ }
+ if(sweetKey && mod.sweet){
+  html += '<div style="margin-bottom:6px"><strong style="color:var(--t2)">ความหวาน:</strong> ';
+  html += Object.entries(mod.sweet).map(([k,v])=>`${k} = x${v}`).join(', ');
+  html += '</div>';
+ }
+ if(primaryKey && mod.strength){
+  html += '<div style="margin-bottom:6px"><strong style="color:var(--t2)">ความเข้ม:</strong> ';
+  html += Object.entries(mod.strength).map(([k,v])=>`${k} = x${v.toFixed(1)}`).join(', ');
+  html += '</div>';
+ }
+ if(!html) html = '<span style="color:var(--t5)">เลือกวัตถุดิบด้านบนเพื่อดู preview</span>';
+ el.innerHTML = html;
 }
 
 function saveMenu(){
@@ -3210,15 +3425,15 @@ function saveMenu(){
  Object.assign(m,data);
  if(hasIngredients){
  const existRec = DB.recipes.find(r=>r.menuId===id);
- if(existRec){ existRec.ingredients=[...menuRecipeIngredients]; }
- else{ const rid=DB.nextId++; DB.recipes.push({id:rid,menuId:id,name:data.name+'Recipe',cupsPerBatch:1,ingredients:[...menuRecipeIngredients]}); m.recipeId=rid; }
+ if(existRec){ existRec.ingredients=[...menuRecipeIngredients]; existRec.primaryIngId=document.getElementById('recipePrimaryIng').value||null; existRec.sweetIngId=document.getElementById('recipeSweetIng').value||null; existRec.costModifiers=getDefaultCostModifiers(); }
+ else{ const rid=DB.nextId++; DB.recipes.push({id:rid,menuId:id,name:data.name+'Recipe',cupsPerBatch:1,ingredients:[...menuRecipeIngredients],primaryIngId:document.getElementById('recipePrimaryIng').value||null,sweetIngId:document.getElementById('recipeSweetIng').value||null,costModifiers:getDefaultCostModifiers()}); m.recipeId=rid; }
  }
  toast('อัพเดตเมนูแล้ว');
  } else {
  const newId=DB.nextId++;
  const menuObj={...data,id:newId,sold:0};
  if(hasIngredients){
- const rid=DB.nextId++; DB.recipes.push({id:rid,menuId:newId,name:data.name+'Recipe',cupsPerBatch:1,ingredients:[...menuRecipeIngredients]}); menuObj.recipeId=rid;
+ const rid=DB.nextId++; DB.recipes.push({id:rid,menuId:newId,name:data.name+'Recipe',cupsPerBatch:1,ingredients:[...menuRecipeIngredients],primaryIngId:document.getElementById('recipePrimaryIng').value||null,sweetIngId:document.getElementById('recipeSweetIng').value||null,costModifiers:getDefaultCostModifiers()}); menuObj.recipeId=rid;
  }
  DB.menus.push(menuObj);
  toast('เพิ่มเมนูใหม่แล้ว');
@@ -3412,7 +3627,7 @@ function _calcOrderStats(orders){
   cups    += o.items.reduce((s,i)=>s+i.qty,0);
   profit  += o.items.reduce((ss,i)=>{
    const m = DB.menus.find(x=>x.id===i.menuId);
-   const cost = m ? (Number(m.cost)||0) : 0;
+   const cost = i.costPerItem!=null ? i.costPerItem : (m ? (Number(m.cost)||0) : 0);
    return ss + (i.price - cost)*i.qty - (i.autoPromoDisc||i.promoDisc||0);
   },0);
  });
@@ -3637,7 +3852,7 @@ function renderTopProducts(orders){
   const pct=Math.round(m.totalSold/maxSold*100);
   const profit=orders.reduce((s,o)=>s+o.items.filter(i=>i.menuId===m.id).reduce((ss,i)=>{
    const menu=DB.menus.find(x=>x.id===i.menuId);
-   const cost=menu?(Number(menu.cost)||0):0;
+   const cost=i.costPerItem!=null?i.costPerItem:(menu?(Number(menu.cost)||0):0);
    return ss+(i.price-cost)*i.qty-(i.autoPromoDisc||i.promoDisc||0);
   },0),0);
   return `<div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px 14px;margin-bottom:8px">
@@ -5518,7 +5733,7 @@ function renderSalesToday(){
  const allOrders=getTodayOrders();
  const activeOrders=allOrders.filter(o=>o.status!=='voided');
  const total=activeOrders.reduce((s,o)=>s+o.total,0);
- const profit=activeOrders.reduce((s,o)=>s+o.items.reduce((ss,i)=>{const m=DB.menus.find(x=>x.id===i.menuId);return ss+(m?(i.price-m.cost)*i.qty-(i.promoDisc||0):0);},0),0);
+ const profit=activeOrders.reduce((s,o)=>s+o.items.reduce((ss,i)=>{const m=DB.menus.find(x=>x.id===i.menuId);const cost=i.costPerItem!=null?i.costPerItem:(m?m.cost:0);return ss+(m?(i.price-cost)*i.qty-(i.promoDisc||0):0);},0),0);
  const voidedCount=allOrders.filter(o=>o.status==='voided').length;
 
  document.getElementById('salesTodayTotal').textContent='฿'+total.toLocaleString();
@@ -5535,7 +5750,7 @@ function renderSalesToday(){
  listEl.innerHTML=allOrders.slice().reverse().map(function(o){
  var timeStr=new Date(o.ts).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
  var isVoided=o.status==='voided';
- var orderProfit=isVoided?0:o.items.reduce(function(ss,i){var m=DB.menus.find(function(x){return x.id===i.menuId;});return ss+(m?(m.price-m.cost)*i.qty:0);},0);
+ var orderProfit=isVoided?0:o.items.reduce(function(ss,i){var m=DB.menus.find(function(x){return x.id===i.menuId;});var cost=i.costPerItem!=null?i.costPerItem:(m?m.cost:0);return ss+(m?(i.price-cost)*i.qty:0);},0);
  var hasPending=DB.pendingVoids.some(function(v){return String(v.orderId)===String(o.id)&&v.status==='pending';});
  var statusBadge='';
  if(isVoided) statusBadge='<span style="background:var(--red-lt);color:var(--red);font-size:9px;font-weight:700;padding:2px 6px;border-radius:var(--rf)">ยกเลิก</span>';
