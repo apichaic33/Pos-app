@@ -2026,7 +2026,7 @@ function renderOrderPanel(){
  const noteParts=(i.note||'').split(' · ');
  const customTags=Object.values(CUST_LABELS).filter(v=>noteParts.includes(v));
  const otherNote=noteParts.filter(p=>!Object.values(CUST_LABELS).includes(p)).join(' · ');
- const metaLine=[i.size||'',i.ice||'',i.sweet?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:'',otherNote].filter(Boolean).join(' · ');
+ const metaLine=[i.size||'',i.ice||'',i.sweet?'หวาน '+i.sweet:'',i.strength?'เข้ม '+i.strength:'',otherNote].filter(Boolean).join(' · ');
  const icePrice2   = getOptItemPrice('ice', i.ice);
  const sweetPrice2 = getOptItemPrice('sweet', i.sweet);
  const strPrice2   = getOptItemPrice('strength', i.strength);
@@ -2421,7 +2421,7 @@ function renderReceipt(order){
  const condParts = [
   i.ice||'',
   i.sweet ? 'หวาน '+i.sweet : '',
-  i.strength && i.strength!=='50%' ? 'เข้ม '+i.strength : '',
+  i.strength ? 'เข้ม '+i.strength : '',
   otherNote
  ].filter(Boolean);
  const condLine = condParts.length
@@ -2783,7 +2783,7 @@ function buildReceiptHTML(){
   const promo = i.promoId?DB.promos.find(p=>p.id===i.promoId):null;
   const promoDisc = i.promoDisc||0;
   const net = i.price*i.qty - promoDisc;
-  const conds=[i.size||'', i.ice||'', i.sweet?'หวาน '+i.sweet:'', i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:''].filter(Boolean).join(' · ');
+  const conds=[i.size||'', i.ice||'', i.sweet?'หวาน '+i.sweet:'', i.strength?'เข้ม '+i.strength:''].filter(Boolean).join(' · ');
   return `<div style="padding:6px 0;border-bottom:1px dashed #ddd">
    <div style="display:flex;justify-content:space-between;align-items:flex-start">
     <div style="flex:1"><span style="font-size:9px;color:#999">${n+1}. </span><strong style="font-size:12px">${i.name}</strong> <span style="font-size:10px;color:#888">(${i.size})</span></div>
@@ -2834,7 +2834,7 @@ function buildCopyReceiptHTML(order, emp){
  const CUST={extraShot:'เพิ่มช็อต',extraMatcha:'เพิ่มมัทฉะ',extraCocoa:'เพิ่มโกโก้'};
  const itemHTML=order.items.map((i,n)=>{
   const promo=i.promoId?DB.promos.find(p=>p.id===i.promoId):null;
-  const opts=[i.size||'', i.ice||'', i.sweet?'หวาน '+i.sweet:'', i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:''].filter(Boolean).join(' · ');
+  const opts=[i.size||'', i.ice||'', i.sweet?'หวาน '+i.sweet:'', i.strength?'เข้ม '+i.strength:''].filter(Boolean).join(' · ');
   const net=i.price*i.qty-(i.promoDisc||0);
   return `<div style="padding:5px 0;border-bottom:1px dashed #ddd">
    <div style="display:flex;gap:4px"><span style="color:#aaa;font-size:10px">${n+1}.</span>
@@ -5283,7 +5283,7 @@ function openOrderDetail(orderId){
  document.getElementById('odBody').innerHTML=`
  <div style="padding:14px 16px;border-bottom:1px solid var(--bg-dk);display:flex;justify-content:space-between"> <span style="font-size:11px;color:var(--t4)">วันที่-เวลา</span> <span style="font-size:11px;font-weight:600;color:var(--t2)">${dateStr}</span> </div> <div style="padding:12px 16px"> ${order.items.map(i=>`
  <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(176,154,133,.12)"> <div style="flex:1"> <div style="font-size:13px;font-weight:600;color:var(--t1);font-family:var(--fh)">${i.name}
- <span style="font-size:10px;color:var(--t4)">(${i.size})</span></div> <div style="font-size:10px;color:var(--t4);margin-top:2px"> ${[i.size||'',i.ice||'',i.sweet?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:'',i.note].filter(Boolean).join(' · ')||'ปกติ'}</div> </div> <div style="text-align:right;flex-shrink:0"> <div style="font-size:12px;color:var(--t3)">x${i.qty}</div> <div style="font-size:13px;font-weight:700;color:var(--cara);font-family:var(--fh)">฿${(i.price*i.qty).toLocaleString()}</div> </div> </div>`).join('')}
+ <span style="font-size:10px;color:var(--t4)">(${i.size})</span></div> <div style="font-size:10px;color:var(--t4);margin-top:2px"> ${[i.size||'',i.ice||'',i.sweet?'หวาน '+i.sweet:'',i.strength?'เข้ม '+i.strength:'',i.note].filter(Boolean).join(' · ')||'ปกติ'}</div> </div> <div style="text-align:right;flex-shrink:0"> <div style="font-size:12px;color:var(--t3)">x${i.qty}</div> <div style="font-size:13px;font-weight:700;color:var(--cara);font-family:var(--fh)">฿${(i.price*i.qty).toLocaleString()}</div> </div> </div>`).join('')}
  </div> <div style="margin:0 16px;background:var(--bg);border-radius:var(--r4);padding:12px 14px;box-shadow:var(--neu-in-sm)"> <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t3);padding:3px 0"> <span>ยอดรวม</span><span>฿${order.subTotal.toLocaleString()}</span></div> ${order.discount>0?`<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--red);padding:3px 0"><span>ส่วนลด</span><span>-฿${order.discount.toLocaleString()}</span></div>`:''}
  <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700;padding-top:8px;border-top:1px solid var(--bg-dk);margin-top:4px;font-family:var(--fh)"> <span>ยอดสุทธิ</span> <span style="color:${isVoided?'var(--t5)':'var(--cara)'}">${isVoided?`<s>฿${order.total.toLocaleString()}</s>`:`฿${order.total.toLocaleString()}`}</span> </div> </div> ${isVoided?`
  <div style="margin:12px 16px;padding:10px 14px;background:var(--red-lt);border-radius:var(--r3)"> <div style="font-size:11px;color:var(--red);font-weight:700"> ยกเลิกแล้ว</div> <div style="font-size:11px;color:var(--t3);margin-top:3px">เหตุผล: ${order.voidReason||'—'}</div> ${order.voidApprovedBy?`<div style="font-size:10px;color:var(--t4);margin-top:2px">อนุมัติโดย: ${order.voidApprovedBy}</div>`:''}
@@ -5953,7 +5953,7 @@ function renderSalesToday(){
  var noteParts=(i.note||'').split(' · ');
  var customTags=Object.values(customLabels).filter(function(v){return noteParts.includes(v);});
  var otherNote=noteParts.filter(function(p){return !Object.values(customLabels).includes(p);}).join(' · ');
- var opts=[i.size||'',i.ice||'',i.sweet?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:'',otherNote].filter(Boolean).join(' · ');
+ var opts=[i.size||'',i.ice||'',i.sweet?'หวาน '+i.sweet:'',i.strength?'เข้ม '+i.strength:'',otherNote].filter(Boolean).join(' · ');
  var html='<div style="display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid rgba(176,154,133,.08)">';
  html+='<span style="width:17px;height:17px;border-radius:50%;background:var(--bg-dk);font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;color:var(--t3)">'+(n+1)+'</span>';
  html+='<div style="flex:1;min-width:0">';
