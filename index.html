@@ -728,6 +728,25 @@ textarea.f-input{resize:none;}
 .si-dot.warn{background:var(--gold-md);box-shadow:0 0 8px rgba(212,168,67,.5);}
 .si-dot.danger{background:var(--red-md);box-shadow:0 0 8px rgba(217,79,68,.5);}
 .si-dot.inactive{background:var(--t5);box-shadow:none;}
+/* Store item card redesign */
+.si-card{background:var(--bg);border-radius:var(--r4);box-shadow:var(--neu-out-sm);margin-bottom:12px;overflow:hidden;}
+.si-card-body{display:flex;align-items:center;gap:12px;padding:14px 16px;}
+.si-card-icon{width:42px;height:42px;border-radius:var(--r3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.si-card-info{flex:1;min-width:0;}
+.si-card-name{font-size:14px;font-weight:700;color:var(--t1);line-height:1.3;margin-bottom:4px;}
+.si-card-meta{font-size:10px;color:var(--t4);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.si-card-qty{text-align:right;flex-shrink:0;}
+.si-card-qty-val{font-size:22px;font-weight:800;font-family:var(--fh);line-height:1.1;}
+.si-card-qty-unit{font-size:10px;color:var(--t4);margin-top:2px;}
+.si-card-footer{display:flex;gap:8px;padding:10px 14px;border-top:1px solid rgba(176,154,133,.1);background:rgba(176,154,133,.04);}
+.si-card-edit{flex:1;padding:9px;font-size:12px;font-weight:700;border-radius:var(--r2);background:var(--bg);box-shadow:var(--neu-out-xs);color:var(--t2);display:flex;align-items:center;justify-content:center;gap:5px;border:none;cursor:pointer;font-family:var(--fh);}
+.si-card-del{padding:9px 16px;font-size:12px;border-radius:var(--r2);background:var(--red-lt);color:var(--red);display:flex;align-items:center;justify-content:center;gap:4px;border:none;cursor:pointer;}
+.si-card-edit:active{box-shadow:var(--neu-in-xs);}
+.si-status-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:var(--rf);}
+.si-status-badge.expired{background:var(--red-lt);color:var(--red);}
+.si-status-badge.soon{background:var(--gold-lt);color:var(--gold);}
+.si-status-badge.low{background:rgba(217,79,68,.1);color:var(--red);}
+.si-status-badge.dmg{background:var(--red-lt);color:var(--red);}
 .si-info{flex:1;min-width:0;}
 .si-name{font-size:12px;font-weight:700;color:var(--t1);font-family:var(--fh);}
 .si-meta{font-size:10px;color:var(--t4);margin-top:1px;}
@@ -1003,8 +1022,8 @@ textarea.f-input{resize:none;}
   <button class="tab-btn" onclick="switchReportPeriod(this,30)">
     <span class="mi" style="font-size:16px;display:block;margin:0 auto 2px">calendar_month</span>30 วัน
   </button>
-</div></div> <div class="scroll-body" style="padding-bottom:20px"> <!-- Donut Chart --> <div class="donut-wrap" id="donutWrap"> <div id="donutSvgWrap"><svg class="donut-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" id="donutSvg"><circle cx="90" cy="90" r="72" fill="none" stroke="#D8D0C8" stroke-width="14" opacity=".3"/></svg></div> <div class="donut-center"> <div class="donut-amount" id="donutAmount">฿0</div> <div class="donut-sub">ยอดขายรวม</div> <button class="donut-detail-btn" onclick="scrollToReportDetail()">รายละเอียด</button> </div> </div> <!-- Stat Cards 2x2 with trend --> <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 16px 8px" id="statCardsV2"> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendSales"></span></div> <div class="scv2-val" style="color:var(--cara)" id="rTotalSales">฿0</div> <div class="scv2-label">ยอดขาย (Gross)</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendNet"></span></div> <div class="scv2-val" style="color:var(--green)" id="rProfit">฿0</div> <div class="scv2-label">กำไร (Net)</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendDisc"></span></div> <div class="scv2-val" style="color:var(--red)" id="rDiscount">฿0</div> <div class="scv2-label">ส่วนลด</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendCups"></span></div> <div class="scv2-val" style="color:var(--blue)" id="rCups">0</div> <div class="scv2-label">จำนวนแก้ว</div> </div> </div> <!-- Line Chart --> <span class="sec-label">ยอดขายรายวัน</span> <div class="line-chart-wrap" id="lineChartWrap"><div id="lineChartSvgWrap"><svg class="line-chart-svg" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg" id="lineChartSvg"></svg></div></div> <span class="sec-label">ยอดขายรายชั่วโมง</span> <div id="hourlySales"></div> <span class="sec-label">เมนูขายดี</span> <div id="topList"></div> <span class="sec-label">เครื่องดื่มพนักงาน</span> <div id="staffLog" style="padding:0 16px"></div> <span class="sec-label">ประสิทธิภาพโปรโมชั่น</span> <div id="promoPerf" style="padding:0 16px 20px"></div> <span class="sec-label">รายการยกเลิก</span> <div id="voidReport" style="padding:0 16px 20px"></div> <!-- hidden old containers for compat --> <div style="display:none"><div id="statCards"></div><div id="paymentSummary"></div><div class="chart-bar-row" id="barChart"></div><div id="rOrders"></div><div id="rAvg"></div></div> </div> </div> <!-- PAGE: STORES --> <div class="page" id="pg-stores"> <div class="pg-head"> <div> <div class="pg-title">คลังสินค้า</div> <div class="pg-sub" id="storesSub"></div> </div> </div> <div style="padding:10px 16px 0;flex-shrink:0">
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="storesTabs">
+</div></div> <div class="scroll-body" style="padding-bottom:20px"> <!-- Donut Chart --> <div class="donut-wrap" id="donutWrap"> <div id="donutSvgWrap"><svg class="donut-svg" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" id="donutSvg"><circle cx="90" cy="90" r="72" fill="none" stroke="#D8D0C8" stroke-width="14" opacity=".3"/></svg></div> <div class="donut-center"> <div class="donut-amount" id="donutAmount">฿0</div> <div class="donut-sub">ยอดขายรวม</div> <button class="donut-detail-btn" onclick="scrollToReportDetail()">รายละเอียด</button> </div> </div> <!-- Stat Cards 2x2 with trend --> <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 16px 8px" id="statCardsV2"> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendSales"></span></div> <div class="scv2-val" style="color:var(--cara)" id="rTotalSales">฿0</div> <div class="scv2-label">ยอดขาย (Gross)</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendNet"></span></div> <div class="scv2-val" style="color:var(--green)" id="rProfit">฿0</div> <div class="scv2-label">กำไร (Net)</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendDisc"></span></div> <div class="scv2-val" style="color:var(--red)" id="rDiscount">฿0</div> <div class="scv2-label">ส่วนลด</div> </div> <div class="stat-card-v2"> <div class="scv2-top"><span class="scv2-trend up" id="trendCups"></span></div> <div class="scv2-val" style="color:var(--blue)" id="rCups">0</div> <div class="scv2-label">จำนวนแก้ว</div> </div> </div> <!-- Line Chart --> <span class="sec-label">ยอดขายรายวัน</span> <div class="line-chart-wrap" id="lineChartWrap"><div id="lineChartSvgWrap"><svg class="line-chart-svg" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg" id="lineChartSvg"></svg></div></div> <span class="sec-label">ยอดขายรายชั่วโมง</span> <div id="hourlySales"></div> <span class="sec-label">เมนูขายดี</span> <div id="topList"></div> <span class="sec-label">เครื่องดื่มพนักงาน</span> <div id="staffLog" style="padding:0 16px"></div> <span class="sec-label">ประสิทธิภาพโปรโมชั่น</span> <div id="promoPerf" style="padding:0 16px 20px"></div> <span class="sec-label">รายการยกเลิก</span> <div id="voidReport" style="padding:0 16px 20px"></div> <!-- hidden old containers for compat --> <div style="display:none"><div id="statCards"></div><div id="paymentSummary"></div><div class="chart-bar-row" id="barChart"></div><div id="rOrders"></div><div id="rAvg"></div></div> </div> </div> <!-- PAGE: STORES --> <div class="page" id="pg-stores"> <div class="pg-head"> <div> <div class="pg-title">คลังสินค้า</div> <div class="pg-sub" id="storesSub"></div> </div> </div> <div style="padding:12px 16px 0;flex-shrink:0">
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px" id="storesTabs">
     <button class="s-tab active" onclick="switchStoreTab(this,'ingredient')" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--esp)"><span style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>eco</span>วัตถุดิบ</button>
     <button class="s-tab" onclick="switchStoreTab(this,'package')" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>package_2</span>บรรจุภัณฑ์</button>
     <button class="s-tab" onclick="switchStoreTab(this,'equipment')" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>blender</span>อุปกรณ์</button>
@@ -1014,7 +1033,7 @@ textarea.f-input{resize:none;}
     <button class="s-tab" onclick="switchStoreTab(this,'po')" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>local_shipping</span>สั่งซื้อ</button>
     <button class="s-tab" onclick="switchStoreTab(this,'alert')" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:var(--r3);background:var(--bg);box-shadow:var(--neu-out-xs);font-size:10px;font-weight:600;color:var(--t3)"><span style='font-family:"Material Symbols Outlined";font-size:18px;font-weight:normal'>notifications_active</span>แจ้งเตือน</button>
   </div>
-</div> <div class="scroll-body" id="storeContent" style="padding-top:8px;padding-bottom:20px"></div> </div> <!-- PAGE: SALES TODAY --> <div class="page" id="pg-sales"> <div class="pg-head"> <div> <div class="pg-title">รายการขายวันนี้</div> <div class="pg-sub" id="salesTodaySub">—</div> </div> <div style="text-align:right"> <div style="font-size:18px;font-weight:800;color:var(--cara);font-family:var(--fh)" id="salesTodayTotal">฿0</div> <div style="font-size:10px;color:var(--t4)">รวมวันนี้</div> </div> </div> <!-- summary chips --> <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 12px;flex-shrink:0">
+</div> <div class="scroll-body" id="storeContent" style="padding-top:4px;padding-bottom:20px"></div> </div> <!-- PAGE: SALES TODAY --> <div class="page" id="pg-sales"> <div class="pg-head"> <div> <div class="pg-title">รายการขายวันนี้</div> <div class="pg-sub" id="salesTodaySub">—</div> </div> <div style="text-align:right"> <div style="font-size:18px;font-weight:800;color:var(--cara);font-family:var(--fh)" id="salesTodayTotal">฿0</div> <div style="font-size:10px;color:var(--t4)">รวมวันนี้</div> </div> </div> <!-- summary chips --> <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 12px;flex-shrink:0">
   <div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px;text-align:center">
     <div style="font-size:10px;color:var(--t4);margin-bottom:4px">ออเดอร์</div>
     <div id="salesTodayCount" style="font-size:22px;font-weight:800;color:var(--esp);font-family:var(--fh)">0</div>
@@ -5341,38 +5360,48 @@ function renderStores(tab){
  const today=new Date().toISOString().split('T')[0];
  const soon=new Date();soon.setDate(soon.getDate()+7);const soonStr=soon.toISOString().split('T')[0];
  if(!data.length){el.innerHTML=`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">inventory_2</span></div><div class="e-title">ยังไม่มีรายการ</div><div class="e-sub">กดปุ่ม + เพิ่มรายการ</div></div>`;return;}
- el.innerHTML='<div style="padding:12px 16px 80px">'+data.map(item=>{
+ el.innerHTML='<div style="padding:14px 16px 80px">'+data.map(item=>{
  const lowStock=item.qty<=item.min;
  const expiring=item.expiry&&item.expiry<=soonStr;
  const expired=item.expiry&&item.expiry<today;
- const dotCol=expired||item.status==='damaged'?'var(--red)':lowStock||expiring?'var(--gold)':item.status!=='active'?'var(--t4)':'var(--green)';
- const badge=expired?`<span style="font-size:9px;font-weight:700;background:var(--red-lt);color:var(--red);padding:1px 6px;border-radius:var(--rf)">หมดอายุ</span>`:
-   expiring?`<span style="font-size:9px;font-weight:700;background:var(--gold-lt);color:var(--gold);padding:1px 6px;border-radius:var(--rf)">ใกล้หมดอายุ</span>`:'';
- const statusBadge=item.status!=='active'?`<span style="font-size:9px;font-weight:700;background:var(--red-lt);color:var(--red);padding:1px 6px;border-radius:var(--rf)">${{damaged:'เสียหาย',retired:'เลิกใช้'}[item.status]||item.status}</span>`:'';
- return`<div style="background:var(--bg);border-radius:var(--r3);box-shadow:var(--neu-out-xs);padding:12px 14px;margin-bottom:8px">
-   <div style="display:flex;align-items:center;gap:10px">
-     <div style="width:36px;height:36px;border-radius:50%;background:${dotCol}22;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-       <div style="width:8px;height:8px;border-radius:50%;background:${dotCol};box-shadow:0 0 6px ${dotCol}"></div></div>
-     <div style="flex:1;min-width:0">
-       <div style="font-size:13px;font-weight:700;color:var(--t1)">${item.name}</div>
-       <div style="font-size:10px;color:var(--t4);margin-top:3px;display:flex;gap:5px;flex-wrap:wrap;align-items:center">
-         <span>฿${(item.cost||0).toLocaleString()}/${item.unit}</span>
-         ${item.expiry?`<span>· หมดอายุ ${item.expiry}</span>`:''}
-         ${badge}${statusBadge}
-       </div>
-     </div>
-     <div style="text-align:right;flex-shrink:0">
-       <div style="font-size:18px;font-weight:800;color:${lowStock?'var(--red)':'var(--esp)'}">
-         ${item.qty}<span style="font-size:10px;font-weight:400;color:var(--t4)"> ${item.unit}</span></div>
-       ${lowStock?`<div style="font-size:9px;color:var(--red);font-weight:700">ต่ำกว่าขั้นต่ำ</div>`:`<div style="font-size:9px;color:var(--t5)">min ${item.min||0}</div>`}
-     </div>
+ const isDamaged=item.status==='damaged';
+ const isRetired=item.status==='retired';
+ const iconBg=expired||isDamaged?'var(--red-lt)':lowStock||expiring?'var(--gold-lt)':isRetired?'rgba(140,123,107,.12)':'rgba(61,155,96,.1)';
+ const iconColor=expired||isDamaged?'var(--red)':lowStock||expiring?'var(--gold)':isRetired?'var(--t4)':'var(--green)';
+ const iconName=tab==='equipment'?'blender':tab==='package'?'package_2':'eco';
+ const qtyColor=lowStock?'var(--red)':'var(--esp)';
+ const badges=[];
+ if(expired) badges.push(`<span class="si-status-badge expired">หมดอายุ</span>`);
+ else if(expiring) badges.push(`<span class="si-status-badge soon">ใกล้หมดอายุ</span>`);
+ if(lowStock) badges.push(`<span class="si-status-badge low">สต็อกต่ำ</span>`);
+ if(isDamaged) badges.push(`<span class="si-status-badge dmg">เสียหาย</span>`);
+ if(isRetired) badges.push(`<span class="si-status-badge dmg">เลิกใช้</span>`);
+ return`<div class="si-card">
+  <div class="si-card-body">
+   <div class="si-card-icon" style="background:${iconBg}">
+    <span style='font-family:"Material Symbols Outlined";font-size:20px;font-weight:normal;color:${iconColor}'>${iconName}</span>
    </div>
-   <div style="display:flex;gap:6px;margin-top:10px;padding-top:8px;border-top:1px solid rgba(176,154,133,.12)">
-     <button onclick="editStoreItem('${tab}',${item.id})" style="flex:1;padding:7px;font-size:11px;border-radius:var(--r2);background:var(--bg);box-shadow:var(--neu-out-xs);font-family:var(--fb);font-weight:600;color:var(--t2)">
-       <span style='font-family:"Material Symbols Outlined";font-size:13px;font-weight:normal;vertical-align:-2px'>edit</span> แก้ไข</button>
-     <button onclick="delStoreItem('${tab}',${item.id})" style="padding:7px 14px;font-size:11px;border-radius:var(--r2);background:var(--red-lt);color:var(--red);font-family:var(--fb);font-weight:600">
-       <span style='font-family:"Material Symbols Outlined";font-size:13px;font-weight:normal;vertical-align:-2px'>delete</span></button>
+   <div class="si-card-info">
+    <div class="si-card-name">${item.name}</div>
+    <div class="si-card-meta">
+     <span>฿${(item.unitCost||item.cost||0).toLocaleString()}/${item.unit}</span>
+     ${item.expiry?`<span>· ${item.expiry}</span>`:''}
+     ${badges.join('')}
+    </div>
    </div>
+   <div class="si-card-qty">
+    <div class="si-card-qty-val" style="color:${qtyColor}">${item.qty}<span style="font-size:11px;font-weight:400;color:var(--t4)"> ${item.unit}</span></div>
+    <div class="si-card-qty-unit">min ${item.min||0}</div>
+   </div>
+  </div>
+  <div class="si-card-footer">
+   <button class="si-card-edit" onclick="editStoreItem('${tab}',${item.id})">
+    <span style='font-family:"Material Symbols Outlined";font-size:14px;font-weight:normal'>edit</span> แก้ไข
+   </button>
+   <button class="si-card-del" onclick="delStoreItem('${tab}',${item.id})">
+    <span style='font-family:"Material Symbols Outlined";font-size:14px;font-weight:normal'>delete</span>
+   </button>
+  </div>
  </div>`;
  }).join('')+'</div>';
 }
