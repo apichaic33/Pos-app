@@ -489,6 +489,30 @@ img{max-width:100%;}
 }
 .btn-print:active{box-shadow:var(--neu-in-sm);}
 .btn-new-order:active{background:var(--esp2);}
+/* RECIPE SLIP PAGE */
+.recipe-slip-page{position:fixed;inset:0;z-index:600;background:var(--bg-lt);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);}
+.recipe-slip-page.open{transform:translateY(0);}
+.recipe-slip-topbar{display:flex;align-items:center;gap:10px;padding:50px 16px 12px;border-bottom:1px solid var(--bg-dk);flex-shrink:0;background:var(--bg);}
+.recipe-slip-title{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--t1);flex:1;}
+.recipe-slip-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 8px;}
+.recipe-slip-card{background:var(--bg);border-radius:var(--r4);box-shadow:var(--neu-out-sm);margin-bottom:12px;overflow:hidden;}
+.recipe-slip-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--esp);color:#fff;}
+.recipe-slip-num{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;font-family:var(--fh);flex-shrink:0;}
+.recipe-slip-menu-name{font-size:14px;font-weight:700;font-family:var(--fh);flex:1;}
+.recipe-slip-qty{font-size:12px;font-weight:700;background:rgba(255,255,255,.2);padding:3px 9px;border-radius:var(--rf);}
+.recipe-slip-opts{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px 4px;}
+.recipe-slip-opt-tag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--rf);background:var(--blue-lt);color:var(--blue);}
+.recipe-slip-opt-tag.sweet{background:rgba(184,134,11,.1);color:#b88a00;}
+.recipe-slip-opt-tag.strength{background:rgba(44,24,16,.08);color:var(--esp);}
+.recipe-slip-opt-tag.note{background:var(--bg-dk);color:var(--t3);}
+.recipe-slip-ings{padding:10px 14px 14px;}
+.recipe-slip-ing-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(140,123,107,.12);}
+.recipe-slip-ing-row:last-child{border-bottom:none;}
+.recipe-slip-ing-dot{width:8px;height:8px;border-radius:50%;background:var(--cara);flex-shrink:0;}
+.recipe-slip-ing-name{flex:1;font-size:13px;font-weight:600;color:var(--t1);}
+.recipe-slip-ing-qty{font-size:13px;font-weight:800;font-family:var(--fh);color:var(--esp);min-width:60px;text-align:right;}
+.recipe-slip-no-recipe{padding:14px;font-size:12px;color:var(--t4);text-align:center;font-style:italic;}
+.recipe-slip-footer{display:flex;gap:10px;padding:14px 16px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--bg-dk);flex-shrink:0;background:var(--bg);}
 
 /* 
  LOGIN SCREEN
@@ -1132,7 +1156,19 @@ textarea.f-input{resize:none;}
  </div> <div class="op-sum-row total"><span>รวมทั้งหมด</span><span id="opTotal">฿0</span></div> </div> <div class="op-action-row"> <button class="btn btn-secondary" style="padding:14px 16px;border-radius:var(--r4);font-size:12px;display:flex;align-items:center;gap:5px" onclick="requestVoidOrder()"><span class="mi" style="font-size:16px">delete_sweep</span>ยกเลิก</button> <button class="btn-confirm" style="display:flex;align-items:center;justify-content:center;gap:6px" onclick="confirmOrder()"><span class="mi" style="font-size:18px">receipt_long</span>ยืนยัน ออเดอร์</button> </div> </div>
 </div> <!-- RECEIPT PAGE -->
 <div class="receipt-page" id="receiptPage"> <div class="receipt-topbar"> <span class="receipt-title">ใบเสร็จ</span> <button class="btn btn-secondary btn-sm" onclick="closeReceiptPage()" style="flex-shrink:0"> ปิด</button> </div> <div class="receipt-body"> <div class="receipt-paper" id="receiptPaper" style="width:302px;margin:0 auto"></div> </div> <div class="receipt-footer-actions" id="receiptFooterActions" style="display:flex;gap:8px;padding:12px 16px"> <button class="btn-new-order" style="flex:1" onclick="newOrderFromReceipt()">ออเดอร์ถัดไป</button> </div>
-</div> <!-- ORDER DETAIL PAGE (slide from right) -->
+</div> <!-- RECIPE SLIP PAGE -->
+<div class="recipe-slip-page" id="recipeSlipPage">
+ <div class="recipe-slip-topbar">
+  <button class="btn btn-secondary btn-sm" onclick="closeRecipeSlip()">← กลับ</button>
+  <span class="recipe-slip-title"><span class="mi" style="font-size:16px;vertical-align:-3px;margin-right:4px;color:var(--cara)">receipt_long</span>สลิปสูตร</span>
+  <span id="recipeSlipOrderRef" style="font-size:10px;color:var(--t4);font-family:var(--fh)"></span>
+ </div>
+ <div class="recipe-slip-body" id="recipeSlipBody"></div>
+ <div class="recipe-slip-footer">
+  <button class="btn-new-order" onclick="closeRecipeSlipAndNew()">ออเดอร์ถัดไป</button>
+ </div>
+</div>
+<!-- ORDER DETAIL PAGE (slide from right) -->
 <div class="order-detail-page" id="orderDetailPage"> <div class="od-topbar"> <button class="btn btn-secondary btn-sm" onclick="closeOrderDetail()">← กลับ</button> <span class="od-title" id="odTitle">รายละเอียดบิล</span> <div id="odStatusBadge"></div> </div> <div class="od-body" id="odBody"></div>
 </div> <!-- APPROVAL MODAL (Employee ID) -->
 <div class="pin-overlay" id="pinOverlay"> <div class="pin-box"> <div class="pin-title" id="pinTitle">ยืนยันตัวตน</div> <div class="pin-sub" id="pinSub">ใส่ PIN ของผู้จัดการ</div>
@@ -1864,7 +1900,7 @@ function addFromModal(){
  if(!emp){toast('ไม่พบรหัส'+empId);return;}
  const staffType = document.getElementById('pdStaffType').value;
  const logEntry = {
- id:'tmp-'+Date.now(),menuId:pdItem.id,menuName:pdItem.name,
+ id:'sl-'+(DB.nextId++),menuId:pdItem.id,menuName:pdItem.name,
  staff:emp.name,empId:emp.id,type:staffType,qty:pdQtyVal,
  ts:Date.now(),note:document.getElementById('pdNote').value,
  isWelfare:true
@@ -2244,7 +2280,8 @@ function confirmOrder(){
   menuId:i.menuId,name:i.name,size:i.size,qty:i.qty,price:i.price,
   sweet:i.sweet,ice:i.ice,strength:i.strength||'50%',note:i.note,
   promoId:i.autoPromoId||i.promoId||0,
-  promoDisc:i.autoPromoDisc||i.promoDisc||0
+  promoDisc:i.autoPromoDisc||i.promoDisc||0,
+  costPerItem:i.costPerItem!=null?i.costPerItem:calcDynamicCost(i.menuId,i.size,i.sweet,i.strength||'50%')
  })),
  subTotal,discount,total,ts:Date.now(),
  status:'active',
@@ -2380,8 +2417,13 @@ function renderReceipt(order){
  const promoDisc = i.promoDisc || 0;
  const netPrice = subTotal - promoDisc;
 
- // เงื่อนไขเครื่องดื่ม
- const condParts = [i.ice, i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'', i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:'', otherNote].filter(Boolean);
+ // เงื่อนไขเครื่องดื่ม — แสดงทั้ง 3: น้ำแข็ง · ความหวาน · ความเข้ม
+ const condParts = [
+  i.ice||'',
+  i.sweet ? 'หวาน '+i.sweet : '',
+  i.strength && i.strength!=='50%' ? 'เข้ม '+i.strength : '',
+  otherNote
+ ].filter(Boolean);
  const condLine = condParts.length
  ? `<div style="font-size:10px;color:var(--t4);padding:1px 0 2px 16px;line-height:1.5">${condParts.join(' · ')}</div>` : '';
 
@@ -2517,7 +2559,21 @@ function updateReceiptFooter(){
  const footer = document.getElementById('receiptFooterActions');
  if(!footer) return;
  // ลบปุ่มเก่าออก (เก็บแค่ btn-new-order)
- Array.from(footer.querySelectorAll('.btn-print,.btn-receipt-save,.btn-receipt-settings,#btnAutoSave,#btnManualSave')).forEach(b=>b.remove());
+ Array.from(footer.querySelectorAll('.btn-print,.btn-receipt-save,.btn-receipt-settings,#btnAutoSave,#btnManualSave,#btnRecipeSlip')).forEach(b=>b.remove());
+ // ปุ่มสลิปสูตร — แสดงเสมอถ้า order มีเมนูที่ link recipe
+ const hasRecipe = previewOrder && previewOrder.items && previewOrder.items.some(i=>{
+  const m=DB.menus.find(x=>x.id===i.menuId);
+  return m && m.recipeId && DB.recipes.find(r=>r.id===m.recipeId);
+ });
+ if(hasRecipe){
+  const slipBtn = document.createElement('button');
+  slipBtn.id = 'btnRecipeSlip';
+  slipBtn.className = 'btn-print';
+  slipBtn.style.cssText = 'display:flex;align-items:center;gap:5px;flex-shrink:0;background:var(--blue-lt);color:var(--blue);box-shadow:none;border:1px solid rgba(43,94,167,.2)';
+  slipBtn.innerHTML = '<span class="mi" style="font-size:16px">receipt_long</span>สลิปสูตร';
+  slipBtn.onclick = () => openRecipeSlip(previewOrder);
+  footer.insertBefore(slipBtn, footer.firstChild);
+ }
  if(rcfg.autoSave){
   // autoSave เปิด → แสดงปุ่มสีทองรอ canvas
   // ปุ่มนี้จะ disabled ก่อน canvas พร้อม แล้ว enable + pulse เมื่อพร้อม
@@ -2727,7 +2783,7 @@ function buildReceiptHTML(){
   const promo = i.promoId?DB.promos.find(p=>p.id===i.promoId):null;
   const promoDisc = i.promoDisc||0;
   const net = i.price*i.qty - promoDisc;
-  const conds=[i.ice,i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:''].filter(Boolean).join(' · ');
+  const conds=[i.ice||'', i.sweet?'หวาน '+i.sweet:'', i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:''].filter(Boolean).join(' · ');
   return `<div style="padding:6px 0;border-bottom:1px dashed #ddd">
    <div style="display:flex;justify-content:space-between;align-items:flex-start">
     <div style="flex:1"><span style="font-size:9px;color:#999">${n+1}. </span><strong style="font-size:12px">${i.name}</strong> <span style="font-size:10px;color:#888">(${i.size})</span></div>
@@ -2778,7 +2834,7 @@ function buildCopyReceiptHTML(order, emp){
  const CUST={extraShot:'เพิ่มช็อต',extraMatcha:'เพิ่มมัทฉะ',extraCocoa:'เพิ่มโกโก้'};
  const itemHTML=order.items.map((i,n)=>{
   const promo=i.promoId?DB.promos.find(p=>p.id===i.promoId):null;
-  const opts=[i.ice,i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:''].filter(Boolean).join(' · ');
+  const opts=[i.ice||'', i.sweet?'หวาน '+i.sweet:'', i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:''].filter(Boolean).join(' · ');
   const net=i.price*i.qty-(i.promoDisc||0);
   return `<div style="padding:5px 0;border-bottom:1px dashed #ddd">
    <div style="display:flex;gap:4px"><span style="color:#aaa;font-size:10px">${n+1}.</span>
@@ -2920,6 +2976,89 @@ async function printCopyReceipt(){
 
 
 function newOrderFromReceipt(){
+ closeReceiptPage();
+ closeOrderPanel();
+ goPage('order');
+ toast('พร้อมรับออเดอร์ใหม่');
+}
+
+/* 
+ RECIPE SLIP
+ */
+function openRecipeSlip(order){
+ if(!order) return;
+ // สร้างหมายเลขออเดอร์ (ดึงจาก receipt logic)
+ const d = order.ts instanceof Date ? order.ts : new Date(order.ts||Date.now());
+ const pad=n=>String(n).padStart(2,'0');
+ const ref=pad(d.getDate())+pad(d.getMonth()+1)+String(d.getFullYear()).slice(-2)+pad(d.getHours())+pad(d.getMinutes());
+ const refEl=document.getElementById('recipeSlipOrderRef');
+ if(refEl) refEl.textContent='#'+ref;
+
+ const body=document.getElementById('recipeSlipBody');
+ if(!body) return;
+
+ let html='';
+ let slipIdx=0;
+ order.items.forEach((item,n)=>{
+  const menu=DB.menus.find(x=>x.id===item.menuId);
+  const recipe=menu&&menu.recipeId ? DB.recipes.find(r=>r.id===menu.recipeId) : null;
+  const ings=recipe ? (recipe.ingredients||recipe.ings||[]) : [];
+
+  // สีพื้นหัว card ตามสีเมนู
+  const hdrColor=menu&&menu.color ? menu.color : 'var(--esp)';
+
+  // option tags
+  const optTags=[];
+  if(item.size) optTags.push(`<span class="recipe-slip-opt-tag">${item.size}</span>`);
+  if(item.ice)  optTags.push(`<span class="recipe-slip-opt-tag">${item.ice}</span>`);
+  if(item.sweet && item.sweet!=='50%') optTags.push(`<span class="recipe-slip-opt-tag sweet">หวาน ${item.sweet}</span>`);
+  if(item.strength && item.strength!=='50%') optTags.push(`<span class="recipe-slip-opt-tag strength">เข้ม ${item.strength}</span>`);
+  if(item.note) optTags.push(`<span class="recipe-slip-opt-tag note">${item.note}</span>`);
+
+  // ingredient rows — ปริมาณคูณด้วย qty ของ item
+  let ingsHtml='';
+  if(ings.length){
+   ingsHtml='<div class="recipe-slip-ings">';
+   ings.forEach(row=>{
+    const ing=DB.ingredients.find(x=>x.id===row.ingId);
+    const bld=row.ingId&&row.ingId.startsWith('blend_') ? DB.blends.find(x=>x.id===row.ingId) : null;
+    const ingName=ing ? ing.name : (bld ? bld.name+'(เบลนด์)' : (row.ingId||'?'));
+    const ingUnit=ing ? (ing.unit||'') : '';
+    const totalQty=((row.qty||0)*item.qty);
+    const qtyDisplay=Number.isInteger(totalQty)?totalQty:totalQty.toFixed(1);
+    ingsHtml+=`<div class="recipe-slip-ing-row">
+     <div class="recipe-slip-ing-dot"></div>
+     <div class="recipe-slip-ing-name">${ingName}</div>
+     <div class="recipe-slip-ing-qty">${qtyDisplay} ${ingUnit}</div>
+    </div>`;
+   });
+   ingsHtml+='</div>';
+  } else {
+   ingsHtml=`<div class="recipe-slip-no-recipe">ไม่มีสูตรบันทึกไว้ — ทำตามมาตรฐานร้าน</div>`;
+  }
+
+  slipIdx++;
+  html+=`<div class="recipe-slip-card">
+   <div class="recipe-slip-header" style="background:${hdrColor}">
+    <div class="recipe-slip-num">${slipIdx}</div>
+    <div class="recipe-slip-menu-name">${item.name}</div>
+    <div class="recipe-slip-qty">×${item.qty}</div>
+   </div>
+   ${optTags.length?`<div class="recipe-slip-opts">${optTags.join('')}</div>`:''}
+   ${ingsHtml}
+  </div>`;
+ });
+
+ body.innerHTML=html||'<div style="padding:32px;text-align:center;color:var(--t4);font-size:13px">ไม่มีข้อมูลสูตรสำหรับออเดอร์นี้</div>';
+ document.getElementById('recipeSlipPage').classList.add('open');
+}
+
+function closeRecipeSlip(){
+ document.getElementById('recipeSlipPage').classList.remove('open');
+}
+
+function closeRecipeSlipAndNew(){
+ closeRecipeSlip();
  closeReceiptPage();
  closeOrderPanel();
  goPage('order');
@@ -3093,8 +3232,18 @@ function switchMenuTab(tab){
 
 
 // ─── normalize blend: ถ้า ings เป็น null ให้ fallback จาก method ───
+// ── คำนวณราคาต่อหน่วยวัตถุดิบ (ไม่เปลี่ยนตาม stock คงเหลือ) ──
+function getIngUnitCost(ing){
+ if(!ing) return 0;
+ // ใช้ unitCost ที่คำนวณตอน save (ราคาซื้อ/จำนวนทั้งหมด)
+ if(ing.unitCost) return ing.unitCost;
+ // fallback: cost/qty (ใช้ได้ถ้ายังไม่ถูกหักสต็อก)
+ if(ing.cost && ing.qty) return ing.cost / ing.qty;
+ return ing.cost || 0;
+}
+
 function getBlendIngs(b){
- const raw = b.ings || b.method || [];
+ const raw = b.ings || b.ingredients || [];
  if(!Array.isArray(raw)) return [];
  return raw;
 }
@@ -3107,33 +3256,37 @@ function getBlendCost(b){
  return getBlendIngs(b).reduce((sum,ig)=>{
   const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ig.ingId);
   if(!ing) return sum;
-  return sum + (ing.cost&&ing.qty ? (ing.cost/ing.qty)*ig.qty : (ing.cost||0)*ig.qty);
+  return sum + getIngUnitCost(ing)*ig.qty;
  },0);
 }
 function renderMenuRecipeRows(){
  // รวม ingredients + blends เป็นตัวเลือกเดียวกัน
  const allItems = [
-  ...DB.ingredients.map(i=>({id:'ing_'+i.id, label:i.name+' (฿'+(i.cost||0).toLocaleString()+'/'+i.unit+')', type:'ing', ref:i})),
+  ...DB.ingredients.map(i=>({id:'ing_'+i.id, label:i.name+' (฿'+getIngUnitCost(i).toFixed(2)+'/'+i.unit+')', type:'ing', ref:i, unit:i.unit})),
   ...(DB.blends||[]).map(b=>{
    const stock=(b.stock||[]).reduce((s,x)=>s+x.qty,0);
-   // คำนวณ cost จริงจากวัตถุดิบ ถ้า totalCostPerBatch = 0
    const realCost = getBlendCost(b);
    const realYield = getBlendYield(b);
    const costPerUnit = realYield>0 ? realCost/realYield : 0;
-   return {id:'blend_'+b.id, label:'[เบลนด์] '+b.name+' (฿'+costPerUnit.toFixed(2)+'/'+b.unit+') คงเหลือ '+stock+b.unit, type:'blend', ref:b, costPerUnit};
+   return {id:'blend_'+b.id, label:'[เบลนด์] '+b.name+' (฿'+costPerUnit.toFixed(2)+'/'+b.unit+') คงเหลือ '+stock+b.unit, type:'blend', ref:b, costPerUnit, unit:b.unit};
   })
  ];
  const html = menuRecipeIngredients.map((row,i)=>{
   const opts = allItems.map(item=>`<option value="${item.id}" ${item.id===row.itemKey?'selected':''}>${item.label}</option>`).join('');
+  const selItem = allItems.find(x=>x.id===row.itemKey);
+  const unitLabel = selItem ? selItem.unit : '';
   return `<div style="display:flex;gap:6px;align-items:flex-end;margin-bottom:8px">
    <div style="flex:2">${i===0?'<div style="font-size:9px;color:var(--t4);font-weight:700;margin-bottom:3px">วัตถุดิบ / เบลนด์</div>':''}
-    <select class="f-select" style="font-size:12px" onchange="menuRecipeIngredients[${i}].itemKey=this.value;recalcMenuCost()">
+    <select class="f-select" style="font-size:12px" onchange="menuRecipeIngredients[${i}].itemKey=this.value;renderMenuRecipeRows();recalcMenuCost()">
      <option value="">-- เลือก --</option>${opts}
     </select>
    </div>
-   <div style="width:72px">${i===0?'<div style="font-size:9px;color:var(--t4);font-weight:700;margin-bottom:3px">ปริมาณ</div>':''}
-    <input class="f-input" type="number" value="${row.qty||''}" placeholder="0" style="font-size:12px;padding:8px 10px"
-     oninput="menuRecipeIngredients[${i}].qty=parseFloat(this.value)||0;recalcMenuCost()">
+   <div style="width:90px">${i===0?'<div style="font-size:9px;color:var(--t4);font-weight:700;margin-bottom:3px">ปริมาณ</div>':''}
+    <div style="position:relative">
+     <input class="f-input" type="number" value="${row.qty||''}" placeholder="0" style="font-size:12px;padding:8px ${unitLabel?'40px':'10px'} 8px 10px"
+      oninput="menuRecipeIngredients[${i}].qty=parseFloat(this.value)||0;recalcMenuCost()">
+     ${unitLabel?`<span style="position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--t4);font-weight:600;pointer-events:none">${unitLabel}</span>`:''}
+    </div>
    </div>
    <div style="width:32px;padding-bottom:2px">
     <button onclick="menuRecipeIngredients.splice(${i},1);renderMenuRecipeRows();recalcMenuCost()"
@@ -3181,8 +3334,7 @@ function getRecipeBaseCost(recipe){
    const ingId = parseInt(key.replace('ing_','')) || row.ingId;
    const ing = DB.ingredients.find(x=>x.id===ingId);
    if(!ing) return;
-   if(ing.cost && ing.qty) cost += (ing.cost / ing.qty) * row.qty;
-   else cost += (ing.cost||0) * row.qty;
+   cost += getIngUnitCost(ing) * row.qty;
   }
  });
  return Math.round(cost * 10) / 10;
@@ -3220,7 +3372,7 @@ function calcDynamicCost(menuId, size, sweet, strength){
    const ingId = parseInt(key.replace('ing_','')) || row.ingId;
    const ing = DB.ingredients.find(x=>x.id===ingId);
    if(!ing) return;
-   unitCost = ing.cost && ing.qty ? ing.cost/ing.qty : (ing.cost||0);
+   unitCost = getIngUnitCost(ing);
   }
 
   let qty = row.qty * sizeMul;
@@ -3300,7 +3452,7 @@ function recalcMenuCost(){
    const ingId = parseInt(key.replace('ing_','')) || row.ingId;
    const ing = DB.ingredients.find(x=>x.id===ingId);
    if(!ing) return;
-   cost += (ing.cost / ing.qty) * row.qty;
+   cost += getIngUnitCost(ing) * row.qty;
   }
  });
  cost = Math.round(cost * 10) / 10;
@@ -3594,12 +3746,6 @@ function _filterOrdersRange(since,until){
   return t>=since&&t<until;
  });
 }
-
-// keep old _filterOrders compatible for sub-renders
-function _filterOrders(days){
- const r=_getReportRange(days,reportDateOffset);
- return _filterOrdersRange(r.since,r.until);
-}
 // ══════════════════════════════════════════════════════════════════════════
 // REPORT ENGINE — v2
 // ══════════════════════════════════════════════════════════════════════════
@@ -3877,7 +4023,7 @@ function renderTopProducts(orders){
 }
 
 // ── สรุปการชำระเงิน (placeholder — เพิ่ม payment type ได้ทีหลัง) ────────
-function renderPaymentSummary(){}
+function renderPaymentSummary(){ /* removed — no-op */ }
 
 // ── ยอดขายรายชั่วโมง ─────────────────────────────────────────────────────
 function renderHourlySales(orders){
@@ -4431,7 +4577,7 @@ function logStaffDrink(){
  const type=document.getElementById('staffType').value;
  const note=document.getElementById('staffNote').value;
  if(!m)return;
- DB.staffLogs.push({id:'tmp-'+Date.now(),menuId,menuName:m.name,staff:name,empId:currentEmp?.id||'',type,qty,ts:Date.now(),note});
+ DB.staffLogs.push({id:'sl-'+(DB.nextId++),menuId,menuName:m.name,staff:name,empId:currentEmp?.id||'',type,qty,ts:Date.now(),note});
  AUD.welfare(m.name, qty, '—', name, type);
  closeModal('modal-staff');
  toast(`บันทึก ${m.name} x${qty} (${name})`);
@@ -5244,8 +5390,8 @@ function calcRecipeCostPerCup(rec){
  rows.forEach(row=>{
  if(!row.ingId||!row.qty)return;
  const ing=DB.ingredients.find(x=>x.id===row.ingId);
- if(!ing||!ing.qty)return;
- cost+=(ing.cost/ing.qty)*row.qty;
+ if(!ing)return;
+ cost+=getIngUnitCost(ing)*row.qty;
  });
  return Math.round(cost*10)/10;
 }
@@ -5310,7 +5456,9 @@ function saveStoreItem(){
  note:document.getElementById('storeItemNote').value
  };
  if(!data.name){toast('กรุณาใส่ชื่อ');return;}
- if(id){const item=arr.find(x=>x.id===id);Object.assign(item,data);toast('อัพเดตแล้ว');}
+ // คำนวณ unitCost ตอนบันทึก (ราคาต่อ 1 หน่วย ไม่เปลี่ยนตาม stock)
+ if(data.qty>0 && data.cost>0) data.unitCost = Math.round((data.cost/data.qty)*10000)/10000;
+ if(id){const item=arr.find(x=>x.id===id); if(!item.unitCost && data.qty>0 && data.cost>0) data.unitCost=Math.round((data.cost/data.qty)*10000)/10000; Object.assign(item,data);toast('อัพเดตแล้ว');}
  else{arr.push({...data,id:DB.nextId++});toast('เพิ่มรายการแล้ว');}
  closeModal('modal-store-item');
  // อัปเดต cost ของเมนูที่ใช้วัตถุดิบนี้
@@ -5399,7 +5547,7 @@ function openBlendModal(id){
  document.getElementById('blendModalTitle').textContent=id?'แก้ไขสูตรเบลนด์':'สร้างสูตรเบลนด์';
  document.getElementById('blendEditId').value=id||'';
  if(id){
-  const b=DB.blends.find(x=>x.id===id);if(!b)return;
+  const b=DB.blends.find(x=>String(x.id)===String(id));if(!b)return;
   document.getElementById('blendName').value=b.name||'';
   document.getElementById('blendType').value=b.type||'syrup';
   document.getElementById('blendUnit').value=b.unit||'';
@@ -5428,8 +5576,7 @@ function calcBlendCost(){
    totalQty+=qty;
    if(!ingId||!qty) return;
    const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===ingId);
-   if(ing&&ing.cost&&ing.qty) totalCost+=(ing.cost/ing.qty)*qty;
-   else if(ing&&ing.cost) totalCost+=ing.cost*qty;
+   if(ing) totalCost+=getIngUnitCost(ing)*qty;
  });
  costEl.value=totalCost>0?Math.round(totalCost*100)/100:'';
  // yield = ผลรวม qty วัตถุดิบทั้งหมด (คำนวณอัตโนมัติ)
@@ -5480,11 +5627,13 @@ function removeBlendIngRow(idx){
  blendIngArr.forEach((_,i)=>renderBlendIngRow(i));
 }
 function saveBlendFormula(){
- const id=parseInt(document.getElementById('blendEditId').value)||null;
- // อ่านวัตถุดิบจาก DOM โดยตรง (ไม่พึ่ง blendIngArr index ที่อาจ out-of-sync)
+ const rawId=document.getElementById('blendEditId').value;
+ const id=rawId||null;
+ // อ่านวัตถุดิบจาก DOM โดยตรง
  const ings=[];
  document.querySelectorAll('#blendIngList .blend-ing-row').forEach(row=>{
-  const ingId=parseInt(row.querySelector('.bing-ing-sel')?.value);
+  const ingIdRaw=row.querySelector('.bing-ing-sel')?.value;
+  const ingId=ingIdRaw?parseInt(ingIdRaw):null;
   const qty=parseFloat(row.querySelector('.bing-qty-inp')?.value)||0;
   if(ingId&&qty) ings.push({ingId,qty,note:''});
  });
@@ -5502,10 +5651,10 @@ function saveBlendFormula(){
   totalCostPerBatch:parseFloat(document.getElementById('blendCost').value)||0,
  };
  if(id){
-  const b=DB.blends.find(x=>x.id===id);
+  const b=DB.blends.find(x=>String(x.id)===String(id));
   if(b){Object.assign(b,data);toast('อัปเดตสูตรแล้ว');}
  } else {
-  DB.blends.push({...data,id:'tmp-'+Date.now(),stock:[]});
+  DB.blends.push({...data,id:DB.nextId++,stock:[]});
   toast('✅ สร้างสูตรเบลนด์แล้ว');
  }
  closeModal('modal-blend');renderStores('blend');scheduleSync();
@@ -5537,7 +5686,7 @@ function renderBlendTab(){
    return`<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t2);padding:3px 0;border-bottom:1px dashed rgba(176,154,133,.15)"><span>${ing.name}</span><span style="font-weight:700">${ig.qty} ${ing.unit}</span></div>`;
   }).join('');
   html+=`<div class="blend-card" style="margin-bottom:12px">
-   <div class="bc-head" onclick="toggleBlendDetail(${b.id})" style="cursor:pointer">
+   <div class="bc-head" onclick="toggleBlendDetail('${b.id}')" style="cursor:pointer">
     <div class="bc-type-icon" style="font-size:20px;background:var(--bg-lt)">${tEmoji}</div>
     <div class="bc-info">
      <div class="bc-name">${b.name}</div>
@@ -5554,13 +5703,13 @@ function renderBlendTab(){
    <div id="blend-detail-${b.id}" style="display:none;padding:10px 14px;border-top:1px solid rgba(176,154,133,.12)">
     <div style="font-size:10px;font-weight:700;color:var(--t4);margin-bottom:6px"><span class="mi" style="font-size:13px;vertical-align:-2px">inventory_2</span> วัตถุดิบต่อ 1 Batch</div>
     ${ingDetail}
-    ${b.method?`<div style="margin-top:8px;font-size:10px;color:var(--t3);background:var(--bg-dk);border-radius:var(--r2);padding:8px;line-height:1.7"><span class="mi" style="font-size:13px;vertical-align:-2px">description</span> ${b.method}</div>`:''}
+    ${b.method&&!Array.isArray(b.method)?`<div style="margin-top:8px;font-size:10px;color:var(--t3);background:var(--bg-dk);border-radius:var(--r2);padding:8px;line-height:1.7"><span class="mi" style="font-size:13px;vertical-align:-2px">description</span> ${b.method}</div>`:''}
    </div>
    <div class="bc-foot" style="justify-content:flex-end">
     <div class="bc-actions">
-     <button class="btn btn-success btn-xs" onclick="event.stopPropagation();openBatchModal(${b.id})"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">science</span> ผลิต</button>
-     <button class="btn btn-secondary btn-xs" onclick="event.stopPropagation();openBlendModal(${b.id})"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">edit</span> แก้ไข</button>
-     <button class="btn btn-xs" style="background:var(--red-lt);color:var(--red)" onclick="event.stopPropagation();delBlend(${b.id})"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">delete</span></button>
+     <button class="btn btn-success btn-xs" onclick="event.stopPropagation();openBatchModal('${b.id}')"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">science</span> ผลิต</button>
+     <button class="btn btn-secondary btn-xs" onclick="event.stopPropagation();openBlendModal('${b.id}')"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">edit</span> แก้ไข</button>
+     <button class="btn btn-xs" style="background:var(--red-lt);color:var(--red)" onclick="event.stopPropagation();delBlend('${b.id}')"><span class="material-symbols-outlined" style="font-size:13px;vertical-align:-2px">delete</span></button>
     </div>
    </div>
   </div>`;
@@ -5578,37 +5727,80 @@ function toggleBlendDetail(id){
 }
 function delBlend(id){
  if(!confirm('ลบสูตรนี้?'))return;
- DB.blends=DB.blends.filter(x=>x.id!==id);
+ DB.blends=DB.blends.filter(x=>String(x.id)!==String(id));
  renderStores('blend');scheduleSync();toast('ลบสูตรแล้ว');
 }
 function openBatchModal(blendId){
- document.getElementById('batchBlendId').value=blendId;
+ const bid=String(blendId);
+ document.getElementById('batchBlendId').value=bid;
  document.getElementById('batchMultiplier').value='1';
- const b=DB.blends.find(x=>x.id===blendId);
+ const b=DB.blends.find(x=>String(x.id)===bid);
+ if(!b){toast('ไม่พบสูตรเบลนด์');return;}
  document.getElementById('batchModalTitle').textContent='ผลิต: '+b.name;
  updateBatchPreview();
  openModal('modal-batch');
 }
 function updateBatchPreview(){
- const blendId=parseInt(document.getElementById('batchBlendId').value);
- const b=DB.blends.find(x=>x.id===blendId);if(!b)return;
+ const bid=String(document.getElementById('batchBlendId').value);
+ const b=DB.blends.find(x=>String(x.id)===bid);if(!b)return;
  const mult=parseFloat(document.getElementById('batchMultiplier').value)||1;
- const expDate=new Date();expDate.setDate(expDate.getDate()+b.shelfDays);
- const canMake=getBlendIngs(b).map(ig=>{const ing=DB.ingredients.find(x=>x.id===ig.ingId);if(!ing)return{name:'?',ok:false,need:ig.qty*mult,have:0,unit:''};const need=ig.qty*mult;return{name:ing.name,ok:ing.qty>=need,need,have:ing.qty,unit:ing.unit};});
+ const expDate=new Date();expDate.setDate(expDate.getDate()+(b.shelfDays||14));
+ const ings=getBlendIngs(b);
+ if(!ings.length){
+  document.getElementById('batchPreview').innerHTML=`<div style="background:rgba(184,134,11,.1);border-radius:var(--r3);padding:12px;margin-top:10px;font-size:12px;color:var(--gold)">⚠️ สูตรนี้ยังไม่มีวัตถุดิบ — แก้ไขสูตรก่อนผลิต</div>`;
+  return;
+ }
+ const canMake=ings.map(ig=>{
+  const ing=[...DB.ingredients,...DB.packages].find(x=>String(x.id)===String(ig.ingId));
+  if(!ing) return{name:'ไม่พบ: '+ig.ingId,ok:false,need:ig.qty*mult,have:0,unit:''};
+  const need=ig.qty*mult;
+  return{name:ing.name,ok:ing.qty>=need,need,have:ing.qty,unit:ing.unit};
+ });
+ const yieldAmt=(b.yieldPerBatch||0)*mult;
+ const costAmt=Math.round((b.totalCostPerBatch||getBlendCost(b))*mult*100)/100;
+ const allOk=canMake.every(r=>r.ok);
  document.getElementById('batchPreview').innerHTML=`
- <div style="background:var(--bg);border-radius:var(--r3);padding:12px;box-shadow:var(--neu-in-sm);margin-top:10px"> <div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px">ตรวจสอบวัตถุดิบ x${mult} batch</div> ${canMake.map(r=>`<div class="batch-ing-row"><span>${r.name}</span><span class="${r.ok?'ok':'no'}">${r.ok?'พอ':'ขาด'} (ต้องการ ${r.need} ${r.unit})</span></div>`).join('')}
- <div style="margin-top:8px;font-size:11px;color:var(--t3)">จะได้ <strong>${b.yieldPerBatch*mult} ${b.unit}</strong> · หมดอายุ ${expDate.toLocaleDateString('th-TH')} · ต้นทุน ฿${b.totalCostPerBatch*mult}</div> </div>`;
+ <div style="background:var(--bg);border-radius:var(--r3);padding:12px;box-shadow:var(--neu-in-sm);margin-top:10px">
+  <div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px">ตรวจสอบวัตถุดิบ ×${mult} batch</div>
+  ${canMake.map(r=>`<div class="batch-ing-row">
+   <span>${r.name}</span>
+   <span class="${r.ok?'ok':'no'}">${r.ok?'✓ พอ':'✗ ขาด'} (ต้องการ ${r.need} ${r.unit}, มี ${r.have})</span>
+  </div>`).join('')}
+  <div style="margin-top:10px;padding-top:8px;border-top:1px dashed rgba(140,123,107,.2);font-size:11px;color:var(--t3)">
+   จะได้ <strong style="color:var(--green)">${yieldAmt} ${b.unit}</strong> ·
+   หมดอายุ <strong>${expDate.toLocaleDateString('th-TH')}</strong> ·
+   ต้นทุน <strong style="color:var(--cara)">฿${costAmt}</strong>
+  </div>
+  ${!allOk?`<div style="margin-top:8px;font-size:11px;color:var(--red);font-weight:600">⚠️ วัตถุดิบบางรายการไม่พอ — ตรวจสอบคลังก่อนผลิต</div>`:''}
+ </div>`;
 }
 function confirmBatch(){
- const blendId=parseInt(document.getElementById('batchBlendId').value);
- const b=DB.blends.find(x=>x.id===blendId);if(!b)return;
+ const bid=String(document.getElementById('batchBlendId').value);
+ const b=DB.blends.find(x=>String(x.id)===bid);if(!b)return;
  const mult=parseFloat(document.getElementById('batchMultiplier').value)||1;
- getBlendIngs(b).forEach(ig=>{const ing=DB.ingredients.find(x=>x.id===ig.ingId);if(ing)ing.qty=Math.max(0,ing.qty-ig.qty*mult);});
- const expDate=new Date();expDate.setDate(expDate.getDate()+b.shelfDays);
+ const ings=getBlendIngs(b);
+ // ตรวจสอบก่อนผลิต
+ const missing=ings.filter(ig=>{
+  const ing=[...DB.ingredients,...DB.packages].find(x=>String(x.id)===String(ig.ingId));
+  return !ing || ing.qty < ig.qty*mult;
+ });
+ if(missing.length){
+  toast('วัตถุดิบไม่พอ กรุณาตรวจสอบคลังก่อนผลิต');return;
+ }
+ // หักวัตถุดิบ
+ ings.forEach(ig=>{
+  const ing=[...DB.ingredients,...DB.packages].find(x=>String(x.id)===String(ig.ingId));
+  if(ing) ing.qty=Math.max(0, Math.round((ing.qty - ig.qty*mult)*1000)/1000);
+ });
+ const expDate=new Date();expDate.setDate(expDate.getDate()+(b.shelfDays||14));
  const batchId=DB.nextId++;
- b.stock.push({batchId,qty:b.yieldPerBatch*mult,produced:new Date().toISOString().split('T')[0],expiry:expDate.toISOString().split('T')[0],cost:b.totalCostPerBatch*mult});
- DB.blendBatches.push({id:batchId,blendId,multiplier:mult,qty:b.yieldPerBatch*mult,produced:new Date().toISOString().split('T')[0],expiry:expDate.toISOString().split('T')[0],totalCost:b.totalCostPerBatch*mult,ts:Date.now()});
- closeModal('modal-batch');renderStores('blend');toast(`ผลิต ${b.name} x${mult} batch สำเร็จ`);scheduleSync();
+ const yieldAmt=(b.yieldPerBatch||0)*mult;
+ const costAmt=Math.round((b.totalCostPerBatch||getBlendCost(b))*mult*100)/100;
+ if(!b.stock) b.stock=[];
+ b.stock.push({batchId,qty:yieldAmt,produced:new Date().toISOString().split('T')[0],expiry:expDate.toISOString().split('T')[0],cost:costAmt});
+ DB.blendBatches.push({id:batchId,blendId:b.id,multiplier:mult,qty:yieldAmt,produced:new Date().toISOString().split('T')[0],expiry:expDate.toISOString().split('T')[0],totalCost:costAmt,ts:Date.now()});
+ addAudit('store','ผลิตเบลนด์','ผลิต '+b.name+' x'+mult+' batch → ได้ '+yieldAmt+' '+b.unit,'','rgba(43,94,167,.08)','low');
+ closeModal('modal-batch');renderStores('blend');toast('✅ ผลิต '+b.name+' x'+mult+' batch สำเร็จ → ได้ '+yieldAmt+' '+b.unit);scheduleSync();
 }
 
 /* PO TAB */
@@ -5763,7 +5955,7 @@ function renderSalesToday(){
  var noteParts=(i.note||'').split(' · ');
  var customTags=Object.values(customLabels).filter(function(v){return noteParts.includes(v);});
  var otherNote=noteParts.filter(function(p){return !Object.values(customLabels).includes(p);}).join(' · ');
- var opts=[i.ice,i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'',otherNote].filter(Boolean).join(' · ');
+ var opts=[i.ice,i.sweet&&i.sweet!=='50%'?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'&&i.strength!=='ปกติ'?'เข้ม '+i.strength:'',otherNote].filter(Boolean).join(' · ');
  var html='<div style="display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid rgba(176,154,133,.08)">';
  html+='<span style="width:17px;height:17px;border-radius:50%;background:var(--bg-dk);font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;color:var(--t3)">'+(n+1)+'</span>';
  html+='<div style="flex:1;min-width:0">';
@@ -7059,6 +7251,13 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  migrateSizes();
  // migrate recipe field: ings → ingredients
  if(DB.recipes) DB.recipes.forEach(r=>{ if(r.ings&&!r.ingredients){ r.ingredients=r.ings; delete r.ings; } });
+ // migrate blend IDs: 'tmp-...' → numeric nextId (fixes NaN in batch modal)
+ if(DB.blends) DB.blends.forEach(b=>{
+  if(typeof b.id==='string' && b.id.startsWith('tmp-')){
+   b.id = DB.nextId++;
+   if(!b.stock) b.stock=[];
+  }
+ });
  if(hasCache){ showSyncStatus('Cache'); }
 
  // 2. โหลดจาก Sheets (รวม employees) — รอให้เสร็จก่อนแสดง login
