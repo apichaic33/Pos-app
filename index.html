@@ -1925,6 +1925,17 @@ function addFromModal(){
  isWelfare:true
  };
  DB.staffLogs.push(logEntry);
+ // หักสต็อกวัตถุดิบตาม recipe (เหมือน confirmOrder)
+ if(pdItem.recipeId){
+  const rec=DB.recipes.find(x=>x.id===pdItem.recipeId);
+  if(rec&&(rec.ingredients||rec.ings)){
+   (rec.ingredients||rec.ings).forEach(row=>{
+    if(!row.ingId||!row.qty)return;
+    const ing=DB.ingredients.find(x=>x.id===row.ingId);
+    if(ing) ing.qty=Math.max(0,Math.round((ing.qty-row.qty*pdQtyVal)*1000)/1000);
+   });
+  }
+ }
  AUD.welfare(pdItem.name, pdQtyVal, emp.id, emp.name, staffType);
  closeModal('modal-product');
  toast(`บันทึกสวัสดิการ ${emp.name}: ${pdItem.name} x${pdQtyVal}`);
@@ -3605,6 +3616,7 @@ function saveMenu(){
  DB.menus.push(menuObj);
  toast('เพิ่มเมนูใหม่แล้ว');
  }
+ addAudit('menu', id?'แก้ไขเมนู':'เพิ่มเมนู', data.name+' ฿'+data.price, '', 'rgba(44,24,16,.06)', 'low');
  closeModal('modal-add-menu');renderManage(mgCat);
  document.getElementById('menuModalTitle').textContent='เพิ่มเมนูใหม่';
  document.getElementById('menuEditId').value='';
@@ -3717,6 +3729,7 @@ function savePromo(){
  if(!data.name){toast('กรุณาใส่ชื่อโปรโมชั่น');return;}
  if(id){const p=DB.promos.find(x=>x.id===id);Object.assign(p,data);toast('อัพเดตแล้ว');}
  else{DB.promos.push({...data,id:DB.nextId++,active:false,used:0,discount:0});toast('สร้างโปรโมชั่นแล้ว');}
+ addAudit('promo', id?'แก้ไขโปรโมชั่น':'สร้างโปรโมชั่น', data.name, '', 'rgba(184,134,11,.08)', 'low');
  closeModal('modal-add-promo');renderPromos(promoFilterTab);
  document.getElementById('promoModalTitle').textContent='สร้างโปรโมชั่น';
  document.getElementById('promoEditId').value='';
@@ -4593,10 +4606,22 @@ function logStaffDrink(){
  const note=document.getElementById('staffNote').value;
  if(!m)return;
  DB.staffLogs.push({id:'sl-'+(DB.nextId++),menuId,menuName:m.name,staff:name,empId:currentEmp?.id||'',type,qty,ts:Date.now(),note});
+ // หักสต็อกวัตถุดิบตาม recipe (เหมือน confirmOrder)
+ if(m.recipeId){
+  const rec=DB.recipes.find(x=>x.id===m.recipeId);
+  if(rec&&(rec.ingredients||rec.ings)){
+   (rec.ingredients||rec.ings).forEach(row=>{
+    if(!row.ingId||!row.qty)return;
+    const ing=DB.ingredients.find(x=>x.id===row.ingId);
+    if(ing) ing.qty=Math.max(0,Math.round((ing.qty-row.qty*qty)*1000)/1000);
+   });
+  }
+ }
  AUD.welfare(m.name, qty, '—', name, type);
  closeModal('modal-staff');
  toast(`บันทึก ${m.name} x${qty} (${name})`);
  document.getElementById('empName').value='';document.getElementById('staffQty').value='1';document.getElementById('staffNote').value='';
+ updateSalesBadge();
  scheduleSync();
 }
 
@@ -5224,12 +5249,28 @@ async function submitVoidRequest(orderId){
   order.status='voided';order.voidReason=reason.trim();
   order.voidType=(document.getElementById('voidTypeSelect')||{}).value||'customer';
   order.voidTs=Date.now();order.voidApprovedBy=mgr.name+' ('+mgr.id+')';
+  // คืน sold count + คืน stock วัตถุดิบ
+  order.items.forEach(i=>{
+   const m=DB.menus.find(x=>x.id===i.menuId);
+   if(m) m.sold=Math.max(0,m.sold-i.qty);
+   if(m&&m.recipeId){
+    const rec=DB.recipes.find(x=>x.id===m.recipeId);
+    if(rec&&(rec.ingredients||rec.ings)){
+     (rec.ingredients||rec.ings).forEach(row=>{
+      if(!row.ingId||!row.qty)return;
+      const ing=DB.ingredients.find(x=>x.id===row.ingId);
+      if(ing) ing.qty=Math.round((ing.qty+row.qty*i.qty)*1000)/1000;
+     });
+    }
+   }
+  });
  }
  AUD.voidReq(orderId,reason.trim());
  _voidPin='';
  document.getElementById('modal-void-reason').remove();
  toast('ยกเลิกออเดอร์แล้ว');
  renderBillManagement(billFilter);
+ updateSalesBadge();
  if(currentPage==='sales') renderSalesToday();
  scheduleSync();
 }
@@ -5251,7 +5292,21 @@ function approveVoid(voidId){
  order.voidType = voidReq.voidType || 'customer';
  order.voidTs = Date.now();
  order.voidApprovedBy = `${approver.name} (${approver.id})`;
- order.items.forEach(i=>{const m=DB.menus.find(x=>x.id===i.menuId);if(m)m.sold=Math.max(0,m.sold-i.qty);});
+ order.items.forEach(i=>{
+  const m=DB.menus.find(x=>x.id===i.menuId);
+  if(m) m.sold=Math.max(0,m.sold-i.qty);
+  // คืน stock วัตถุดิบที่ถูกหักตอนสั่ง
+  if(m&&m.recipeId){
+   const rec=DB.recipes.find(x=>x.id===m.recipeId);
+   if(rec&&(rec.ingredients||rec.ings)){
+    (rec.ingredients||rec.ings).forEach(row=>{
+     if(!row.ingId||!row.qty)return;
+     const ing=DB.ingredients.find(x=>x.id===row.ingId);
+     if(ing) ing.qty=Math.round((ing.qty+row.qty*i.qty)*1000)/1000;
+    });
+   }
+  }
+ });
  AUD.voidApprove(order.id, approver);
  toast(`ยกเลิกบิล #${order.id} · อนุมัติโดย ${approver.name}`);
  }
@@ -5497,10 +5552,9 @@ function saveStoreItem(){
  }
  });
  }
+ addAudit('store', id?'แก้ไขคลัง':'เพิ่มคลัง', `${data.name} · ${data.qty}${data.unit}`, '', 'rgba(44,24,16,.06)', 'low');
  renderStores(type);scheduleSync();
 }
-
-/* Recipe Modal */
 let recipeIngs=[];
 function openRecipeModal(){recipeIngs=[];document.getElementById('recipeName').value='';document.getElementById('recipeCups').value='1';document.getElementById('recipeIngList').innerHTML='';document.getElementById('recipeResult').style.display='none';openModal('modal-recipe');}
 function addRecipeIng(){
@@ -5559,7 +5613,8 @@ function saveUseLog(){
  const note=document.getElementById('useLogNote').value;
  ing.qty=Math.max(0,ing.qty-qty);
  DB.useLogs.push({id:DB.nextId++,ingId,itemName:ing.name,unit:ing.unit,qty,reason,note,ts:Date.now()});
- closeModal('modal-use-log');renderStores('uselog');toast(`บันทึก ${ing.name} -${qty}${ing.unit}`);scheduleSync();
+ addAudit('store','บันทึกใช้วัตถุดิบ',`${ing.name} -${qty}${ing.unit} (${reason})`, '', 'rgba(217,79,68,.06)', 'low');
+ closeModal('modal-use-log');renderStores('uselog');updateSalesBadge();toast(`บันทึก ${ing.name} -${qty}${ing.unit}`);scheduleSync();
 }
 
 /* BLEND TAB */
@@ -5680,6 +5735,7 @@ function saveBlendFormula(){
   DB.blends.push({...data,id:DB.nextId++,stock:[]});
   toast('✅ สร้างสูตรเบลนด์แล้ว');
  }
+ addAudit('store', id?'แก้ไขสูตรเบลนด์':'สร้างสูตรเบลนด์', data.name, '', 'rgba(43,94,167,.06)', 'low');
  closeModal('modal-blend');renderStores('blend');scheduleSync();
 }
 function renderBlendTab(){
