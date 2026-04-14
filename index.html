@@ -2276,6 +2276,8 @@ function confirmOrder(){
  const total=Math.max(0,subTotal-discount);
  const order={
  id:'ORD-TMP-'+Date.now(),
+ empId: currentOperator ? String(currentOperator.id) : '',
+ empName: currentOperator ? currentOperator.name : '',
  items:orderItems.map(i=>({
   menuId:i.menuId,name:i.name,size:i.size,qty:i.qty,price:i.price,
   sweet:i.sweet,ice:i.ice,strength:i.strength||'50%',note:i.note,
@@ -2444,15 +2446,11 @@ function renderReceipt(order){
  </div>`;
  }).join('');
 
- // cashier info
- const op = lastOperator;
+ // ใบเสร็จปกติ — ไม่แสดงชื่อพนักงาน (แสดงเฉพาะสำเนา)
  const posId = DB.posId || 'POS-01';
- const cashierRows = op
- ? `<div class="receipt-row"><span style="font-size:11px;color:var(--t4)">รหัสพนักงาน</span><span style="font-size:11px">${op.id}</span></div> <div class="receipt-row"><span style="font-size:11px;color:var(--t4)">ชื่อพนักงาน</span><span style="font-size:11px">${op.name}</span></div>`
- : '';
 
  document.getElementById('receiptPaper').innerHTML=`
- <div class="receipt-shop"> <div class="receipt-shop-name">${DB.shopName}</div> <div class="receipt-shop-sub" style="font-size:13px;color:var(--t3);font-weight:600;margin-top:2px">${DB.shopSub}</div> </div> <hr class="receipt-divider"> <div class="receipt-row"><span style="font-size:11px;color:var(--t4)">เลขออเดอร์</span><span style="font-weight:700;font-size:11px;letter-spacing:.5px">${orderRef}</span></div> <div class="receipt-row"><span style="font-size:11px;color:var(--t4)">วันที่</span><span style="font-size:11px">${dateStr}</span></div> ${cashierRows}
+ <div class="receipt-shop"> <div class="receipt-shop-name">${DB.shopName}</div> <div class="receipt-shop-sub" style="font-size:13px;color:var(--t3);font-weight:600;margin-top:2px">${DB.shopSub}</div> </div> <hr class="receipt-divider"> <div class="receipt-row"><span style="font-size:11px;color:var(--t4)">เลขออเดอร์</span><span style="font-weight:700;font-size:11px;letter-spacing:.5px">${orderRef}</span></div> <div class="receipt-row"><span style="font-size:11px;color:var(--t4)">วันที่</span><span style="font-size:11px">${dateStr}</span></div>
  <div class="receipt-row"><span style="font-size:11px;color:var(--t4)">หมายเลข POS</span><span style="font-size:11px">${posId}</span></div> <hr class="receipt-divider"> ${itemRows}
  <hr class="receipt-divider"> <div class="receipt-row"><span>รวม</span><span>฿${order.subTotal.toLocaleString()}</span></div> ${order.discount>0?`<div class="receipt-row" style="color:var(--red)"><span>ส่วนลดโปรโมชั่น</span><span>-฿${order.discount.toLocaleString()}</span></div>`:''}
  <div class="receipt-row total"><span>รวมทั้งสิ้น</span><span>฿${order.total.toLocaleString()}</span></div> <div class="receipt-meta">ขอบคุณที่ใช้บริการ</div> `;
@@ -2803,8 +2801,6 @@ function buildReceiptHTML(){
   <hr style="border:none;border-top:1px dashed #bbb;margin:8px 0">
   <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">เลขออเดอร์</span><strong style="font-size:11px;letter-spacing:.5px">${orderRef}</strong></div>
   <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">วันที่</span><span style="font-size:11px">${dateStr}</span></div>
-  ${op?`<div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">รหัสพนักงาน</span><span style="font-size:11px">${op.id}</span></div>
-  <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">ชื่อพนักงาน</span><span style="font-size:11px">${op.name}</span></div>`:''}
   <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">หมายเลข POS</span><span style="font-size:11px">${posId}</span></div>
   <hr style="border:none;border-top:1px dashed #bbb;margin:8px 0">
   ${items}
@@ -2860,8 +2856,8 @@ function buildCopyReceiptHTML(order, emp){
    <hr style="border:none;border-top:1px dashed #bbb;margin:8px 0">
    <div style="display:flex;justify-content:space-between;gap:8px;padding:2px 0"><span style="color:#888;font-size:11px;flex-shrink:0">เลขออเดอร์</span><strong style="font-size:10px;text-align:right;word-break:break-all">${order.id}</strong></div>
    <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">วันที่</span><span style="font-size:11px">${dateStr}</span></div>
-   <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">อนุมัติโดย</span><span style="font-size:11px">${emp.id} ${emp.name}</span></div>
-   <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">ผู้ทำรายการ</span><span style="font-size:11px">${order.empId||''} ${order.empName||lastOperator&&lastOperator.name||''}</span></div>
+   <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">ผู้ขาย</span><span style="font-size:11px;font-weight:600">${order.empId||lastOperator?.id||'—'} ${order.empName||lastOperator?.name||''}</span></div>
+   <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">ผู้อนุมัติสำเนา</span><span style="font-size:11px;font-weight:600;color:#B83228">${emp.id} ${emp.name}</span></div>
    <div style="display:flex;justify-content:space-between;padding:2px 0"><span style="color:#888;font-size:11px">หมายเลข POS</span><span style="font-size:11px">${DB.posId||'POS-01'}</span></div>
    <hr style="border:none;border-top:1px dashed #bbb;margin:8px 0">
    ${itemHTML}
