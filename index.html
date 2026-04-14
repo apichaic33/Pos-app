@@ -5835,7 +5835,7 @@ function renderPOTab(){
  let html='';
  // suggestions
  if(lowItems.length){
- html+=`<div style="background:rgba(184,134,11,.08);border-radius:var(--r3);padding:10px 14px;margin:12px 16px 10px"> <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:8px"> แนะนำสั่งซื้อ (${lowItems.length} รายการใกล้หมด)</div> ${lowItems.map(i=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(184,134,11,.12)"> <span style="font-size:12px;color:var(--t2)">${i.name}</span> <div style="display:flex;align-items:center;gap:8px"> <span style="font-size:11px;color:var(--red)">${i.qty}/${i.min} ${i.unit}</span> <button onclick="quickCreatePO(${i.id},'${i.name}',${i.min*3},${i.cost},'${i.unit}')" style="font-size:10px;background:var(--gold-lt);color:var(--gold);border:none;border-radius:var(--rf);padding:3px 8px;font-weight:700;cursor:pointer">+ สั่ง</button> </div> </div>`).join('')}
+ html+=`<div style="background:rgba(184,134,11,.08);border-radius:var(--r3);padding:10px 14px;margin:12px 16px 10px"> <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:8px"> แนะนำสั่งซื้อ (${lowItems.length} รายการใกล้หมด)</div> ${lowItems.map(i=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(184,134,11,.12)"> <span style="font-size:12px;color:var(--t2)">${i.name}</span> <div style="display:flex;align-items:center;gap:8px"> <span style="font-size:11px;color:var(--red)">${i.qty}/${i.min} ${i.unit}</span> <button onclick="quickCreatePO(${i.id},'${i.name}',${i.min*3},${i.unitCost||i.cost||0},'${i.unit}')" style="font-size:10px;background:var(--gold-lt);color:var(--gold);border:none;border-radius:var(--rf);padding:3px 8px;font-weight:700;cursor:pointer">+ สั่ง</button> </div> </div>`).join('')}
  </div>`;
  }
  // existing POs
@@ -5852,25 +5852,36 @@ function renderPOTab(){
  return html;
 }
 function openManualPO(){
- // เปิด modal สั่งซื้อแบบเลือกรายการ
  const items=[...DB.ingredients,...DB.packages].filter(i=>i.status==='active');
  if(!items.length){toast('ยังไม่มีวัตถุดิบ/บรรจุภัณฑ์ในคลัง');return;}
- // สร้าง select options
- document.getElementById('poItemSel').innerHTML=items.map(i=>`<option value="${i.id}" data-unit="${i.unit}" data-cost="${i.cost}" data-name="${i.name}">${i.name} (${i.qty}${i.unit})</option>`).join('');
+ document.getElementById('poItemSel').innerHTML=items.map(i=>`<option value="${i.id}" data-unit="${i.unit}" data-cost="${i.unitCost||i.cost||0}" data-name="${i.name}">${i.name} (${i.qty}${i.unit})</option>`).join('');
  const first=items[0];
  document.getElementById('poQtyInput').value=Math.max(first.min*3,1)||1;
- document.getElementById('poUnitLabel').textContent=first.unit;
+ document.getElementById('poUnitLabel').value=first.unit;
+ document.getElementById('poPriceInput').value=first.unitCost||first.cost||'';
+ document.getElementById('poTotalPreview').value='';
  document.getElementById('poEditId').value='';
+ document.getElementById('poNote').value='';
+ updatePOPreview();
  openModal('modal-po');
 }
 function onPOItemChange(){
  const sel=document.getElementById('poItemSel');
  const opt=sel.options[sel.selectedIndex];
- document.getElementById('poUnitLabel').textContent=opt.dataset.unit||'หน่วย';
- // แนะนำปริมาณ
+ document.getElementById('poUnitLabel').value=opt.dataset.unit||'หน่วย';
  const items=[...DB.ingredients,...DB.packages];
  const item=items.find(i=>String(i.id)===String(sel.value));
- if(item) document.getElementById('poQtyInput').value=Math.max(item.min*3,1)||1;
+ if(item){
+  document.getElementById('poQtyInput').value=Math.max(item.min*3,1)||1;
+  document.getElementById('poPriceInput').value=item.unitCost||item.cost||'';
+ }
+ updatePOPreview();
+}
+function updatePOPreview(){
+ const qty=parseFloat(document.getElementById('poQtyInput').value)||0;
+ const price=parseFloat(document.getElementById('poPriceInput').value)||0;
+ const total=qty*price;
+ document.getElementById('poTotalPreview').value=total>0?'฿'+total.toLocaleString('th-TH',{minimumFractionDigits:0,maximumFractionDigits:2}):'';
 }
 function savePO(){
  const sel=document.getElementById('poItemSel');
@@ -5879,30 +5890,62 @@ function savePO(){
  const name=opt.dataset.name||opt.text;
  const qty=parseFloat(document.getElementById('poQtyInput').value)||0;
  const unit=opt.dataset.unit||'หน่วย';
- const unitCost=parseFloat(opt.dataset.cost)||0;
+ const unitCost=parseFloat(document.getElementById('poPriceInput').value)||parseFloat(opt.dataset.cost)||0;
  if(!qty){toast('กรุณาใส่จำนวน');return;}
- const po={id:DB.nextId++,ingId,itemName:name,qty,unit,unitCost,totalCost:Math.round(qty*unitCost),status:'pending',note:document.getElementById('poNote').value||'',ts:Date.now()};
+ if(!unitCost){toast('กรุณาใส่ราคาต่อหน่วย');return;}
+ const po={id:DB.nextId++,ingId,itemName:name,qty,unit,unitCost,totalCost:Math.round(qty*unitCost*100)/100,status:'pending',note:document.getElementById('poNote').value||'',ts:Date.now()};
  DB.purchaseOrders.push(po);
+ addAudit('store','สร้างใบสั่งซื้อ',`สั่ง ${name} x${qty}${unit} · ฿${po.totalCost}`,'','rgba(43,94,167,.08)','low');
  closeModal('modal-po');
- renderStores('po'); toast(`สร้างใบสั่ง ${name} x${qty}${unit}`); scheduleSync();
+ renderStores('po'); toast(`✅ สร้างใบสั่ง ${name} x${qty}${unit}`); scheduleSync();
 }
 function quickCreatePO(ingId,name,qty,unitCost,unit){
  const po={id:DB.nextId++,ingId,itemName:name,qty,unit,unitCost,totalCost:Math.round(qty*unitCost),status:'pending',note:'',ts:Date.now()};
  DB.purchaseOrders.push(po);
- renderStores('po'); toast(`สร้างใบสั่ง ${name} x${qty}${unit}`); scheduleSync();
+ addAudit('store','สร้างใบสั่งซื้อ',`สั่ง ${name} x${qty}${unit} (auto)`,'','rgba(43,94,167,.08)','low');
+ renderStores('po'); toast(`✅ สร้างใบสั่ง ${name} x${qty}${unit}`); scheduleSync();
 }
 function receivePO(poId){
  const po=DB.purchaseOrders.find(x=>x.id===poId);if(!po)return;
  po.status='received';
- // เพิ่มสต็อก
+ po.receivedTs=Date.now();
+ // อัปเดต stock
  const ing=[...DB.ingredients,...DB.packages].find(x=>x.id===po.ingId);
- if(ing){ ing.qty+=po.qty; toast(`รับ ${po.itemName} +${po.qty}${po.unit} เข้าคลังแล้ว`); }
- else toast('รับของแล้ว');
- renderStores('po'); scheduleSync();
+ if(ing){
+  ing.qty = Math.round((ing.qty + po.qty)*1000)/1000;
+  // อัปเดต unitCost ใหม่ถ้า PO มีราคา (ราคาต้นทุนอาจเปลี่ยน)
+  if(po.unitCost>0 && po.qty>0){
+   ing.cost = po.unitCost;       // ราคาต่อ 1 หน่วยที่สั่งซื้อครั้งนี้
+   ing.unitCost = po.unitCost;   // ล็อกไว้ใช้ใน recipe cost
+  }
+  // คำนวณต้นทุนเมนูใหม่ที่ใช้วัตถุดิบนี้
+  DB.menus.forEach(m=>{
+   if(!m.recipeId)return;
+   const rec=DB.recipes.find(r=>r.id===m.recipeId);
+   if(!rec)return;
+   const usesThis=(rec.ingredients||rec.ings||[]).some(row=>row.ingId===po.ingId);
+   if(usesThis){
+    const newCost=calcRecipeCostPerCup(rec);
+    if(newCost>0) m.cost=newCost;
+   }
+  });
+  toast(`✅ รับ ${po.itemName} +${po.qty}${po.unit} → คลังรวม ${ing.qty}${ing.unit}`);
+ } else {
+  toast('รับของแล้ว (ไม่พบวัตถุดิบในคลัง)');
+ }
+ // บันทึก Audit Log
+ addAudit('store','รับสินค้า PO',`รับ ${po.itemName} x${po.qty}${po.unit} · ฿${po.totalCost}`,'','rgba(61,155,96,.08)','low');
+ // อัปเดต UI ที่เกี่ยวข้อง
+ renderStores('po');
+ updateSalesBadge();   // badge แจ้งเตือนสต็อกต่ำ
+ scheduleSync();
 }
 function cancelPO(poId){
  const po=DB.purchaseOrders.find(x=>x.id===poId);if(!po)return;
- po.status='cancelled'; renderStores('po'); scheduleSync();
+ if(!confirm(`ยกเลิกใบสั่ง ${po.itemName}?`))return;
+ po.status='cancelled';
+ addAudit('store','ยกเลิก PO',`ยกเลิกใบสั่ง ${po.itemName} x${po.qty}${po.unit}`,'','rgba(217,79,68,.08)','low');
+ renderStores('po');scheduleSync();toast(`ยกเลิกใบสั่ง ${po.itemName} แล้ว`);
 }
 
 /* ALERT TAB */
@@ -7331,11 +7374,21 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
    <div class="f-row">
     <div class="f-group">
      <label class="f-label">จำนวนสั่ง</label>
-     <input class="f-input" id="poQtyInput" type="number" placeholder="0" min="1">
+     <input class="f-input" id="poQtyInput" type="number" placeholder="0" min="1" oninput="updatePOPreview()">
     </div>
     <div class="f-group">
      <label class="f-label">หน่วย</label>
      <input class="f-input" id="poUnitLabel" readonly style="background:var(--bg-dk);color:var(--t3)">
+    </div>
+   </div>
+   <div class="f-row">
+    <div class="f-group">
+     <label class="f-label">ราคา/หน่วย (฿)</label>
+     <input class="f-input" id="poPriceInput" type="number" placeholder="0.00" step="0.01" oninput="updatePOPreview()">
+    </div>
+    <div class="f-group">
+     <label class="f-label">รวม (฿)</label>
+     <input class="f-input" id="poTotalPreview" readonly style="background:var(--bg-dk);color:var(--cara);font-weight:700">
     </div>
    </div>
    <div class="f-group">
