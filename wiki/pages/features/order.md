@@ -1,9 +1,9 @@
 ---
 title: Order / POS System
 type: feature
-tags: [order, pos, receipt, promo, cart]
+tags: [order, pos, receipt, promo, cart, recipe-slip]
 updated: 2026-04-15
-source_files: [../../../js/order.js]
+source_files: [../../../js/order.js, ../../../js/auth.js]
 ---
 
 # Order / POS System
@@ -64,11 +64,30 @@ source_files: [../../../js/order.js]
 - `logStaffDrink()` — บันทึกเครื่องดื่มพนักงาน / ทดลองสูตร / ของเสีย
 - บันทึกลง `DB.staffLogs` + audit log
 
+## Product Detail Modal
+- เปิดด้วย `openProductModal(id)` เมื่อกดการ์ดเมนู
+- แสดงแบบ **full-page** (CSS class `full-page` บน `modal-overlay`)
+- ตัวเลือกที่แสดง: ขนาด · น้ำแข็ง · ความเข้ม · ความหวาน · Custom Options
+
+## Recipe Slip (สลิปสูตร)
+ปุ่ม "สลิปสูตร" ปรากฏใน footer ใบเสร็จ (เฉพาะออเดอร์ที่มีเมนูผูกสูตร)
+
+การแสดงผลใน `openRecipeSlip()`:
+1. **จัดกลุ่มตามหมวดหมู่** — กาแฟ / ชา / โกโก้ / Custom / อื่นๆ
+2. **ตัวเลือกต่อรายการ** — ขนาด · น้ำแข็ง · เข้ม · หวาน · หมายเหตุ (ทุกรายการ)
+3. **ขยาย blend → วัตถุดิบจริง** — สัดส่วนตาม yield ของ batch
+4. **สรุปวัตถุดิบรวม** — aggregate ทุกรายการท้ายหน้า
+
+## Bill List
+`renderBillList()` แสดงแต่ละบิลพร้อม preview รายการ:
+- ชื่อเมนู × จำนวน
+- ตัวเลือก: น้ำแข็ง · หวาน · เข้ม · หมายเหตุ (ต่อรายการ)
+
 ## Key Variables
-| Variable | ความหมาย |
-|----------|---------|
-| `orderItems[]` | รายการตะกร้าปัจจุบัน |
-| `activeCat` | หมวดเมนูที่เลือก |
-| `orderDiscount` | ส่วนลดรวม |
-| `previewOrder` | ข้อมูลบิลสำหรับใบเสร็จ |
-| `lastOperator` | พนักงานคนสุดท้ายที่ยืนยันบิล |
+| Variable | ความหมาย | ค่า default |
+|----------|---------|------------|
+| `orderItems[]` | รายการตะกร้าปัจจุบัน | `[]` |
+| `activeCat` | หมวดเมนูที่เลือก | `'all'` (ทั้งหมด) |
+| `orderDiscount` | ส่วนลดรวม | `0` |
+| `previewOrder` | ข้อมูลบิลสำหรับใบเสร็จ | — |
+| `lastOperator` | พนักงานคนสุดท้ายที่ยืนยันบิล | — |
