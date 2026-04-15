@@ -64,6 +64,7 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  updateSyncUI();
  document.getElementById('reportDate').textContent='วันนี้';
  updateSalesBadge();
+ updateKitchenBadge();
 
  // 3. แสดง/ซ่อน UI ตามสถานะพนักงาน
  const _hint   = document.getElementById('loginFirstRunHint');
