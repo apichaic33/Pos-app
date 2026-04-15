@@ -100,7 +100,7 @@ function toast(msg){
  ORDER PAGE
  */
 let orderItems=[];
-let activeCat='coffee';
+let activeCat='all';
 
 function renderOrder(){
  renderCatPills();
