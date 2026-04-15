@@ -78,7 +78,21 @@
     <div style="font-size:10px;color:var(--t4);margin-bottom:4px">กำไร</div>
     <div id="salesTodayProfit" style="font-size:16px;font-weight:800;color:var(--green);font-family:var(--fh)">฿0</div>
   </div>
-</div> <div class="scroll-body" id="salesTodayList" style="padding-bottom:20px"></div> </div> <!-- PAGE: BILL MANAGEMENT --> <div class="page" id="pg-staff-mgmt"> <div class="pg-head"> <div> <div class="pg-title">พนักงาน</div> <div class="pg-sub" id="staffMgmtSub">0 คน</div> </div> </div> <div id="staffMgmtContent" style="padding:0 16px 100px"></div>
+</div> <div class="scroll-body" id="salesTodayList" style="padding-bottom:20px"></div> </div>
+<!-- PAGE: KITCHEN -->
+<div class="page" id="pg-kitchen">
+ <div class="pg-head">
+  <div><div class="pg-title">ครัว</div><div class="pg-sub" id="kitchenSub">รอทำ 0 บิล</div></div>
+  <button onclick="renderKitchen()" style="background:none;border:none;padding:6px;cursor:pointer;color:var(--t4)"><span class="mi" style="font-size:22px">refresh</span></button>
+ </div>
+ <div class="tab-bar" style="margin:0 16px 12px">
+  <button class="tab-btn active" id="kt-pending" onclick="switchKitchenTab(this,'pending')">รอทำ</button>
+  <button class="tab-btn" id="kt-done" onclick="switchKitchenTab(this,'done')">เสร็จแล้ว</button>
+  <button class="tab-btn" id="kt-all" onclick="switchKitchenTab(this,'all')">ทั้งหมด</button>
+ </div>
+ <div class="scroll-body" id="kitchenList" style="padding:0 16px 100px"></div>
+</div>
+<!-- PAGE: BILL MANAGEMENT --> <div class="page" id="pg-staff-mgmt"> <div class="pg-head"> <div> <div class="pg-title">พนักงาน</div> <div class="pg-sub" id="staffMgmtSub">0 คน</div> </div> </div> <div id="staffMgmtContent" style="padding:0 16px 100px"></div>
 </div> <div class="page" id="pg-bills"> <div class="pg-head"> <div> <div class="pg-title">จัดการบิล</div> <div class="pg-sub" id="billMgSub">—</div> </div> <div class="tab-bar" style="margin:0;width:auto"> <button class="tab-btn active" onclick="switchBillTab(this,'today')" style="padding:6px 9px;font-size:9px">วันนี้</button> <button class="tab-btn" onclick="switchBillTab(this,'all')" style="padding:6px 9px;font-size:9px">ทั้งหมด</button> </div> </div> <div id="pendingVoidsList"></div> <div class="scroll-body" id="billMgList" style="padding-bottom:20px"></div> </div> <!-- PAGE: OPTION SETS MANAGER -->
 <div class="page" id="pg-optsets">
  <div class="pg-head">
@@ -139,6 +153,13 @@
       <div class="nav-badge" id="navSalesBadge"></div>
     </div>
     <span class="nl">รายการขาย</span>
+  </button>
+  <button class="nav-it" id="nav-kitchen" onclick="goPage('kitchen')">
+    <div class="ni-pill" style="position:relative">
+      <span class="material-symbols-outlined" style="font-size:22px;font-variation-settings:'FILL' 1">blender</span>
+      <div class="nav-badge" id="navKitchenBadge"></div>
+    </div>
+    <span class="nl">ครัว</span>
   </button>
 </div> <!-- CART FAB --> <button class="cart-fab" id="cartFab" onclick="openOrderPanel()"><span class="mi" style="font-size:24px;color:#fff">shopping_cart</span> <div class="cart-fab-count" id="cartFabCount">0</div> </button> <!-- TOAST --> <div class="toast" id="toast"></div> 
 <!-- BOTTOM ACTION BARS -->
