@@ -435,7 +435,9 @@ function renderOrderPanel(){
  if(itemCountEl) itemCountEl.textContent=totalCount+' รายการ';
  const CUST_LABELS={extraShot:'เพิ่มช็อต',extraMatcha:'เพิ่มมัทฉะ',extraCocoa:'เพิ่มโกโก้'};
  list.innerHTML=orderItems.map(i=>{
- const promo=i.autoPromoId?DB.promos.find(x=>x.id===i.autoPromoId):null;
+ const autoPromo=i.autoPromoId?DB.promos.find(x=>x.id===i.autoPromoId):null;
+ const manualPromo=(!autoPromo&&i.promoId)?DB.promos.find(x=>x.id===i.promoId):null;
+ const promo=autoPromo||manualPromo;
  const noteParts=(i.note||'').split(' · ');
  const customTags=Object.values(CUST_LABELS).filter(v=>noteParts.includes(v));
  const otherNote=noteParts.filter(p=>!Object.values(CUST_LABELS).includes(p)).join(' · ');
@@ -445,7 +447,7 @@ function renderOrderPanel(){
  const strPrice2   = getOptItemPrice('strength', i.strength);
  const sizePrice2  = getOptItemPrice('sizes', i.size);
  const optExtra    = icePrice2+sweetPrice2+strPrice2+sizePrice2;
- const disc=i.autoPromoDisc||0;
+ const disc=i.autoPromoDisc||i.promoDisc||0;
  const rawTotal=i.price*i.qty;
  const netTotal=rawTotal-disc;
  return `<div class="op-item fade-up">
@@ -700,6 +702,7 @@ function confirmOrder(){
  })),
  subTotal,discount,total,ts:Date.now(),
  status:'active',
+ kitchenDone:false,
  voidReason:null, voidTs:null, voidApprovedBy:null
  };
  DB.orders.push(order);
@@ -739,6 +742,8 @@ function confirmOrder(){
  renderProductGrid(activeCat);
  scheduleSync();
  updateSalesBadge();
+ updateKitchenBadge();
+ if(typeof currentPage!=='undefined'&&currentPage==='kitchen') renderKitchen();
  // ── Pre-render canvas ล่วงหน้า (รอ user gesture ก่อน share) ──────────────
  window._pendingReceiptCanvas = null;
  window._pendingReceiptFname  = null;
@@ -777,7 +782,7 @@ let lastOperator=null;
 function openReceiptPreview(){
  if(!orderItems.length){toast('ยังไม่มีรายการ');return;}
  const subTotal=orderItems.reduce((s,i)=>s+i.price*i.qty,0);
- const discount=orderItems.reduce((s,i)=>s+(i.promoDisc||0),0);
+ const discount=orderItems.reduce((s,i)=>s+(i.autoPromoDisc||i.promoDisc||0),0);
  const total=Math.max(0,subTotal-discount);
  previewOrder={
  id:'#'+String(DB.nextId).padStart(4,'0'),
@@ -1474,6 +1479,139 @@ function closeRecipeSlipAndNew(){
  toast('พร้อมรับออเดอร์ใหม่');
 }
 
-/* 
+/*
+ KITCHEN PAGE (ครัว)
+ แสดงออเดอร์วันนี้พร้อมสูตร — พนักงานกด "เสร็จแล้ว" ต่อบิล
+ */
+let kitchenFilter='pending';
+
+function switchKitchenTab(btn,filter){
+ btn.closest('.tab-bar').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active');
+ kitchenFilter=filter;
+ renderKitchen();
+}
+
+function updateKitchenBadge(){
+ const count=getTodayOrders().filter(o=>o.status!=='voided'&&!o.kitchenDone).length;
+ const badge=document.getElementById('navKitchenBadge');
+ if(!badge)return;
+ if(count>0){badge.textContent=count;badge.classList.add('show');}
+ else badge.classList.remove('show');
+}
+
+function markKitchenDone(orderId){
+ const order=DB.orders.find(o=>String(o.id)===String(orderId));
+ if(!order)return;
+ order.kitchenDone=true;
+ scheduleSync();
+ updateKitchenBadge();
+ renderKitchen();
+ toast('เสร็จแล้ว ✓');
+}
+
+function renderKitchen(){
+ const allOrders=getTodayOrders().filter(o=>o.status!=='voided');
+ const pendingCount=allOrders.filter(o=>!o.kitchenDone).length;
+ const subEl=document.getElementById('kitchenSub');
+ if(subEl) subEl.textContent=`รอทำ ${pendingCount} บิล`;
+ updateKitchenBadge();
+
+ let orders;
+ if(kitchenFilter==='pending') orders=allOrders.filter(o=>!o.kitchenDone);
+ else if(kitchenFilter==='done') orders=allOrders.filter(o=>!!o.kitchenDone);
+ else orders=allOrders;
+ // FIFO: เก่าสุดขึ้นก่อน
+ orders=orders.slice().sort((a,b)=>a.ts-b.ts);
+
+ const listEl=document.getElementById('kitchenList');
+ if(!listEl)return;
+
+ if(!orders.length){
+  const emptyIcon=kitchenFilter==='done'?'check_circle':'local_cafe';
+  const emptyMsg=kitchenFilter==='pending'?'ไม่มีออเดอร์รอทำ':kitchenFilter==='done'?'ยังไม่มีออเดอร์เสร็จแล้ว':'ยังไม่มีออเดอร์วันนี้';
+  listEl.innerHTML=`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">${emptyIcon}</span></div><div class="e-title">${emptyMsg}</div></div>`;
+  return;
+ }
+
+ listEl.innerHTML=orders.map(order=>{
+  const d=new Date(order.ts);
+  const timeStr=d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  const isDone=!!order.kitchenDone;
+  const totalDrinks=order.items.reduce((s,i)=>s+i.qty,0);
+
+  // ── Item cards ─────────────────────────────
+  const itemsHtml=order.items.map((item,idx)=>{
+   const menu=DB.menus.find(m=>m.id===item.menuId);
+   const recipe=menu&&menu.recipeId?DB.recipes.find(r=>r.id===menu.recipeId):null;
+   const ings=recipe?(recipe.ingredients||recipe.ings||[]):[];
+   const hdrColor=menu&&menu.color?menu.color:'var(--esp)';
+
+   // option tags
+   const optTags=[];
+   if(item.size) optTags.push(`<span class="kitchen-opt-tag">${item.size}</span>`);
+   if(item.ice)  optTags.push(`<span class="kitchen-opt-tag">${item.ice}</span>`);
+   if(item.sweet&&item.sweet!=='50%') optTags.push(`<span class="kitchen-opt-tag sweet">หวาน ${item.sweet}</span>`);
+   if(item.strength&&item.strength!=='50%') optTags.push(`<span class="kitchen-opt-tag strong">เข้ม ${item.strength}</span>`);
+   if(item.note) optTags.push(`<span class="kitchen-opt-tag note">${item.note}</span>`);
+
+   // ingredient rows
+   let ingsHtml='';
+   if(ings.length){
+    ingsHtml='<div class="kitchen-ings">'+ings.map(row=>{
+     const ing=DB.ingredients.find(x=>x.id===row.ingId);
+     const bld=row.ingId&&row.ingId.startsWith('blend_')?DB.blends.find(x=>x.id===row.ingId):null;
+     const ingName=ing?ing.name:(bld?bld.name+' (เบลนด์)':'?');
+     const ingUnit=ing?(ing.unit||''):'';
+     const totalQty=(row.qty||0)*item.qty;
+     const qtyDisp=Number.isInteger(totalQty)?totalQty:totalQty.toFixed(1);
+     return `<div class="kitchen-ing-row">
+      <div class="kitchen-ing-dot"></div>
+      <div class="kitchen-ing-name">${ingName}</div>
+      <div class="kitchen-ing-qty">${qtyDisp} ${ingUnit}</div>
+     </div>`;
+    }).join('')+'</div>';
+   } else {
+    ingsHtml='<div class="kitchen-no-recipe">ทำตามมาตรฐานร้าน</div>';
+   }
+
+   return `<div class="kitchen-item">
+    <div class="kitchen-item-head" style="background:${hdrColor}">
+     <div class="kitchen-item-num">${idx+1}</div>
+     <div class="kitchen-item-name">${item.name}</div>
+     <div class="kitchen-item-qty">×${item.qty}</div>
+    </div>
+    ${optTags.length?`<div class="kitchen-item-opts">${optTags.join('')}</div>`:''}
+    ${ingsHtml}
+   </div>`;
+  }).join('');
+
+  // ── Done button / badge ────────────────────
+  const doneSection=isDone
+   ?`<div style="padding:10px 14px;border-top:1px solid rgba(176,154,133,.12);display:flex;align-items:center;gap:6px;justify-content:center">
+      <span class="mi" style="font-size:16px;color:var(--green)">check_circle</span>
+      <span style="font-size:12px;font-weight:700;color:var(--green)">เสร็จแล้ว</span>
+     </div>`
+   :`<div style="padding:12px 14px;border-top:1px solid rgba(176,154,133,.12)">
+      <button class="kitchen-done-btn" onclick="markKitchenDone('${order.id}')">
+       <span class="mi" style="font-size:18px">check_circle</span> ทำเสร็จแล้ว
+      </button>
+     </div>`;
+
+  return `<div class="kitchen-order-card${isDone?' done':''}">
+   <div class="kitchen-order-head">
+    <div style="display:flex;align-items:center">
+     <span class="kitchen-order-id">บิล #${order.id}</span>
+     <span class="kitchen-order-time">${timeStr} · ${totalDrinks} แก้ว</span>
+    </div>
+    <span class="kitchen-status ${isDone?'done':'pending'}">${isDone?'<span class="mi" style="font-size:12px">check_circle</span> เสร็จ':'รอทำ'}</span>
+   </div>
+   ${itemsHtml}
+   ${doneSection}
+  </div>`;
+ }).join('');
+}
+
+/*
  MANAGE PAGE
  */
