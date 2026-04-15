@@ -964,5 +964,37 @@ textarea.f-input{resize:none;}
 }
 .prod-card .prod-add-fab:active{box-shadow:var(--neu-in-xs);}
 
+/* ═══════════════════════════════════════
+   KITCHEN PAGE (ครัว)
+   ═══════════════════════════════════════ */
+.kitchen-order-card{background:var(--bg);border-radius:var(--r4);box-shadow:var(--neu-out-sm);margin-bottom:14px;overflow:hidden;transition:opacity .2s;}
+.kitchen-order-card.done{opacity:.55;}
+.kitchen-order-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid rgba(176,154,133,.12);}
+.kitchen-order-id{font-family:var(--fh);font-size:14px;font-weight:800;color:var(--t1);}
+.kitchen-order-time{font-size:11px;color:var(--t4);margin-left:6px;}
+.kitchen-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--rf);display:inline-flex;align-items:center;gap:3px;}
+.kitchen-status.pending{background:var(--gold-lt);color:var(--gold);}
+.kitchen-status.done{background:var(--green-lt);color:var(--green);}
+.kitchen-item{border-bottom:1px solid rgba(176,154,133,.10);}
+.kitchen-item:last-child{border-bottom:none;}
+.kitchen-item-head{display:flex;align-items:center;gap:10px;padding:9px 14px;color:#fff;}
+.kitchen-item-num{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-family:var(--fh);flex-shrink:0;}
+.kitchen-item-name{font-size:13px;font-weight:700;flex:1;}
+.kitchen-item-qty{font-size:11px;font-weight:700;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:var(--rf);}
+.kitchen-item-opts{display:flex;gap:5px;flex-wrap:wrap;padding:7px 14px 4px;}
+.kitchen-opt-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--rf);background:var(--blue-lt);color:var(--blue);}
+.kitchen-opt-tag.sweet{background:var(--gold-lt);color:var(--gold);}
+.kitchen-opt-tag.strong{background:rgba(44,24,16,.08);color:var(--esp);}
+.kitchen-opt-tag.note{background:var(--bg-dk);color:var(--t3);}
+.kitchen-ings{padding:8px 14px 12px;}
+.kitchen-ing-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(140,123,107,.1);}
+.kitchen-ing-row:last-child{border-bottom:none;}
+.kitchen-ing-dot{width:6px;height:6px;border-radius:50%;background:var(--cara);flex-shrink:0;}
+.kitchen-ing-name{flex:1;font-size:12px;font-weight:600;color:var(--t1);}
+.kitchen-ing-qty{font-size:12px;font-weight:800;font-family:var(--fh);color:var(--esp);min-width:55px;text-align:right;}
+.kitchen-no-recipe{padding:8px 14px 12px;font-size:11px;color:var(--t4);font-style:italic;}
+.kitchen-done-btn{width:100%;padding:13px;background:var(--cara);color:#fff;font-size:14px;font-weight:700;border:none;border-radius:var(--r3);cursor:pointer;font-family:var(--fh);display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 14px var(--cara-glow);}
+.kitchen-done-btn:active{box-shadow:var(--neu-in-sm);opacity:.9;}
+
 
 @keyframes slideUpIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
