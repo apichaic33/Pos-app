@@ -1429,7 +1429,6 @@ function newOrderFromReceipt(){
  */
 function openRecipeSlip(order){
  if(!order) return;
- // สร้างหมายเลขออเดอร์ (ดึงจาก receipt logic)
  const d = order.ts instanceof Date ? order.ts : new Date(order.ts||Date.now());
  const pad=n=>String(n).padStart(2,'0');
  const ref=pad(d.getDate())+pad(d.getMonth()+1)+String(d.getFullYear()).slice(-2)+pad(d.getHours())+pad(d.getMinutes());
@@ -1439,57 +1438,130 @@ function openRecipeSlip(order){
  const body=document.getElementById('recipeSlipBody');
  if(!body) return;
 
+ // ── ฟังก์ชัน: ขยาย blend เป็น ingredient จริง (สัดส่วนตาม blendQty/yieldPerBatch) ──
+ function expandBlendIng(blendId, blendQty){
+  const bld=(DB.blends||[]).find(x=>String(x.id)===String(blendId.replace('blend_','')));
+  if(!bld) return [];
+  const yld=getBlendYield(bld)||1;
+  const ratio=blendQty/yld;
+  return getBlendIngs(bld).map(ig=>{
+   const ing=DB.ingredients.find(x=>x.id===ig.ingId);
+   return{ingId:ig.ingId, name:ing?ing.name:'(ไม่พบ)', unit:ing?ing.unit:'', qty:(ig.qty||0)*ratio, fromBlend:bld.name};
+  });
+ }
+
+ // ── สะสม aggregate ทั้ง order ─────────────────────
+ const aggMap={}; // key=ingId → {name,unit,qty}
+ function addAgg(ingId,name,unit,qty){
+  const k=String(ingId);
+  if(!aggMap[k]) aggMap[k]={name,unit,qty:0};
+  aggMap[k].qty+=qty;
+ }
+
+ // ── จัดกลุ่มตาม category ──────────────────────────
+ const CAT_ORDER=['coffee','tea','cocoa','custom','other'];
+ const catGroups={};
+ order.items.forEach(item=>{
+  const menu=DB.menus.find(x=>x.id===item.menuId);
+  const cat=(menu&&menu.cat)||'other';
+  if(!catGroups[cat]) catGroups[cat]=[];
+  catGroups[cat].push({item,menu});
+ });
+
  let html='';
  let slipIdx=0;
- order.items.forEach((item,n)=>{
-  const menu=DB.menus.find(x=>x.id===item.menuId);
-  const recipe=menu&&menu.recipeId ? DB.recipes.find(r=>r.id===menu.recipeId) : null;
-  const ings=recipe ? (recipe.ingredients||recipe.ings||[]) : [];
 
-  // สีพื้นหัว card ตามสีเมนู
-  const hdrColor=menu&&menu.color ? menu.color : 'var(--esp)';
+ const catsPresent=[...CAT_ORDER,...Object.keys(catGroups)].filter((c,i,a)=>a.indexOf(c)===i&&catGroups[c]);
+ catsPresent.forEach(cat=>{
+  if(!catGroups[cat]) return;
+  const catName={coffee:'กาแฟ',tea:'ชา',cocoa:'โกโก้',custom:'Custom',other:'อื่นๆ'}[cat]||cat;
+  html+=`<div style="padding:6px 14px 2px"><span style="font-size:9px;font-weight:800;color:var(--t4);text-transform:uppercase;letter-spacing:.8px">${catName}</span></div>`;
 
-  // option tags
-  const optTags=[];
-  if(item.size) optTags.push(`<span class="recipe-slip-opt-tag">${item.size}</span>`);
-  if(item.ice)  optTags.push(`<span class="recipe-slip-opt-tag">${item.ice}</span>`);
-  if(item.sweet && item.sweet!=='50%') optTags.push(`<span class="recipe-slip-opt-tag sweet">หวาน ${item.sweet}</span>`);
-  if(item.strength && item.strength!=='50%') optTags.push(`<span class="recipe-slip-opt-tag strength">เข้ม ${item.strength}</span>`);
-  if(item.note) optTags.push(`<span class="recipe-slip-opt-tag note">${item.note}</span>`);
+  catGroups[cat].forEach(({item,menu})=>{
+   const recipe=menu&&menu.recipeId ? DB.recipes.find(r=>r.id===menu.recipeId) : null;
+   const ings=recipe ? (recipe.ingredients||recipe.ings||[]) : [];
+   const hdrColor=menu&&menu.color ? menu.color : 'var(--esp)';
 
-  // ingredient rows — ปริมาณคูณด้วย qty ของ item
-  let ingsHtml='';
-  if(ings.length){
-   ingsHtml='<div class="recipe-slip-ings">';
-   ings.forEach(row=>{
-    const ing=DB.ingredients.find(x=>x.id===row.ingId);
-    const bld=row.ingId&&row.ingId.startsWith('blend_') ? DB.blends.find(x=>x.id===row.ingId) : null;
-    const ingName=ing ? ing.name : (bld ? bld.name+'(เบลนด์)' : (row.ingId||'?'));
-    const ingUnit=ing ? (ing.unit||'') : '';
-    const totalQty=((row.qty||0)*item.qty);
-    const qtyDisplay=Number.isInteger(totalQty)?totalQty:totalQty.toFixed(1);
-    ingsHtml+=`<div class="recipe-slip-ing-row">
-     <div class="recipe-slip-ing-dot"></div>
-     <div class="recipe-slip-ing-name">${ingName}</div>
-     <div class="recipe-slip-ing-qty">${qtyDisplay} ${ingUnit}</div>
-    </div>`;
-   });
-   ingsHtml+='</div>';
-  } else {
-   ingsHtml=`<div class="recipe-slip-no-recipe">ไม่มีสูตรบันทึกไว้ — ทำตามมาตรฐานร้าน</div>`;
-  }
+   // option tags — แสดงทุกตัวเลือกเสมอ
+   const optTags=[];
+   if(item.size)     optTags.push(`<span class="recipe-slip-opt-tag">${item.size}</span>`);
+   if(item.ice)      optTags.push(`<span class="recipe-slip-opt-tag">${item.ice}</span>`);
+   optTags.push(`<span class="recipe-slip-opt-tag sweet">หวาน ${item.sweet||DB.optionSets.sweet.default}</span>`);
+   optTags.push(`<span class="recipe-slip-opt-tag strength">เข้ม ${item.strength||DB.optionSets.strength.default}</span>`);
+   if(item.note)     optTags.push(`<span class="recipe-slip-opt-tag note">${item.note}</span>`);
 
-  slipIdx++;
-  html+=`<div class="recipe-slip-card">
-   <div class="recipe-slip-header" style="background:${hdrColor}">
-    <div class="recipe-slip-num">${slipIdx}</div>
-    <div class="recipe-slip-menu-name">${item.name}</div>
-    <div class="recipe-slip-qty">×${item.qty}</div>
-   </div>
-   ${optTags.length?`<div class="recipe-slip-opts">${optTags.join('')}</div>`:''}
-   ${ingsHtml}
-  </div>`;
+   // ingredient rows: ขยาย blend → วัตถุดิบจริง
+   let ingsHtml='';
+   if(ings.length){
+    ingsHtml='<div class="recipe-slip-ings">';
+    ings.forEach(row=>{
+     const rowQtyTotal=(row.qty||0)*item.qty;
+     if(row.ingId&&row.ingId.toString().startsWith('blend_')){
+      // ขยาย blend
+      const bldId=row.ingId.toString().replace('blend_','');
+      const bld=(DB.blends||[]).find(x=>String(x.id)===bldId);
+      const bldName=bld?bld.name:'เบลนด์';
+      ingsHtml+=`<div class="recipe-slip-ing-row" style="opacity:.65">
+       <div class="recipe-slip-ing-dot" style="background:var(--purple)"></div>
+       <div class="recipe-slip-ing-name" style="font-style:italic">[${bldName}] ${rowQtyTotal.toFixed(1)} ${bld?bld.unit:''}</div>
+      </div>`;
+      const expanded=expandBlendIng(row.ingId.toString(), rowQtyTotal);
+      expanded.forEach(eg=>{
+       const qd=Number.isInteger(eg.qty)?eg.qty:eg.qty.toFixed(1);
+       ingsHtml+=`<div class="recipe-slip-ing-row" style="padding-left:16px">
+        <div class="recipe-slip-ing-dot" style="background:var(--t5)"></div>
+        <div class="recipe-slip-ing-name">${eg.name}</div>
+        <div class="recipe-slip-ing-qty">${qd} ${eg.unit}</div>
+       </div>`;
+       addAgg(eg.ingId,eg.name,eg.unit,eg.qty);
+      });
+     } else {
+      const ing=DB.ingredients.find(x=>x.id===row.ingId);
+      const ingName=ing?ing.name:(row.ingId||'?');
+      const ingUnit=ing?ing.unit:'';
+      const qd=Number.isInteger(rowQtyTotal)?rowQtyTotal:rowQtyTotal.toFixed(1);
+      ingsHtml+=`<div class="recipe-slip-ing-row">
+       <div class="recipe-slip-ing-dot"></div>
+       <div class="recipe-slip-ing-name">${ingName}</div>
+       <div class="recipe-slip-ing-qty">${qd} ${ingUnit}</div>
+      </div>`;
+      if(ing) addAgg(ing.id,ing.name,ing.unit,rowQtyTotal);
+     }
+    });
+    ingsHtml+='</div>';
+   } else {
+    ingsHtml=`<div class="recipe-slip-no-recipe">ไม่มีสูตรบันทึกไว้ — ทำตามมาตรฐานร้าน</div>`;
+   }
+
+   slipIdx++;
+   html+=`<div class="recipe-slip-card">
+    <div class="recipe-slip-header" style="background:${hdrColor}">
+     <div class="recipe-slip-num">${slipIdx}</div>
+     <div class="recipe-slip-menu-name">${item.name}</div>
+     <div class="recipe-slip-qty">×${item.qty}</div>
+    </div>
+    <div class="recipe-slip-opts">${optTags.join('')}</div>
+    ${ingsHtml}
+   </div>`;
+  });
  });
+
+ // ── สรุปวัตถุดิบรวมทั้ง order ─────────────────────
+ const aggEntries=Object.values(aggMap).filter(e=>e.qty>0);
+ if(aggEntries.length){
+  html+=`<div style="margin:10px 14px 0;padding:12px 14px;background:var(--bg-dk);border-radius:var(--r3)">
+   <div style="font-size:10px;font-weight:800;color:var(--esp);letter-spacing:.5px;margin-bottom:8px">สรุปวัตถุดิบรวมทั้งออเดอร์</div>
+   <div class="recipe-slip-ings">`;
+  aggEntries.forEach(e=>{
+   const qd=Number.isInteger(e.qty)?e.qty:+e.qty.toFixed(2);
+   html+=`<div class="recipe-slip-ing-row">
+    <div class="recipe-slip-ing-dot" style="background:var(--cara)"></div>
+    <div class="recipe-slip-ing-name" style="font-weight:700">${e.name}</div>
+    <div class="recipe-slip-ing-qty" style="color:var(--cara);font-weight:700">${qd} ${e.unit}</div>
+   </div>`;
+  });
+  html+=`</div></div>`;
+ }
 
  body.innerHTML=html||'<div style="padding:32px;text-align:center;color:var(--t4);font-size:13px">ไม่มีข้อมูลสูตรสำหรับออเดอร์นี้</div>';
  document.getElementById('recipeSlipPage').classList.add('open');
@@ -3564,8 +3636,13 @@ function renderBillManagement(filter){
  const hasPending = DB.pendingVoids.some(v=>String(v.orderId)===String(o.id)&&v.status==='pending');
  const statusClass = o.status==='voided' ? 'voided' : hasPending ? 'pending' : 'active';
  const statusLabel = o.status==='voided' ? 'ยกเลิกแล้ว' : hasPending ? 'รออนุมัติ' : 'ปกติ';
+ // สร้าง preview รายการพร้อมตัวเลือก
+ const itemPreview = o.items.map(i=>{
+  const opts=[i.ice||'',i.sweet?'หวาน '+i.sweet:'',i.strength&&i.strength!=='50%'?'เข้ม '+i.strength:'',i.note||''].filter(Boolean).join(' · ');
+  return `<div style="display:flex;align-items:baseline;gap:4px;padding:1px 0"><span style="font-size:11px;font-weight:600;color:var(--t2)">${i.name}</span><span style="font-size:10px;color:var(--t5)">×${i.qty}</span>${opts?`<span style="font-size:9px;color:var(--t4);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"> · ${opts}</span>`:''}</div>`;
+ }).join('');
  return `
- <div class="bill-item" onclick="openOrderDetail('${o.id}')"> <div class="bill-head"> <div class="bill-status-dot ${statusClass}"></div> <div class="bill-info"> <div class="bill-id">บิล #${o.id} · ${t}</div> <div class="bill-meta">${o.items.reduce((s,i)=>s+i.qty,0)} แก้ว · ${statusLabel}${o.voidApprovedBy?' · ผู้อนุมัติ: '+o.voidApprovedBy:''}</div> </div> <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"> <div class="bill-amt ${o.status==='voided'?'voided':''}">฿${o.total.toLocaleString()}</div> ${o.status==='active'&&!hasPending
+ <div class="bill-item" onclick="openOrderDetail('${o.id}')"> <div class="bill-head"> <div class="bill-status-dot ${statusClass}"></div> <div class="bill-info" style="min-width:0;flex:1"> <div class="bill-id">บิล #${o.id} · ${t}</div> <div class="bill-meta">${o.items.reduce((s,i)=>s+i.qty,0)} แก้ว · ${statusLabel}${o.voidApprovedBy?' · ผู้อนุมัติ: '+o.voidApprovedBy:''}</div> <div style="margin-top:4px">${itemPreview}</div> </div> <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0"> <div class="bill-amt ${o.status==='voided'?'voided':''}">฿${o.total.toLocaleString()}</div> ${o.status==='active'&&!hasPending
  ?`<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();requestBillVoid('${o.id}')">ยกเลิกบิล</button>`:''}
  </div> </div> </div>`;
  }).join('');
@@ -3953,9 +4030,12 @@ function saveStoreItem(){
  note:document.getElementById('storeItemNote').value
  };
  if(!data.name){toast('กรุณาใส่ชื่อ');return;}
- // คำนวณ unitCost ตอนบันทึก (ราคาต่อ 1 หน่วย ไม่เปลี่ยนตาม stock)
- if(data.qty>0 && data.cost>0) data.unitCost = Math.round((data.cost/data.qty)*10000)/10000;
- if(id){const item=arr.find(x=>x.id===id); if(!item.unitCost && data.qty>0 && data.cost>0) data.unitCost=Math.round((data.cost/data.qty)*10000)/10000; Object.assign(item,data);toast('อัพเดตแล้ว');}
+ // คำนวณ unitCost = ราคาต่อหน่วยย่อย (ไม่เปลี่ยนตาม stock คงเหลือ)
+ // ถ้ามี unitQty: unitCost = cost/unitQty (ราคาต่อถุง ÷ กรัม/ถุง)
+ // ถ้าไม่มี unitQty: fallback unitCost = cost/qty (ราคารวม ÷ จำนวนทั้งหมด)
+ if(data.unitQty>0 && data.cost>0) data.unitCost = Math.round((data.cost/data.unitQty)*10000)/10000;
+ else if(data.qty>0 && data.cost>0) data.unitCost = Math.round((data.cost/data.qty)*10000)/10000;
+ if(id){const item=arr.find(x=>x.id===id); Object.assign(item,data);toast('อัพเดตแล้ว');}
  else{arr.push({...data,id:DB.nextId++});toast('เพิ่มรายการแล้ว');}
  closeModal('modal-store-item');
  // อัปเดต cost ของเมนูที่ใช้วัตถุดิบนี้
