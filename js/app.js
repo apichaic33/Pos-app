@@ -3813,7 +3813,7 @@ function openStoreAdd(){
  document.getElementById('storeModalTitle').textContent={ingredient:'เพิ่มวัตถุดิบ',package:'เพิ่มบรรจุภัณฑ์',equipment:'เพิ่มอุปกรณ์'}[storeTab]||'เพิ่มรายการ';
  document.getElementById('storeEditId').value='';
  document.getElementById('storeEditType').value=storeTab;
- ['storeItemName','storeItemQty','storeItemUnit','storeItemCost','storeItemExpiry','storeItemMin','storeItemNote'].forEach(i=>document.getElementById(i).value='');
+ ['storeItemName','storeItemQty','storeItemUnitQty','storeItemUnit','storeItemCost','storeItemExpiry','storeItemMin','storeItemNote'].forEach(i=>document.getElementById(i).value='');
  document.getElementById('storeItemStatus').value='active';
  document.getElementById('storeExpiryGroup').style.display=storeTab==='equipment'?'none':'block';
  document.getElementById('storeStatusGroup').style.display=storeTab!=='ingredient'?'block':'none';
@@ -3856,13 +3856,14 @@ function renderStores(tab){
     <div class="si-card-name">${item.name}</div>
     <div class="si-card-meta">
      <span>฿${(item.unitCost||item.cost||0).toLocaleString()}/${item.unit}</span>
+     ${item.unitQty?`<span>· 1 หน่วย = ${item.unitQty}${item.unit}</span>`:''}
      ${item.expiry?`<span>· ${item.expiry}</span>`:''}
      ${badges.join('')}
     </div>
    </div>
    <div class="si-card-qty">
     <div class="si-card-qty-val" style="color:${qtyColor}">${item.qty}<span style="font-size:11px;font-weight:400;color:var(--t4)"> ${item.unit}</span></div>
-    <div class="si-card-qty-unit">min ${item.min||0}</div>
+    <div class="si-card-qty-unit">${item.unitQty&&item.unitQty>0?`${Math.floor(item.qty/item.unitQty)} หน่วย · `:''}min ${item.min||0}</div>
    </div>
   </div>
   <div class="si-card-footer">
@@ -3918,6 +3919,7 @@ function editStoreItem(type,id){
  document.getElementById('storeEditType').value=type;
  document.getElementById('storeItemName').value=item.name;
  document.getElementById('storeItemQty').value=item.qty;
+ document.getElementById('storeItemUnitQty').value=item.unitQty||'';
  document.getElementById('storeItemUnit').value=item.unit;
  document.getElementById('storeItemCost').value=item.cost;
  document.getElementById('storeItemExpiry').value=item.expiry||'';
@@ -3942,6 +3944,7 @@ function saveStoreItem(){
  const data={
  name:document.getElementById('storeItemName').value.trim(),
  qty:parseFloat(document.getElementById('storeItemQty').value)||0,
+ unitQty:parseFloat(document.getElementById('storeItemUnitQty').value)||0,
  unit:document.getElementById('storeItemUnit').value.trim()||'ชิ้น',
  cost:parseFloat(document.getElementById('storeItemCost').value)||0,
  expiry:document.getElementById('storeItemExpiry').value||null,
