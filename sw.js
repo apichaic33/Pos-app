@@ -14,6 +14,18 @@ const CACHE_NAME  = `pos-app-${APP_VERSION}`;
 const PRECACHE = [
   './index.html',
   './manifest.json',
+  './css/app.css',
+  './js/db.js',
+  './js/order.js',
+  './js/manage.js',
+  './js/promo.js',
+  './js/report.js',
+  './js/options.js',
+  './js/staff.js',
+  './js/inventory.js',
+  './js/sync.js',
+  './js/auth.js',
+  './js/init.js',
 ];
 
 // ─── INSTALL ─────────────────────────────────────────────────
