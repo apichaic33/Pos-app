@@ -163,9 +163,10 @@ function saveStoreItem(){
  note:document.getElementById('storeItemNote').value
  };
  if(!data.name){toast('กรุณาใส่ชื่อ');return;}
- // คำนวณ unitCost ตอนบันทึก (ราคาต่อ 1 หน่วย ไม่เปลี่ยนตาม stock)
- if(data.qty>0 && data.cost>0) data.unitCost = Math.round((data.cost/data.qty)*10000)/10000;
- if(id){const item=arr.find(x=>x.id===id); if(!item.unitCost && data.qty>0 && data.cost>0) data.unitCost=Math.round((data.cost/data.qty)*10000)/10000; Object.assign(item,data);toast('อัพเดตแล้ว');}
+ // คำนวณ unitCost = ราคาต่อหน่วยย่อย (ไม่เปลี่ยนตาม stock คงเหลือ)
+ if(data.unitQty>0 && data.cost>0) data.unitCost = Math.round((data.cost/data.unitQty)*10000)/10000;
+ else if(data.qty>0 && data.cost>0) data.unitCost = Math.round((data.cost/data.qty)*10000)/10000;
+ if(id){const item=arr.find(x=>x.id===id); Object.assign(item,data);toast('อัพเดตแล้ว');}
  else{arr.push({...data,id:DB.nextId++});toast('เพิ่มรายการแล้ว');}
  closeModal('modal-store-item');
  // อัปเดต cost ของเมนูที่ใช้วัตถุดิบนี้
