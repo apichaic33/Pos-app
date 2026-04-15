@@ -3,7 +3,7 @@ title: Inventory & Stores
 type: feature
 tags: [inventory, ingredients, blend, recipe, purchase-order, stock]
 updated: 2026-04-15
-source_files: [../../../js/inventory.js]
+source_files: [../../../js/inventory.js, ../../../js/app.js]
 ---
 
 # Inventory & Stores
@@ -60,10 +60,31 @@ Flow:
 ## Item Schema (ingredients)
 ```js
 {
-  id, name, qty, unit, cost,   // ราคา/หน่วย
-  min,                          // จุดสั่งซื้อ (alert threshold)
-  expiry,                       // วันหมดอายุ (YYYY-MM-DD)
+  id, name,
+  qty,      // ปริมาณในคลัง (หักเพิ่มตาม PO / Use Log / Order)
+  unitQty,  // ปริมาณต่อ 1 ถุง/แพ็ค (ไม่กระทบ stock โดยตรง)
+  unit,     // หน่วยย่อย เช่น กรัม, ml
+  cost,     // ราคาต่อ 1 ถุง/แพ็ค (฿)
+  unitCost, // ราคาต่อหน่วยย่อย = cost/unitQty (คำนวณตอน save)
+  min,      // จุดสั่งซื้อ (alert threshold)
+  expiry,   // วันหมดอายุ (YYYY-MM-DD)
   status: 'active'|'damaged'|'retired',
   note
 }
 ```
+
+### การคำนวณ unitCost
+| มีข้อมูล | สูตร |
+|---------|------|
+| `unitQty > 0` | `unitCost = cost / unitQty` (ราคาต่อหน่วยย่อย) |
+| `unitQty = 0` | `unitCost = cost / qty` (fallback) |
+
+> `unitCost` ถูก lock ไว้ตอน save — ไม่เปลี่ยนตาม stock ที่ลดลง
+
+### Stock Movement
+| เหตุการณ์ | ผล |
+|----------|-----|
+| รับ PO (`receivePO`) | `qty += po.qty`, `unitCost = po.unitCost` |
+| บันทึก Use Log | `qty -= qty` |
+| ออเดอร์มี recipe | `qty -= row.qty * orderQty` |
+| `unitQty` | ไม่กระทบ qty เลย |
