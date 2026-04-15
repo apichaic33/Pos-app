@@ -4,15 +4,15 @@
  Secondary: Tablet, Desktop
  */
 :root {
- --bg:#EDE8E3; --bg-dk:#D8D0C8; --bg-lt:#F8F4F0;
- --neu-out: 8px 8px 20px rgba(165,148,132,.72),-5px -5px 14px rgba(255,255,255,.95);
- --neu-out-sm: 4px 4px 12px rgba(165,148,132,.65),-3px -3px 8px rgba(255,255,255,.92);
- --neu-out-xs: 2px 2px 7px rgba(165,148,132,.55),-2px -2px 5px rgba(255,255,255,.88);
- --neu-in: inset 5px 5px 12px rgba(155,138,122,.5),inset -3px -3px 8px rgba(255,255,255,.88);
- --neu-in-sm: inset 3px 3px 8px rgba(155,138,122,.45),inset -2px -2px 5px rgba(255,255,255,.84);
- --neu-in-xs: inset 2px 2px 5px rgba(155,138,122,.4),inset -1px -1px 4px rgba(255,255,255,.8);
- --glass:rgba(248,244,240,.88); --glass-bd:rgba(255,255,255,.72);
- --glass-sh:0 8px 32px rgba(148,132,116,.2);
+ --bg:#F4F4F5; --bg-dk:#E4E4E7; --bg-lt:#FFFFFF;
+ --neu-out: 0 1px 3px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.06);
+ --neu-out-sm: 0 1px 2px rgba(0,0,0,.07),0 0 0 1px rgba(0,0,0,.05);
+ --neu-out-xs: 0 0 0 1px rgba(0,0,0,.07);
+ --neu-in: 0 0 0 1.5px rgba(0,0,0,.13),inset 0 1px 2px rgba(0,0,0,.05);
+ --neu-in-sm: 0 0 0 1.5px rgba(0,0,0,.13),inset 0 1px 2px rgba(0,0,0,.05);
+ --neu-in-xs: 0 0 0 1px rgba(0,0,0,.09);
+ --glass:rgba(255,255,255,.96); --glass-bd:rgba(0,0,0,.07);
+ --glass-sh:0 -1px 0 rgba(0,0,0,.06);
  --cara:#C8826A; --cara-dk:#A56248; --cara-lt:rgba(200,130,106,.16); --cara-glow:rgba(200,130,106,.45);
  --esp:#2A1810; --esp2:#3D2418;
  --green:#2D7A4F; --green-lt:rgba(45,122,79,.13); --green-md:#3D9B60;
@@ -20,8 +20,8 @@
  --blue:#2B5EA7; --blue-lt:rgba(43,94,167,.11); --blue-md:#4A7FCB;
  --gold:#B8860B; --gold-lt:rgba(184,134,11,.11); --gold-md:#D4A843;
  --purple:#5B3FA0; --purple-lt:rgba(91,63,160,.11);
- --t1:#1A0F08; --t2:#4A2E1A; --t3:#7B5A40; --t4:#B09A85; --t5:#D4C4B4;
- --r2:8px; --r3:14px; --r4:18px; --r5:24px; --r6:32px; --rf:999px;
+ --t1:#09090B; --t2:#27272A; --t3:#52525B; --t4:#A1A1AA; --t5:#D4D4D8;
+ --r2:6px; --r3:10px; --r4:14px; --r5:20px; --r6:28px; --rf:999px;
  --fh:'Kanit',sans-serif; --fb:'Sarabun',sans-serif;
  --nav-h:70px; --top-h:54px;
 }
@@ -87,8 +87,8 @@ img{max-width:100%;}
 }
 /* Desktop frame */
 @media(min-width:500px){
- body{background:#B8B0A8;}
- #app{border-radius:0;box-shadow:0 0 60px rgba(100,80,60,.3);}
+ body{background:#18181B;}
+ #app{border-radius:0;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 24px 64px rgba(0,0,0,.5);}
 }
 
 /* TOP BAR */
@@ -994,7 +994,126 @@ textarea.f-input{resize:none;}
 .kitchen-ing-qty{font-size:12px;font-weight:800;font-family:var(--fh);color:var(--esp);min-width:55px;text-align:right;}
 .kitchen-no-recipe{padding:8px 14px 12px;font-size:11px;color:var(--t4);font-style:italic;}
 .kitchen-done-btn{width:100%;padding:13px;background:var(--cara);color:#fff;font-size:14px;font-weight:700;border:none;border-radius:var(--r3);cursor:pointer;font-family:var(--fh);display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 14px var(--cara-glow);}
-.kitchen-done-btn:active{box-shadow:var(--neu-in-sm);opacity:.9;}
+.kitchen-done-btn:active{opacity:.9;}
+
+/* ═══════════════════════════════════════════════════════════
+   MODERN FLAT DESIGN — v6 CLEAN THEME
+   ═══════════════════════════════════════════════════════════ */
+
+/* White elevated surfaces — cards, modals, navigation */
+.prod-card,.card,.promo-card,.stat-card,.stat-card-v2,
+.si-card,.blend-card,.bill-item,.kitchen-order-card,
+.opt-group-card,.pin-box,.recipe-slip-card {
+  background:var(--bg-lt);
+}
+.modal-sheet {
+  background:var(--bg-lt);
+  box-shadow:0 -2px 16px rgba(0,0,0,.09),0 0 0 1px rgba(0,0,0,.06);
+}
+.top-bar { background:var(--bg-lt); box-shadow:none; border-bottom:1px solid var(--bg-dk); }
+.nav-bar { background:var(--bg-lt); border-top-color:var(--bg-dk); box-shadow:none; }
+.drawer { background:var(--bg-lt); }
+.drawer-item-icon { background:var(--bg-dk); box-shadow:none; }
+.drawer-sync-badge { background:var(--bg-dk); box-shadow:none; }
+.order-panel-page { background:var(--bg-lt); }
+.op-footer {
+  background:var(--bg-lt);
+  border-top:1px solid var(--bg-dk);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+}
+.op-summary { background:var(--bg); box-shadow:none; border:1px solid var(--bg-dk); border-radius:var(--r3); }
+.receipt-footer-actions,.recipe-slip-footer { background:var(--bg-lt); border-top-color:var(--bg-dk); }
+.receipt-topbar,.recipe-slip-topbar { background:var(--bg-lt); border-bottom-color:var(--bg-dk); }
+.order-detail-page,.od-topbar { background:var(--bg-lt); border-bottom-color:var(--bg-dk); }
+.recipe-slip-card { box-shadow:0 0 0 1px var(--bg-dk); }
+
+/* Input fields — white with thin border */
+.f-input,.f-select,.op-discount-row input {
+  background:var(--bg-lt);
+  box-shadow:0 0 0 1px var(--bg-dk);
+}
+.f-input:focus,.op-discount-row input:focus {
+  box-shadow:0 0 0 1.5px var(--cara);
+}
+
+/* Icon-style buttons — border instead of shadow */
+.ham-btn { background:var(--bg-lt); box-shadow:none; border:1px solid var(--bg-dk); }
+.ham-btn:active { background:var(--bg-dk); }
+.op-close,.op-clear { background:var(--bg-lt); box-shadow:none; border:1px solid var(--bg-dk); }
+.op-close:active,.op-clear:active { background:var(--bg-dk); box-shadow:none; }
+.modal-close { background:var(--bg-lt); box-shadow:none; border:1px solid var(--bg-dk); }
+.modal-close:active { background:var(--bg-dk); box-shadow:none; }
+.op-handle,.modal-handle { background:var(--bg-dk); box-shadow:none; }
+.date-nav-btn { background:var(--bg-lt); box-shadow:0 0 0 1px var(--bg-dk); }
+.date-nav-btn:active { background:var(--bg-dk); box-shadow:none; }
+
+/* Dark action buttons — flat shadow */
+.btn-confirm { box-shadow:0 2px 8px rgba(0,0,0,.18); }
+.btn-confirm:active { box-shadow:none; transform:scale(.98); }
+.btn-dark { box-shadow:0 2px 8px rgba(0,0,0,.18); }
+.btn-new-order { box-shadow:0 2px 8px rgba(0,0,0,.18); }
+.btn-print { background:var(--bg-lt); box-shadow:0 0 0 1px var(--bg-dk); }
+.btn-print:active { background:var(--bg-dk); box-shadow:none; }
+
+/* Category & option pills */
+.cat-pill { background:var(--bg-lt); box-shadow:0 0 0 1px var(--bg-dk); }
+.option-chip { background:var(--bg-lt); box-shadow:0 0 0 1px var(--bg-dk); }
+.option-chip:active { background:var(--bg-dk); }
+
+/* Stores tabs */
+.s-tab { background:var(--bg-lt); box-shadow:0 0 0 1px var(--bg-dk); }
+.s-tab.active { background:var(--esp); box-shadow:0 2px 8px rgba(0,0,0,.18); }
+
+/* Segmented tab bar */
+.tab-bar { background:var(--bg-dk); box-shadow:none; }
+.tab-btn.active { background:var(--bg-lt); color:var(--cara); box-shadow:0 1px 3px rgba(0,0,0,.09),0 0 0 0.5px rgba(0,0,0,.06); }
+
+/* Numpad */
+.numpad-btn { background:var(--bg-lt); box-shadow:0 0 0 1px var(--bg-dk); }
+.numpad-btn:active { background:var(--bg-dk); box-shadow:none; }
+
+/* PIN dots */
+.pin-dot { background:var(--bg-lt); box-shadow:0 0 0 1.5px var(--bg-dk); }
+
+/* +/- quantity buttons */
+.prod-add,.prod-card .prod-add-fab { background:var(--bg-lt); box-shadow:0 0 0 1px var(--bg-dk); }
+.prod-add:active,.prod-card .prod-add-fab:active { background:var(--bg-dk); box-shadow:none; }
+.op-q-btn { background:var(--bg-lt); box-shadow:0 0 0 1px var(--bg-dk); }
+.op-q-btn:active { background:var(--bg-dk); box-shadow:none; transform:scale(.82); }
+
+/* Toggle switch */
+.toggle-slider { background:var(--bg-dk); box-shadow:none; border:1px solid rgba(0,0,0,.1); }
+.toggle-slider:before { background:var(--bg-lt); box-shadow:0 1px 4px rgba(0,0,0,.15); }
+
+/* Neu-toggle (option rows) */
+.neu-tog-track { box-shadow:none; border:1px solid rgba(0,0,0,.1); }
+.neu-tog-thumb { box-shadow:0 1px 4px rgba(0,0,0,.2); }
+
+/* Report */
+.top-rank { background:var(--bg-lt); box-shadow:0 0 0 1px var(--bg-dk); }
+.donut-svg { filter:drop-shadow(0 2px 8px rgba(0,0,0,.08)); }
+
+/* Audit */
+.audit-icon { box-shadow:0 0 0 1px var(--bg-dk); }
+.audit-severity-high .audit-icon { box-shadow:0 0 0 2px var(--red-md); }
+.audit-severity-med .audit-icon { box-shadow:0 0 0 2px var(--gold-md); }
+.audit-emp { background:var(--bg-dk); }
+
+/* Bill & store cards */
+.si-card-edit { background:var(--bg-lt); box-shadow:0 0 0 1px var(--bg-dk); }
+.si-card-edit:active { background:var(--bg-dk); box-shadow:none; }
+
+/* Blend cards */
+.bc-type-icon { background:var(--bg-dk); box-shadow:none; }
+.pc-icon { background:var(--bg-dk); box-shadow:none; }
+
+/* Color picker */
+.color-dot { box-shadow:0 0 0 1px var(--bg-dk); }
+.color-dot.selected { box-shadow:0 0 0 3px var(--cara); }
+
+/* Recipe result block */
+.recipe-result { background:var(--bg); box-shadow:none; border:1px solid var(--bg-dk); }
+.receipt-paper { box-shadow:0 2px 12px rgba(0,0,0,.07); }
 
 
 @keyframes slideUpIn{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}
