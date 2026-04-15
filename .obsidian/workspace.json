@@ -185,6 +185,7 @@
   },
   "active": "71bc7529589ec620",
   "lastOpenFiles": [
+    "wiki/pages/decisions/index.md",
     "raw/Luckin.md",
     "wiki/CLAUDE.md",
     "raw",
@@ -194,7 +195,6 @@
     "icon-192.png",
     "apple-touch-icon.png",
     "wiki/pages/decisions/004-sha256-pin.md",
-    "wiki/pages/decisions/index.md",
     "wiki/index.md",
     "wiki/pages/decisions/001-cloudflare-worker-proxy.md",
     "wiki/pages/decisions/008-sw-blob-localhost.md",
