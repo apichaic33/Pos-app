@@ -415,6 +415,7 @@ function _goPageDirect(p){
  if(p==='report') renderReport(reportDays||1);
  if(p==='stores') renderStores(storeTab||'ingredient');
  if(p==='sales') renderSalesToday();
+ if(p==='kitchen') renderKitchen();
  if(p==='bills') renderBillManagement('today');
  if(p==='audit') renderAuditLog(auditFilter||'all');
  if(p==='staff-mgmt') renderStaffMgmt();
