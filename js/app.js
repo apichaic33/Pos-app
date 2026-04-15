@@ -1486,8 +1486,8 @@ function openRecipeSlip(order){
    const optTags=[];
    if(item.size)     optTags.push(`<span class="recipe-slip-opt-tag">${item.size}</span>`);
    if(item.ice)      optTags.push(`<span class="recipe-slip-opt-tag">${item.ice}</span>`);
-   optTags.push(`<span class="recipe-slip-opt-tag sweet">หวาน ${item.sweet||DB.optionSets.sweet.default}</span>`);
    optTags.push(`<span class="recipe-slip-opt-tag strength">เข้ม ${item.strength||DB.optionSets.strength.default}</span>`);
+   optTags.push(`<span class="recipe-slip-opt-tag sweet">หวาน ${item.sweet||DB.optionSets.sweet.default}</span>`);
    if(item.note)     optTags.push(`<span class="recipe-slip-opt-tag note">${item.note}</span>`);
 
    // ingredient rows: ขยาย blend → วัตถุดิบจริง
