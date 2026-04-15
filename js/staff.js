@@ -639,7 +639,9 @@ async function submitVoidRequest(orderId){
  toast('ยกเลิกออเดอร์แล้ว');
  renderBillManagement(billFilter);
  updateSalesBadge();
+ updateKitchenBadge();
  if(currentPage==='sales') renderSalesToday();
+ if(currentPage==='kitchen') renderKitchen();
  scheduleSync();
 }
 
@@ -678,7 +680,8 @@ function approveVoid(voidId){
  AUD.voidApprove(order.id, approver);
  toast(`ยกเลิกบิล #${order.id} · อนุมัติโดย ${approver.name}`);
  }
- renderBillManagement(billFilter); scheduleSync(); updateSalesBadge();
+ renderBillManagement(billFilter); scheduleSync(); updateSalesBadge(); updateKitchenBadge();
+ if(currentPage==='kitchen') renderKitchen();
  }
  }
  );
