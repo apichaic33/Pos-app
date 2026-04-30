@@ -4,6 +4,60 @@ Append-only record of all wiki operations.
 
 ---
 
+## [2026-04-29] update | UI Redesign — Modern Flat Design (v6 Clean Theme)
+
+### เปลี่ยนแปลง
+- เลิกใช้ Neumorphic Design → เปลี่ยนเป็น **Flat / Modern** (border + subtle shadow)
+- สีพื้นหลัง: warm beige `#EDE8E3` → neutral light gray `#F4F4F5`
+- Card/Modal/Nav: เปลี่ยนเป็น **white** `#FFFFFF` (`--bg-lt`) แทน `--bg`
+- Shadow variables (`--neu-out`, `--neu-in` ฯลฯ) → `border + drop-shadow` บาง
+- Text colors: warm brown → neutral zinc (`#09090B`, `#27272A`, `#52525B`, `#A1A1AA`)
+- Border-radius ลดลง: `--r4: 18→14px`, `--r3: 14→10px` (ดูสะอาดขึ้น)
+- Desktop frame: `#B8B0A8` → near-black `#18181B` (premium)
+- เพิ่ม override block "MODERN FLAT DESIGN" ท้าย CSS ครอบคลุมทุก component
+
+### Files
+- `css/app.css` — แก้ `:root` + append override block (~120 lines)
+- `sw.js` version `5.1.4 → 5.2.0`
+
+---
+
+## [2026-04-29] update | Bug fix: Orders disappear after app reload
+
+### ปัญหา
+พนักงานกรอกออเดอร์เข้าระบบ แต่หลังจาก reload แอป หรือเปิดแอปใหม่ ออเดอร์วันนั้นหายไปหมด
+
+### Root Cause (3 bugs)
+
+**Bug 1 (หลัก):** `loadFromSheet()` ใน `sync.js` ทับ `DB.orders` ด้วยข้อมูลจาก cloud
+→ ออเดอร์ที่ยังไม่ได้ sync (LS_DIRTY=true) ถูกลบทิ้งทันทีเมื่อแอปโหลดใหม่
+
+**Bug 2:** Order ID ใช้ `'ORD-TMP-'+Date.now()` (string) ไม่ match กับ ID pattern ของ cloud
+→ merge logic เปรียบ ID ผิดพลาด ออเดอร์ที่ sync แล้วกลายเป็น duplicate
+
+**Bug 3 (race condition):** `syncToSheet()` หลัง sync สำเร็จ → GET `getAll` → `DB.orders = fresh.orders`
+→ ถ้ามีออเดอร์ใหม่เพิ่มขณะรอ response จะถูกทับ
+
+### แก้ไข
+
+**sync.js `loadFromSheet()`:**
+- เก็บ `localOrders` ก่อน overwrite
+- หลัง overwrite: filter ออเดอร์ที่ cloud ไม่มี → merge กลับ
+- ถ้ามี unsynced orders → auto-trigger `syncToSheet` ใน 5 วินาที
+
+**sync.js `syncToSheet()`:**
+- หลัง `DB.orders = fresh.orders` → merge กลับ orders ที่เพิ่มขณะรอ response
+
+**order.js `confirmOrder()`:**
+- เปลี่ยน `id: 'ORD-TMP-'+Date.now()` → `id: DB.nextId++` (numeric, stable)
+
+### Files
+- `js/sync.js` — `loadFromSheet` merge logic + `syncToSheet` race fix
+- `js/order.js` — order ID numeric
+- `sw.js` version `5.2.0 → 5.2.1`
+
+---
+
 ## [2026-04-15] update | Feature: Kitchen Display (ครัว) — NAV page 3
 
 ### Feature
