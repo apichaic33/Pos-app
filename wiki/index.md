@@ -32,4 +32,4 @@
 | [TD-008](pages/decisions/008-sw-blob-localhost.md)       | SW Blob บน localhost — HTTPS ใช้ไฟล์จริง       |
 
 ---
-_Last updated: 2026-04-15_
+_Last updated: 2026-04-29_
