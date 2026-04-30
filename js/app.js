@@ -3649,7 +3649,7 @@ function renderBillManagement(filter){
 }
 
 function requestBillVoid(orderId){
- const order = DB.orders.find(o=>o.id===orderId);
+ const order = DB.orders.find(o=>String(o.id)===String(orderId));
  if(!order||order.status==='voided') return;
  openVoidModal(orderId);
 }
