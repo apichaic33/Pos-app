@@ -552,31 +552,9 @@ async function sendRecoveryOTP(){
   btn.innerHTML='<span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px;animation:spin 1s linear infinite">progress_activity</span> กำลังส่ง...';
 
   try {
-    const res = await fetch(SCRIPT_URL, { // POST to worker, action in body
-      method:'POST',
-      mode:'cors',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        action: 'sendOTP',
-        email: emp.email,
-        empName: emp.name,
-        otp: otp,
-        shopName: DB.shopName
-      })
-    });
-    const data = await res.json();
-    if(data.status==='ok'){
-      // ไป Step 2
-      document.getElementById('recoveryStep1').style.display='none';
-      document.getElementById('recoveryStep2').style.display='block';
-      document.getElementById('recoveryOtpSentTo').textContent = 'ส่งไปที่ '+maskEmail(emp.email);
-    } else if(data.status==='rateLimit'){
-      errEl.textContent='⚠️ ส่ง OTP บ่อยเกินไป กรุณารอ 10 นาที แล้วลองใหม่';
-    } else {
-      errEl.textContent='ส่ง Email ไม่สำเร็จ: '+(data.msg||'ลองใหม่');
-    }
+    // Email via GAS ถูกถอดออกแล้ว — แสดง OTP บนหน้าจอให้ Manager เห็นโดยตรง
+    showOtpFallbackAlert(otp, emp);
   } catch(e){
-    // Fallback: GAS ส่ง Email ไม่ได้ — แสดง OTP บนหน้าจอให้ Manager เห็นโดยตรง
     showOtpFallbackAlert(otp, emp);
   } finally {
     btn.disabled=false;

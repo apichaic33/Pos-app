@@ -46,12 +46,10 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  });
  if(hasCache){ showSyncStatus('Cache'); }
 
- // 2. โหลดจาก Sheets (รวม employees) — รอให้เสร็จก่อนแสดง login
- if(isOnline && !SCRIPT_URL.includes('YOUR_SUBDOMAIN') && !SCRIPT_URL.includes('YOUR_APPS_SCRIPT')){
+ // 2. โหลดจาก Firestore — รอให้เสร็จก่อนแสดง login
+ if(isOnline){
    showSyncStatus('กำลังเชื่อมต่อ...');
-   // ─── load data (CORS must be enabled on Worker) ────────────
    try {
-     console.log('[init] Connecting to Worker:', SCRIPT_URL);
      await loadFromSheet();
    } catch(e) {
      console.error('[init] loadFromSheet exception:', e.message, e);
@@ -123,15 +121,16 @@ function dbgLog(msg,color){
 }
 function dbgClearLog(){document.getElementById('dbg-log').innerHTML='<span style="color:#666">// cleared</span>';}
 async function dbgPingWorker(){
- dbgLog('→ Ping Worker: '+SCRIPT_URL,'#88AAFF');
+ dbgLog('→ Ping Firestore...','#88AAFF');
  document.getElementById('dbg-worker').textContent='⏳...';
  try{
-  const t0=Date.now();const res=await fetch(SCRIPT_URL+'?action=ping',{mode:'cors'});const ms=Date.now()-t0;
-  const txt=await res.text();
-  dbgLog(`← HTTP ${res.status} (${ms}ms)`,res.ok?'#88CC88':'#FF8888');
-  dbgLog(`   Body: ${txt}`,'#DDBB88');
-  document.getElementById('dbg-worker').textContent=res.ok?`✅ ${ms}ms`:`❌ ${res.status}`;
-  document.getElementById('dbg-worker').style.color=res.ok?'var(--green)':'var(--red)';
+  const db=_fsDB();if(!db){dbgLog('Firestore ไม่พร้อม','#FF6666');return;}
+  const t0=Date.now();
+  await db.collection('pos_masterdata').doc('config').get();
+  const ms=Date.now()-t0;
+  dbgLog(`← Firestore OK (${ms}ms)`,'#88CC88');
+  document.getElementById('dbg-worker').textContent=`✅ ${ms}ms`;
+  document.getElementById('dbg-worker').style.color='var(--green)';
  }catch(e){
   dbgLog(`✗ ${e.message}`,'#FF6666');
   document.getElementById('dbg-worker').textContent='❌ Error';
@@ -139,18 +138,21 @@ async function dbgPingWorker(){
  }
 }
 async function dbgTestGetAll(){
- dbgLog('→ GET ?action=getAll','#88AAFF');
+ dbgLog('→ loadFromSheet (Firestore)','#88AAFF');
  document.getElementById('dbg-gas').textContent='⏳...';
  try{
-  const t0=Date.now();const res=await fetch(SCRIPT_URL+'?action=getAll',{mode:'cors'});const ms=Date.now()-t0;
-  dbgLog(`← HTTP ${res.status} (${ms}ms)`,res.ok?'#88CC88':'#FF8888');
-  if(!res.ok){document.getElementById('dbg-gas').textContent=`❌ ${res.status}`;document.getElementById('dbg-gas').style.color='var(--red)';return;}
-  const txt=await res.text();dbgLog(`   length: ${txt.length} chars`,'#AAAAAA');
-  try{
-   const data=JSON.parse(txt);
-   if(data.error){dbgLog(`   GAS error: ${data.error}`,'#FF8888');document.getElementById('dbg-gas').textContent='❌ '+data.error;document.getElementById('dbg-gas').style.color='var(--red)';}
-   else{Object.keys(data).forEach(k=>{if(Array.isArray(data[k]))dbgLog(`   ${k}: ${data[k].length}`,'#AADDAA');});document.getElementById('dbg-gas').textContent='✅ OK';document.getElementById('dbg-gas').style.color='var(--green)';dbgLog('✅ getAll สำเร็จ!','#44FF88');}
-  }catch(pe){dbgLog(`   JSON error: ${pe.message}`,'#FF8888');dbgLog(`   First 200: ${txt.substring(0,200)}`,'#FFAA44');}
+  const t0=Date.now();
+  const ok=await loadFromSheet();
+  const ms=Date.now()-t0;
+  if(ok){
+   dbgLog(`✅ loadFromSheet OK (${ms}ms)`,'#44FF88');
+   document.getElementById('dbg-gas').textContent='✅ OK';
+   document.getElementById('dbg-gas').style.color='var(--green)';
+  }else{
+   dbgLog('loadFromSheet returned false','#FF8888');
+   document.getElementById('dbg-gas').textContent='❌ fail';
+   document.getElementById('dbg-gas').style.color='var(--red)';
+  }
  }catch(e){dbgLog(`✗ ${e.message}`,'#FF6666');document.getElementById('dbg-gas').textContent='❌ Error';document.getElementById('dbg-gas').style.color='var(--red)';}
 }
 function dbgShowDB(){
