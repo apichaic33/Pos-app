@@ -695,6 +695,34 @@ function clearOrderConfirm(){
  }
 }
 
+/* ═══════════════════════════════════════════════════════
+   RECIPE ENGINE
+   คำนวณปริมาณวัตถุดิบที่ใช้จริงต่อ 1 ออเดอร์ item
+   รองรับ sweet/strength modifier ต่อวัตถุดิบ
+═══════════════════════════════════════════════════════ */
+function calcRecipeAmounts(menuId, size, sweet, strength, qty=1){
+ const menu=DB.menus.find(m=>m.id===menuId);
+ // ค้นหา recipe: เรียงลำดับ size-specific → linked by recipeId → any menuId match
+ let recipe=DB.recipes.find(r=>r.menuId===menuId&&r.size===size);
+ if(!recipe&&menu?.recipeId) recipe=DB.recipes.find(r=>r.id===menu.recipeId&&(!r.size||r.size===size));
+ if(!recipe&&menu?.recipeId) recipe=DB.recipes.find(r=>r.id===menu.recipeId);
+ if(!recipe) return [];
+ const ings=recipe.ingredients||recipe.ings||[];
+ const mods=recipe.mods||{};
+ return ings.map(row=>{
+  if(!row.ingId||!row.qty) return null;
+  let amount=row.qty;
+  if(mods.sweet&&mods.sweet.ingId===row.ingId) amount*=(mods.sweet[sweet]??1);
+  if(mods.strength&&mods.strength.ingId===row.ingId) amount*=(mods.strength[strength]??1);
+  const ing=DB.ingredients.find(x=>x.id===row.ingId);
+  return{ingId:row.ingId,name:ing?.name||'',qty:Math.round(amount*qty*10)/10,unit:ing?.unit||''};
+ }).filter(Boolean);
+}
+function checkStockAlerts(){
+ const low=DB.ingredients.filter(i=>i.min>0&&(i.qty||0)<=i.min);
+ if(low.length) toast('⚠ วัตถุดิบใกล้หมด: '+low.slice(0,3).map(i=>i.name).join(', ')+(low.length>3?'...':''));
+}
+
 function confirmOrder(){
  if(!orderItems.length){toast('ไม่มีรายการ');return;}
  // ── Final promo calc ──
@@ -730,18 +758,15 @@ function confirmOrder(){
  });
  orderItems.forEach(oi=>{
   const m=DB.menus.find(x=>x.id===oi.menuId);
-  if(m){ m.sold+=oi.qty; }
-  if(m&&m.recipeId){
-   const rec=DB.recipes.find(x=>x.id===m.recipeId);
-   if(rec&&(rec.ingredients||rec.ings)){
-    (rec.ingredients||rec.ings).forEach(row=>{
-     if(!row.ingId||!row.qty)return;
-     const ing=DB.ingredients.find(x=>x.id===row.ingId);
-     if(ing){ ing.qty=Math.max(0,ing.qty-row.qty*oi.qty); }
-    });
-   }
-  }
+  if(m) m.sold+=oi.qty;
+  // Recipe Engine: ตัดสต็อกตาม size + sweet + strength
+  const amounts=calcRecipeAmounts(oi.menuId,oi.size,oi.sweet,oi.strength||'50%',oi.qty);
+  amounts.forEach(({ingId,qty})=>{
+   const ing=DB.ingredients.find(x=>x.id===ingId);
+   if(ing) ing.qty=Math.max(0,(ing.qty||0)-qty);
+  });
  });
+ checkStockAlerts();
  if(typeof currentOperator!=='undefined'&&currentOperator) lastOperator=currentOperator;
  AUD.orderNew(order.id, order.total, order.items.length);
  previewOrder={id:'#'+String(order.id),items:order.items.map(i=>({...i,color:DB.menus.find(m=>m.id===i.menuId)?.color||'#2C1810'})),subTotal,discount,total,ts:new Date(),orderId:order.id};
@@ -1556,9 +1581,9 @@ function renderKitchen(){
   // ── Item cards ─────────────────────────────
   const itemsHtml=order.items.map((item,idx)=>{
    const menu=DB.menus.find(m=>m.id===item.menuId);
-   const recipe=menu&&menu.recipeId?DB.recipes.find(r=>r.id===menu.recipeId):null;
-   const ings=recipe?(recipe.ingredients||recipe.ings||[]):[];
    const hdrColor=menu&&menu.color?menu.color:'var(--esp)';
+   // ใช้ Recipe Engine — แสดง qty จริงตาม size+sweet+strength
+   const amounts=calcRecipeAmounts(item.menuId,item.size,item.sweet,item.strength||'50%',item.qty);
 
    // option tags
    const optTags=[];
@@ -1568,20 +1593,15 @@ function renderKitchen(){
    if(item.strength&&item.strength!=='50%') optTags.push(`<span class="kitchen-opt-tag strong">เข้ม ${item.strength}</span>`);
    if(item.note) optTags.push(`<span class="kitchen-opt-tag note">${item.note}</span>`);
 
-   // ingredient rows
+   // ingredient rows — จาก Recipe Engine (qty รวม qty item แล้ว)
    let ingsHtml='';
-   if(ings.length){
-    ingsHtml='<div class="kitchen-ings">'+ings.map(row=>{
-     const ing=DB.ingredients.find(x=>x.id===row.ingId);
-     const bld=row.ingId&&row.ingId.startsWith('blend_')?DB.blends.find(x=>x.id===row.ingId):null;
-     const ingName=ing?ing.name:(bld?bld.name+' (เบลนด์)':'?');
-     const ingUnit=ing?(ing.unit||''):'';
-     const totalQty=(row.qty||0)*item.qty;
-     const qtyDisp=Number.isInteger(totalQty)?totalQty:totalQty.toFixed(1);
+   if(amounts.length){
+    ingsHtml='<div class="kitchen-ings">'+amounts.map(a=>{
+     const qtyDisp=Number.isInteger(a.qty)?a.qty:a.qty.toFixed(1);
      return `<div class="kitchen-ing-row">
       <div class="kitchen-ing-dot"></div>
-      <div class="kitchen-ing-name">${ingName}</div>
-      <div class="kitchen-ing-qty">${qtyDisp} ${ingUnit}</div>
+      <div class="kitchen-ing-name">${a.name}</div>
+      <div class="kitchen-ing-qty">${qtyDisp} ${a.unit}</div>
      </div>`;
     }).join('')+'</div>';
    } else {

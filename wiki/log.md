@@ -4,6 +4,21 @@ Append-only record of all wiki operations.
 
 ---
 
+## [2026-04-30] create | Recipe Engine + Roadmap Planning
+
+### เปลี่ยนแปลง
+- สร้าง `wiki/pages/features/recipe-engine.md` — schema, engine function, auto-deduct, cost per cup
+- สร้าง `wiki/pages/roadmap.md` — แผนพัฒนา Phase 1–5
+- อัปเดต `wiki/index.md` — เพิ่ม Recipe Engine + Planning section
+- เริ่ม Phase 1: Recipe Engine implementation
+
+### Files
+- `wiki/pages/features/recipe-engine.md` (new)
+- `wiki/pages/roadmap.md` (new)
+- `wiki/index.md` (updated)
+
+---
+
 ## [2026-04-30] update | Firestore Migration — Replace Google Sheets with Firebase Firestore
 
 ### เปลี่ยนแปลง

@@ -101,18 +101,31 @@ function calcRecipeCostPerCup(rec){
  return Math.round(cost*10)/10;
 }
 function renderRecipeTab(){
- // แสดง linked recipes (ผูกกับเมนู)
- const linked = DB.recipes.filter(r=>r.menuId);
- const standalone = DB.recipes.filter(r=>!r.menuId);
- const allRecs = [...linked,...standalone];
- if(!allRecs.length)return`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">description</span></div><div class="e-title">ยังไม่มีสูตร</div><div class="e-sub">เพิ่มสูตรผ่านหน้าจัดการเมนู</div></div>`;
+ const linked=DB.recipes.filter(r=>r.menuId);
+ const standalone=DB.recipes.filter(r=>!r.menuId);
+ const allRecs=[...linked,...standalone];
+ if(!allRecs.length)return`<div class="empty-state"><div class="e-icon"><span class="mi" style="font-size:40px;opacity:.4">menu_book</span></div><div class="e-title">ยังไม่มีสูตร</div><div class="e-sub">กดปุ่ม + เพิ่มสูตรวัตถุดิบต่อแก้ว</div></div>`;
  return`<div style="padding:12px 16px 80px">`+allRecs.map(rec=>{
- const menu=rec.menuId?DB.menus.find(m=>m.id===rec.menuId):null;
- const cost=calcRecipeCostPerCup(rec);
- const recIngs=rec.ingredients||rec.ings||[];
- const margin=menu&&menu.price>0?Math.round((menu.price-cost)/menu.price*100):null;
- const mc=margin!==null?(margin>=50?'var(--green)':margin>=30?'var(--gold)':'var(--red)'):'var(--t4)';
- return`<div class="store-item" style="flex-direction:column;align-items:stretch;gap:6px;padding:10px 14px"> <div style="display:flex;align-items:center;gap:8px"> <div style="width:28px;height:28px;border-radius:6px;background:${menu?menu.color:'var(--bg-dk)'};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0">${menu?menu.icon:''}</div> <div style="flex:1"> <div class="si-name">${rec.name}${menu?` <span style="font-size:9px;color:var(--t4);font-weight:400">→ ${menu.name}</span>`:''}</div> <div class="si-meta">${recIngs.length} วัตถุดิบ · ต้นทุน <strong style="color:var(--cara)">฿${cost}</strong>/แก้ว${margin!==null?` · <span style="color:${mc};font-weight:700">Margin ${margin}%</span>`:''}</div> </div> </div> <div style="display:flex;flex-wrap:wrap;gap:4px;padding-left:36px">${recIngs.map(row=>{const ing=DB.ingredients.find(x=>x.id===row.ingId);return ing?`<span style="font-size:9px;background:var(--bg-dk);border-radius:var(--rf);padding:2px 7px;color:var(--t3)">${ing.name} ${row.qty}${ing.unit}</span>`:''}).join('')}</div> </div>`;
+  const menu=rec.menuId?DB.menus.find(m=>m.id===rec.menuId):null;
+  const cost=calcRecipeCostPerCup(rec);
+  const recIngs=rec.ingredients||rec.ings||[];
+  const price=menu?.price||0;
+  const margin=price>0?Math.round((price-cost)/price*100):null;
+  const mc=margin!==null?(margin>=50?'var(--green)':margin>=30?'var(--gold)':'var(--red)'):'var(--t4)';
+  const sizeTag=rec.size?`<span style="font-size:9px;background:var(--blue-lt);color:var(--blue);padding:1px 6px;border-radius:4px;font-weight:700">${rec.size}</span>`:'';
+  const hasMods=rec.mods&&(rec.mods.sweet||rec.mods.strength);
+  return`<div class="store-item" style="flex-direction:column;align-items:stretch;gap:6px;padding:10px 14px">
+   <div style="display:flex;align-items:center;gap:8px">
+    <div style="width:28px;height:28px;border-radius:6px;background:${menu?menu.color:'var(--bg-dk)'};display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0">${menu?menu.icon:'📋'}</div>
+    <div style="flex:1">
+     <div class="si-name" style="display:flex;align-items:center;gap:5px">${rec.name} ${sizeTag}${hasMods?'<span style="font-size:9px;color:var(--cara)">⚙mod</span>':''}</div>
+     <div class="si-meta">${recIngs.length} วัตถุดิบ · ต้นทุน <strong style="color:var(--cara)">฿${cost}</strong>/แก้ว${margin!==null?` · <span style="color:${mc};font-weight:700">Margin ${margin}%</span>`:''}</div>
+    </div>
+    <button class="btn btn-secondary btn-sm btn-icon" onclick="editRecipe(${rec.id})" style="padding:6px 10px;font-size:11px">แก้ไข</button>
+    <button class="btn btn-danger btn-sm btn-icon" onclick="delRecipe(${rec.id})" style="padding:6px 10px;font-size:11px">ลบ</button>
+   </div>
+   <div style="display:flex;flex-wrap:wrap;gap:4px;padding-left:36px">${recIngs.map(row=>{const ing=DB.ingredients.find(x=>x.id===row.ingId);return ing?`<span style="font-size:9px;background:var(--bg-dk);border-radius:var(--rf);padding:2px 7px;color:var(--t3)">${ing.name} <strong>${row.qty}${ing.unit}</strong></span>`:''}).join('')}</div>
+  </div>`;
  }).join('')+'</div>';
 }
 function renderUseLogTab(){
@@ -186,45 +199,149 @@ function saveStoreItem(){
  renderStores(type);scheduleSync();
 }
 let recipeIngs=[];
-function openRecipeModal(){recipeIngs=[];document.getElementById('recipeName').value='';document.getElementById('recipeCups').value='1';document.getElementById('recipeIngList').innerHTML='';document.getElementById('recipeResult').style.display='none';openModal('modal-recipe');}
+function _recipeIngOptions(){return DB.ingredients.map(i=>`<option value="${i.id}">${i.name} (${i.unit})</option>`).join('');}
+function _fillModSelects(){
+ const opts='<option value="">— ไม่มี —</option>'+_recipeIngOptions();
+ document.getElementById('modSweetIng').innerHTML=opts;
+ document.getElementById('modStrengthIng').innerHTML=opts;
+ document.getElementById('modSweetIng').onchange=()=>document.getElementById('modSweetRow').style.display=document.getElementById('modSweetIng').value?'flex':'none';
+ document.getElementById('modStrengthIng').onchange=()=>document.getElementById('modStrengthRow').style.display=document.getElementById('modStrengthIng').value?'flex':'none';
+}
+function openRecipeModal(prefillMenuId,prefillSize){
+ recipeIngs=[];
+ document.getElementById('recipeEditId').value='';
+ document.getElementById('recipeModalTitle').textContent='สูตรวัตถุดิบ';
+ document.getElementById('recipeName').value='';
+ document.getElementById('recipeCups').value='1';
+ document.getElementById('recipeIngList').innerHTML='';
+ document.getElementById('recipeResult').style.display='none';
+ document.getElementById('recipeModSection').style.display='none';
+ document.getElementById('modSweetRow').style.display='none';
+ document.getElementById('modStrengthRow').style.display='none';
+ // fill menu selector
+ const menuSel=document.getElementById('recipeMenuId');
+ menuSel.innerHTML='<option value="">— ไม่ผูกกับเมนู —</option>'+DB.menus.map(m=>`<option value="${m.id}">${m.icon||''} ${m.name}</option>`).join('');
+ menuSel.value=prefillMenuId||'';
+ _fillModSelects();
+ onRecipeMenuChange(prefillSize);
+ openModal('modal-recipe');
+}
+function onRecipeMenuChange(prefillSize){
+ const menuId=parseInt(document.getElementById('recipeMenuId').value)||0;
+ const sizeGroup=document.getElementById('recipeSizeGroup');
+ const modSection=document.getElementById('recipeModSection');
+ if(menuId){
+  // fill size selector from optionSets
+  const sizes=(DB.optionSets?.sizes?.items||[{label:'200ml'},{label:'1000ml'}]).map(s=>s.label);
+  document.getElementById('recipeSize').innerHTML='<option value="">ทุก size</option>'+sizes.map(s=>`<option value="${s}">${s}</option>`).join('');
+  if(prefillSize) document.getElementById('recipeSize').value=prefillSize;
+  sizeGroup.style.display='block';
+  modSection.style.display='block';
+ } else {
+  sizeGroup.style.display='none';
+  modSection.style.display='none';
+ }
+}
 function addRecipeIng(){
  const idx=recipeIngs.length;recipeIngs.push({ingId:'',qty:0});
  const row=document.createElement('div');row.className='recipe-ing-row';row.id=`ring-${idx}`;
- row.innerHTML=`<div class="f-group" style="flex:2"><label class="f-label">วัตถุดิบ</label><select class="f-select" id="ring-ing-${idx}" onchange="calcRecipe()"><option value="">เลือก...</option>${DB.ingredients.map(i=>`<option value="${i.id}">${i.name} (${i.unit})</option>`).join('')}</select></div><div class="f-group"><label class="f-label">ปริมาณ</label><input class="f-input" id="ring-qty-${idx}" type="number" placeholder="0" oninput="calcRecipe()"></div><button class="btn btn-danger btn-sm btn-icon" onclick="removeRing(${idx})" style="align-self:flex-end"></button>`;
+ row.innerHTML=`<div class="f-group" style="flex:2"><label class="f-label">วัตถุดิบ</label><select class="f-select" id="ring-ing-${idx}" onchange="calcRecipe()"><option value="">เลือก...</option>${_recipeIngOptions()}</select></div><div class="f-group"><label class="f-label">qty/แก้ว</label><input class="f-input" id="ring-qty-${idx}" type="number" step="0.1" placeholder="0" oninput="calcRecipe()"></div><button class="btn btn-danger btn-sm btn-icon" onclick="removeRing(${idx})" style="align-self:flex-end;margin-top:20px">✕</button>`;
  document.getElementById('recipeIngList').appendChild(row);
 }
 function removeRing(idx){document.getElementById(`ring-${idx}`)?.remove();calcRecipe();}
 function calcRecipe(){
  const cups=parseInt(document.getElementById('recipeCups').value)||1;let total=0;const rows=[];
  document.querySelectorAll('[id^="ring-"]').forEach(row=>{
- if(!row.id.match(/^ring-\d+$/)||!row.querySelector)return;
- const idx=row.id.split('-')[1];
- const ingId=parseInt(document.getElementById(`ring-ing-${idx}`)?.value);
- const qty=parseFloat(document.getElementById(`ring-qty-${idx}`)?.value)||0;
- if(!ingId||!qty)return;
- const ing=DB.ingredients.find(i=>i.id===ingId);if(!ing)return;
- const cost=(ing.cost/1000)*qty*cups;total+=cost;
- rows.push({name:ing.name,qty:qty*cups,unit:ing.unit,cost:cost.toFixed(2)});
+  if(!row.id.match(/^ring-\d+$/)||!row.querySelector)return;
+  const idx=row.id.split('-')[1];
+  const ingId=parseInt(document.getElementById(`ring-ing-${idx}`)?.value);
+  const qty=parseFloat(document.getElementById(`ring-qty-${idx}`)?.value)||0;
+  if(!ingId||!qty)return;
+  const ing=DB.ingredients.find(i=>i.id===ingId);if(!ing)return;
+  const unitCost=getIngUnitCost(ing);
+  const cost=unitCost*qty*cups;total+=cost;
+  rows.push({name:ing.name,qty:qty*cups,unit:ing.unit,cost:cost.toFixed(2)});
  });
  if(rows.length){
- document.getElementById('recipeResult').style.display='block';
- document.getElementById('recipeResultRows').innerHTML=rows.map(r=>`<div class="rr-row"><span>${r.name} (${r.qty}${r.unit})</span><span>฿${r.cost}</span></div>`).join('')+`<div class="rr-row"><span>ต้นทุนรวม ${cups} แก้ว</span><span>฿${total.toFixed(2)}</span></div><div class="rr-row"><span>ต้นทุน/แก้ว</span><span>฿${(total/cups).toFixed(2)}</span></div>`;
+  document.getElementById('recipeResult').style.display='block';
+  document.getElementById('recipeResultRows').innerHTML=rows.map(r=>`<div class="rr-row"><span>${r.name} (${r.qty}${r.unit})</span><span>฿${r.cost}</span></div>`).join('')+`<div class="rr-row"><span>ต้นทุนรวม ${cups} แก้ว</span><span>฿${total.toFixed(2)}</span></div><div class="rr-row"><strong>ต้นทุน/แก้ว</strong><strong>฿${(total/cups).toFixed(2)}</strong></div>`;
  }
 }
+function editRecipe(id){
+ const rec=DB.recipes.find(r=>r.id===id);if(!rec)return;
+ openRecipeModal(rec.menuId||null,rec.size||null);
+ document.getElementById('recipeEditId').value=rec.id;
+ document.getElementById('recipeModalTitle').textContent='แก้ไขสูตร';
+ document.getElementById('recipeName').value=rec.name;
+ document.getElementById('recipeCups').value=rec.cups||1;
+ (rec.ingredients||rec.ings||[]).forEach(row=>{
+  const idx=recipeIngs.length;recipeIngs.push({ingId:row.ingId,qty:row.qty});
+  const rowEl=document.createElement('div');rowEl.className='recipe-ing-row';rowEl.id=`ring-${idx}`;
+  rowEl.innerHTML=`<div class="f-group" style="flex:2"><label class="f-label">วัตถุดิบ</label><select class="f-select" id="ring-ing-${idx}" onchange="calcRecipe()"><option value="">เลือก...</option>${_recipeIngOptions()}</select></div><div class="f-group"><label class="f-label">qty/แก้ว</label><input class="f-input" id="ring-qty-${idx}" type="number" step="0.1" placeholder="0" value="${row.qty}" oninput="calcRecipe()"></div><button class="btn btn-danger btn-sm btn-icon" onclick="removeRing(${idx})" style="align-self:flex-end;margin-top:20px">✕</button>`;
+  document.getElementById('recipeIngList').appendChild(rowEl);
+  document.getElementById(`ring-ing-${idx}`).value=row.ingId;
+ });
+ // restore mods
+ const mods=rec.mods||{};
+ if(mods.sweet?.ingId){
+  document.getElementById('modSweetIng').value=mods.sweet.ingId;
+  document.getElementById('modSweetRow').style.display='flex';
+  document.getElementById('modSweet0').value=mods.sweet['0%']??0;
+  document.getElementById('modSweet25').value=mods.sweet['25%']??0.5;
+  document.getElementById('modSweet50').value=mods.sweet['50%']??1;
+  document.getElementById('modSweet75').value=mods.sweet['75%']??1.5;
+  document.getElementById('modSweet100').value=mods.sweet['100%']??2;
+ }
+ if(mods.strength?.ingId){
+  document.getElementById('modStrengthIng').value=mods.strength.ingId;
+  document.getElementById('modStrengthRow').style.display='flex';
+  document.getElementById('modStr25').value=mods.strength['25%']??0.75;
+  document.getElementById('modStr50').value=mods.strength['50%']??1;
+  document.getElementById('modStr75').value=mods.strength['75%']??1.25;
+ }
+ calcRecipe();
+}
+function delRecipe(id){
+ if(!confirm('ลบสูตรนี้?'))return;
+ DB.recipes=DB.recipes.filter(r=>r.id!==id);
+ renderStores('recipe');toast('ลบสูตรแล้ว');scheduleSync();
+}
 function saveRecipe(){
- const name=document.getElementById('recipeName').value.trim();const cups=parseInt(document.getElementById('recipeCups').value)||1;
+ const editId=parseInt(document.getElementById('recipeEditId').value)||null;
+ const name=document.getElementById('recipeName').value.trim();
+ const cups=parseInt(document.getElementById('recipeCups').value)||1;
+ const menuId=parseInt(document.getElementById('recipeMenuId').value)||null;
+ const size=document.getElementById('recipeSize').value||null;
  if(!name){toast('กรุณาใส่ชื่อสูตร');return;}
  const ings=[];
  document.querySelectorAll('[id^="ring-"]').forEach(row=>{
- if(!row.id.match(/^ring-\d+$/))return;
- const idx=row.id.split('-')[1];
- const ingId=parseInt(document.getElementById(`ring-ing-${idx}`)?.value);
- const qty=parseFloat(document.getElementById(`ring-qty-${idx}`)?.value)||0;
- if(ingId&&qty)ings.push({ingId,qty});
+  if(!row.id.match(/^ring-\d+$/))return;
+  const idx=row.id.split('-')[1];
+  const ingId=parseInt(document.getElementById(`ring-ing-${idx}`)?.value);
+  const qty=parseFloat(document.getElementById(`ring-qty-${idx}`)?.value)||0;
+  if(ingId&&qty)ings.push({ingId,qty});
  });
- let totalCost=0;ings.forEach(r=>{const ing=DB.ingredients.find(i=>i.id===r.ingId);if(ing)totalCost+=(ing.cost/1000)*r.qty;});
- DB.recipes.push({id:DB.nextId++,name,cups,ingredients:ings,costPerCup:Math.round(totalCost*100)/100,ts:Date.now()});
- closeModal('modal-recipe');renderStores('recipe');toast('บันทึกสูตรแล้ว');scheduleSync();
+ if(!ings.length){toast('กรุณาเพิ่มวัตถุดิบอย่างน้อย 1 รายการ');return;}
+ // collect mods
+ const mods={};
+ const sweetIngId=parseInt(document.getElementById('modSweetIng').value)||0;
+ if(sweetIngId){
+  mods.sweet={ingId:sweetIngId,'0%':parseFloat(document.getElementById('modSweet0').value)||0,'25%':parseFloat(document.getElementById('modSweet25').value)||0.5,'50%':parseFloat(document.getElementById('modSweet50').value)||1,'75%':parseFloat(document.getElementById('modSweet75').value)||1.5,'100%':parseFloat(document.getElementById('modSweet100').value)||2};
+ }
+ const strIngId=parseInt(document.getElementById('modStrengthIng').value)||0;
+ if(strIngId){
+  mods.strength={ingId:strIngId,'25%':parseFloat(document.getElementById('modStr25').value)||0.75,'50%':parseFloat(document.getElementById('modStr50').value)||1,'75%':parseFloat(document.getElementById('modStr75').value)||1.25};
+ }
+ let totalCost=0;ings.forEach(r=>{const ing=DB.ingredients.find(i=>i.id===r.ingId);if(ing)totalCost+=getIngUnitCost(ing)*r.qty;});
+ const recData={name,cups,menuId,size,ingredients:ings,costPerCup:Math.round(totalCost*100)/100,mods,ts:Date.now()};
+ if(editId){const rec=DB.recipes.find(r=>r.id===editId);if(rec)Object.assign(rec,recData);toast('อัพเดตสูตรแล้ว');}
+ else{DB.recipes.push({...recData,id:DB.nextId++});toast('บันทึกสูตรแล้ว');}
+ // ผูก recipeId กับเมนู (ถ้าไม่มี size = สูตร default)
+ if(menuId&&!size){
+  const menu=DB.menus.find(m=>m.id===menuId);
+  if(menu&&!editId) menu.recipeId=DB.recipes[DB.recipes.length-1].id;
+ }
+ closeModal('modal-recipe');renderStores('recipe');scheduleSync();
 }
 
 /* Use Log */
@@ -669,9 +786,11 @@ function getTodayOrders(){
 function updateSalesBadge(){
  const count=getTodayOrders().filter(o=>o.status!=='voided').length;
  const badge=document.getElementById('navSalesBadge');
- if(!badge)return;
- if(count>0){badge.textContent=count;badge.classList.add('show');}
- else badge.classList.remove('show');
+ if(badge){if(count>0){badge.textContent=count;badge.classList.add('show');}else badge.classList.remove('show');}
+ // Stock alert badge ใน nav stores
+ const lowCount=DB.ingredients.filter(i=>i.min>0&&(i.qty||0)<=i.min).length;
+ const stockBadge=document.getElementById('navStockBadge');
+ if(stockBadge){if(lowCount>0){stockBadge.textContent=lowCount;stockBadge.classList.add('show');}else stockBadge.classList.remove('show');}
 }
 function renderSalesToday(){
  const allOrders=getTodayOrders();

@@ -14,9 +14,15 @@
 | [Order / POS System](pages/features/order.md) | รับออเดอร์, คำนวณโปรโมชั่น, ออกใบเสร็จ, auto-save/print |
 | [Menu Management](pages/features/menu-management.md) | จัดการเมนู, คำนวณต้นทุน/margin, โปรโมชั่น 6 ประเภท |
 | [Inventory & Stores](pages/features/inventory.md) | วัตถุดิบ, สูตรเบลนด์, สูตรเมนู, PO, stock alerts |
+| [Recipe Engine](pages/features/recipe-engine.md) | สูตรวัตถุดิบต่อแก้ว, auto-deduct, cost per cup 🔄 |
 | [Authentication](pages/features/auth.md) | Login PIN, Manager Gate, brute-force protection, OTP recovery |
 | [Staff & Audit Log](pages/features/staff-audit.md) | พนักงาน, audit trail, void บิล |
-| [Sync & API](pages/features/sync-api.md) | Cloudflare Worker, Google Sheets, offline, 5 themes |
+| [Sync & API](pages/features/sync-api.md) | Firebase Firestore, Anonymous Auth, offline persistence |
+
+## Planning
+| Page | Summary |
+|------|---------|
+| [Roadmap](pages/roadmap.md) | แผนพัฒนา Phase 1-5: Recipe → Kitchen → Delivery → Dashboard → Loyalty |
 
 ## Decisions
 | Page                                                     | Summary                                        |
