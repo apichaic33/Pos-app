@@ -229,12 +229,13 @@ async function manualSync(){
  if(!isOnline){toast('ออฟไลน์ ไม่สามารถรีเฟรชได้');return;}
  if(icon) icon.style.animation='spin 0.8s linear infinite';
  if(btn) btn.style.pointerEvents='none';
- const ok = await loadFromSheet(); // ✅ delegate ให้ loadFromSheet ทำทั้งหมด
+ // push dirty local data ขึ้น Firestore ก่อน แล้วค่อย pull
+ await syncToSheet();
+ const ok = await loadFromSheet();
  if(ok){
-   const ing=DB.ingredients.length, pkg=DB.packages.length, eq=DB.equipment.length;
-   toast('รีเฟรชแล้ว ✓  วัตถุดิบ '+ing+' / บรรจุ '+pkg+' / อุปกรณ์ '+eq);
+   toast('sync สำเร็จ ✓');
  } else {
-   toast('รีเฟรชไม่สำเร็จ ลองใหม่อีกครั้ง');
+   toast('sync ไม่สำเร็จ ลองใหม่อีกครั้ง');
  }
  if(icon) icon.style.animation='';
  if(btn) btn.style.pointerEvents='auto';

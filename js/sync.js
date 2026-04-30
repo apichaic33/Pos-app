@@ -437,11 +437,19 @@ async function loadFromSheet(){
   const auditSnap=await db.collection(FS_AUDIT).where('ts','>=',auditSince).orderBy('ts','desc').get();
   DB.auditLog=auditSnap.docs.map(d=>d.data());
   const cloudIds=new Set(DB.orders.map(o=>String(o.id)));
+  // merge 1: new orders ที่ยังไม่อยู่ใน cloud
   const unsynced=localOrders.filter(o=>!cloudIds.has(String(o.id)));
   if(unsynced.length){ DB.orders=[...DB.orders,...unsynced]; }
+  // merge 2: preserve local status changes (void, etc.) ที่ยังไม่ sync ขึ้น cloud
+  localOrders.forEach(lo=>{
+   if(!cloudIds.has(String(lo.id))) return; // handled above
+   const ci=DB.orders.findIndex(co=>String(co.id)===String(lo.id));
+   if(ci>=0 && lo.status!==DB.orders[ci].status) DB.orders[ci]=lo;
+  });
   if(!DB.customOptions) DB.customOptions=[];
   recalcNextId(); saveLocal();
-  if(unsynced.length){clearTimeout(syncTimer);syncTimer=setTimeout(syncToSheet,5000);}
+  const needSync=unsynced.length||localOrders.some(lo=>{ const co=DB.orders.find(c=>String(c.id)===String(lo.id)); return co&&lo.status!==co.status; });
+  if(needSync){clearTimeout(syncTimer);syncTimer=setTimeout(syncToSheet,3000);}
   else localStorage.setItem(LS_DIRTY,'');
   showSyncStatus('✓ '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}));
   startOrdersListener();
