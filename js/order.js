@@ -497,6 +497,21 @@ function calcAutoPromo(){
  const subTotal=orderItems.reduce((s,i)=>s+i.price*i.qty,0);
  const totalQty=orderItems.reduce((s,i)=>s+i.qty,0);
 
+ // helper: กระจาย discount (integer บาท) ให้ items ตามน้ำหนัก
+ // ใช้ Largest Remainder Method — รับประกัน sum(result) === totalDisc เสมอ
+ function distributeDiscount(items, totalDisc, weightFn){
+  if(!items.length || totalDisc<=0) return items.map(()=>0);
+  const weights=items.map(i=>weightFn(i));
+  const wSum=weights.reduce((s,w)=>s+w,0);
+  if(!wSum) return items.map(()=>0);
+  const exact=weights.map(w=>(w/wSum)*totalDisc);
+  const floors=exact.map(v=>Math.floor(v));
+  let rem=totalDisc-floors.reduce((s,v)=>s+v,0);
+  const order=exact.map((v,i)=>({i,frac:v-Math.floor(v)})).sort((a,b)=>b.frac-a.frac);
+  order.forEach(({i})=>{ if(rem-->0) floors[i]+=1; });
+  return floors;
+ }
+
  // helper: ตรวจว่า promo scope ครอบ item นี้หรือเปล่า
  function promoCovers(p, item){
   if(p.scope==='all') return true;
@@ -540,11 +555,12 @@ function calcAutoPromo(){
     const coveredQty=covered.reduce((s,i)=>s+i.qty,0);
     const freeSets=Math.floor(coveredQty/(n+m));
     if(freeSets>0){
-     // กระจายส่วนลดตาม qty สัดส่วน
-     covered.forEach(i=>{
-      const share=Math.round((i.qty/coveredQty)*freeSets*m);
-      const disc=share*i.price;
-      if(disc>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=disc; }
+     // ราคา item ที่ถูกที่สุด freeSets*m ชิ้น = totalDisc
+     const units=covered.flatMap(i=>Array(i.qty).fill(i.price)).sort((a,b)=>a-b);
+     const totalDisc=units.slice(0,freeSets*m).reduce((s,v)=>s+v,0);
+     const shares=distributeDiscount(covered,totalDisc,i=>i.price*i.qty);
+     covered.forEach((i,idx)=>{
+      if(shares[idx]>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=shares[idx]; }
      });
     }
     break;
@@ -574,13 +590,12 @@ function calcAutoPromo(){
    // ─── ซื้อครบ N บาท ลด M% (ยอดรวมทั้งออเดอร์) ─
    case 'min':{
     if(subTotal<p.val) break;
-    const pctDisc=p.val2||0;
-    // กระจายส่วนลดตามสัดส่วนราคาแต่ละ item
-    orderItems.forEach(i=>{
-     if(!promoCovers(p,i)) return;
-     const itemTotal=i.price*i.qty;
-     const share=Math.round(itemTotal*(pctDisc/100));
-     if(share>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=share; }
+    const covMin=orderItems.filter(i=>promoCovers(p,i));
+    const covTotal=covMin.reduce((s,i)=>s+i.price*i.qty,0);
+    const totalDisc=Math.round(covTotal*((p.val2||0)/100));
+    const shares=distributeDiscount(covMin,totalDisc,i=>i.price*i.qty);
+    covMin.forEach((i,idx)=>{
+     if(shares[idx]>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=shares[idx]; }
     });
     break;
    }
@@ -608,15 +623,13 @@ function calcAutoPromo(){
      normalSetTotal+=i.price*take;
      remaining-=take;
     });
-    const totalDisc=Math.max(0,normalSetTotal-bundlePrice*sets);
+    const totalDisc=Math.max(0,Math.round(normalSetTotal-bundlePrice*sets));
     if(totalDisc<=0) break;
-    // กระจายส่วนลดตามสัดส่วนเฉพาะชิ้นที่อยู่ใน set
-    orderItems.forEach(i=>{
-     if(!promoCovers(p,i)) return;
-     const qtyInSet=inSetMap[i.key]||0;
-     if(!qtyInSet) return;
-     const share=Math.round((i.price*qtyInSet/normalSetTotal)*totalDisc);
-     if(share>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=share; }
+    // กระจาย discount ด้วย Largest Remainder — ผลรวมตรง bundlePrice×sets เสมอ
+    const inSetItems=orderItems.filter(i=>promoCovers(p,i)&&(inSetMap[i.key]||0)>0);
+    const shares=distributeDiscount(inSetItems,totalDisc,i=>i.price*(inSetMap[i.key]||0));
+    inSetItems.forEach((i,idx)=>{
+     if(shares[idx]>(i.autoPromoDisc||0)){ i.autoPromoId=p.id; i.autoPromoDisc=shares[idx]; }
     });
     break;
    }
