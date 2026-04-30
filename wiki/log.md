@@ -4,6 +4,27 @@ Append-only record of all wiki operations.
 
 ---
 
+## [2026-04-30] update | Firestore Migration — Replace Google Sheets with Firebase Firestore
+
+### เปลี่ยนแปลง
+- ย้าย backend จาก Google Sheets + Cloudflare Worker → **Firebase Firestore** (compat SDK v9)
+- ใช้ Firebase compat SDK โหลดผ่าน CDN (ไม่ใช้ ES modules เพื่อรักษา `onclick="fn()"` pattern)
+- Collection structure: `pos_masterdata/{key}`, `pos_orders/{id}`, `pos_audit/{id}`, `pos_pendingvoids/{id}`
+- `syncToSheet()` → เขียน master data batch + orders/voids/audit ไปยัง Firestore
+- `loadFromSheet()` → อ่าน master data + orders (60 วัน) + audit (30 วัน) จาก Firestore
+- เพิ่ม `startOrdersListener()` — real-time `onSnapshot` listener อัปเดต kitchen/sales page ทันที
+- `apiFetch`/`apiGet` เหลือ stub (return null) เพื่อไม่ break callers
+- Batch write ทีละ 400 items (Firestore limit 500)
+- Merge pattern คงอยู่: local unsynced orders ถูก merge กลับหลัง load จาก cloud
+
+### Files
+- `js/firebase.js` — Firebase init, `firestoreDB` global, offline persistence
+- `js/sync.js` — แทนที่ GAS functions ด้วย Firestore equivalents + `startOrdersListener`
+- `index.html` — เพิ่ม Firebase CDN scripts + firebase.js ก่อน sync.js
+- `sw.js` — เพิ่ม firebase.js ใน PRECACHE, bump version `5.2.1 → 5.3.0`
+
+---
+
 ## [2026-04-29] update | UI Redesign — Modern Flat Design (v6 Clean Theme)
 
 ### เปลี่ยนแปลง

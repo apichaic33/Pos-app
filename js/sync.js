@@ -1,10 +1,16 @@
-/* 
- GOOGLE SHEET SYNC
+/*
+ FIRESTORE SYNC (v2 — แทนที่ Google Sheets + Cloudflare Worker)
  */
-// ชี้ไปที่ Cloudflare Worker แทน GAS โดยตรง (APP_SECRET ถูกซ่อนอยู่ใน Worker)
-// ⚠️ เปลี่ยน URL นี้หลัง deploy Worker เสร็จ: https://pos-app-proxy.<your-subdomain>.workers.dev
-const SCRIPT_URL='https://pos-app-proxy.laboon-pos-app.workers.dev';
-// APP_SECRET ถูกย้ายไปเก็บใน Cloudflare Worker Environment Variables แล้ว ✅
+// ── Firestore collections ────────────────────────────────────
+const FS_MASTER = 'pos_masterdata';  // master data (menus, employees ฯลฯ)
+const FS_ORDERS = 'pos_orders';      // ออเดอร์ (real-time listener)
+const FS_AUDIT  = 'pos_audit';       // audit log
+const FS_VOIDS  = 'pos_pendingvoids';// void รออนุมัติ
+
+const FS_MASTER_KEYS = ['menus','ingredients','packages','equipment',
+  'recipes','blends','blendBatches','employees','promos','purchaseOrders','customOptions'];
+
+let fsOrdersUnsubscribe = null; // real-time listener cleanup handle
 const LS_KEY='pos_db_v5';const LS_DIRTY='pos_dirty_v5';const LS_LASTSYNC='pos_lastsync_v5';
 const LS_ORDER='pos_order_v5'; // pending order items
 const LS_RECEIPT_SETTINGS='pos_receipt_cfg_v1'; // auto-save / auto-print settings
@@ -382,92 +388,75 @@ function loadLocal(){
   });return true;}
  catch(e){localStorage.removeItem(LS_KEY);localStorage.removeItem(LS_DIRTY);return false;}
 }
-async function apiFetch(body){if(!isOnline)return null;try{const res=await fetch(SCRIPT_URL,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok)throw new Error('HTTP '+res.status);return await res.json();}catch(e){console.error('[apiFetch] error:',e.message,body?.action);return null;}}
-async function apiGet(params={}){if(!isOnline)return null;try{const q=new URLSearchParams(params).toString();const res=await fetch(`${SCRIPT_URL}?${q}`,{mode:'cors'});if(!res.ok)throw new Error('HTTP '+res.status);return await res.json();}catch(e){console.error('[apiGet] error:',e.message,params?.action);return null;}}
+async function apiFetch(body){return null;}
+async function apiGet(params={}){return null;}
 async function syncToSheet(){
- const dirty=localStorage.getItem(LS_DIRTY);if(!dirty||!isOnline)return;
+ const dirty=localStorage.getItem(LS_DIRTY);if(!dirty)return;
+ const db=_fsDB();if(!db){showSyncStatus('Firestore ไม่พร้อม');return;}
  showSyncStatus('กำลัง sync...');
- const result=await apiFetch({action:'syncAll',db:DB});
- if(result&&result.ok){
+ try{
+  const b=db.batch();
+  FS_MASTER_KEYS.forEach(k=>{
+   b.set(db.collection(FS_MASTER).doc(k),{items:DB[k]||[],updatedAt:Date.now()});
+  });
+  b.set(db.collection(FS_MASTER).doc('config'),{shopName:DB.shopName||'',nextId:DB.nextId||1,optionSets:DB.optionSets||{},appConfig:DB.appConfig||{},updatedAt:Date.now()});
+  await b.commit();
+  if((DB.orders||[]).length) await _fsBatchWrite(db,FS_ORDERS,DB.orders,o=>String(o.id));
+  if((DB.pendingVoids||[]).length) await _fsBatchWrite(db,FS_VOIDS,DB.pendingVoids,v=>String(v.id));
+  if((DB.auditLog||[]).length) await _fsBatchWrite(db,FS_AUDIT,DB.auditLog,e=>String(e.id||e.ts));
   localStorage.setItem(LS_DIRTY,'');
   localStorage.setItem(LS_LASTSYNC,new Date().toISOString());
-  showSyncStatus('\u2714 '+new Date().toLocaleTimeString('th-TH'));
-  // อัปเดต id จริงจาก GAS: reload orders หลัง sync
-  const fresh=await apiGet({action:'getAll'});
-  if(fresh&&Array.isArray(fresh.orders)&&fresh.orders.length){
-    // merge กลับออเดอร์ที่เพิ่งเพิ่มระหว่างรอ response
-    const cloudIds=new Set(fresh.orders.map(o=>String(o.id)));
-    const newLocal=(DB.orders||[]).filter(o=>!cloudIds.has(String(o.id)));
-    DB.orders=[...fresh.orders,...newLocal];
-    if(newLocal.length) localStorage.setItem(LS_DIRTY,'true');
-    saveLocal();
-    if(typeof updateSalesBadge==='function') updateSalesBadge();
-    if(typeof renderBillManagement==='function') renderBillManagement(typeof billFilter!=='undefined'?billFilter:'today');
-    if(typeof updateKitchenBadge==='function') updateKitchenBadge();
-  }
-} else showSyncStatus('Sync failed');
+  showSyncStatus('✓ '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}));
+ }catch(e){console.error('[syncToSheet/FS]',e);showSyncStatus('Sync failed');}
 }
 async function loadFromSheet(){
+ const db=_fsDB();
+ if(!db){showSyncStatus('Firestore ไม่พร้อม');return false;}
  showSyncStatus('กำลังโหลด...');
- let result = null;
- try {
-   result = await apiGet({action:'getAll'});
- } catch(e) {
-   console.error('[loadFromSheet] fetch exception:', e);
+ const localOrders=Array.isArray(DB.orders)?[...DB.orders]:[];
+ try{
+  const snaps=await Promise.all([
+   ...FS_MASTER_KEYS.map(k=>db.collection(FS_MASTER).doc(k).get()),
+   db.collection(FS_MASTER).doc('config').get()
+  ]);
+  FS_MASTER_KEYS.forEach((k,i)=>{ if(snaps[i].exists) DB[k]=snaps[i].data().items||DB[k]; });
+  const cfgSnap=snaps[FS_MASTER_KEYS.length];
+  if(cfgSnap.exists){
+   const d=cfgSnap.data();
+   if(d.shopName) DB.shopName=d.shopName;
+   if(d.nextId&&d.nextId>(DB.nextId||0)) DB.nextId=d.nextId;
+   if(d.optionSets) DB.optionSets=d.optionSets;
+   if(d.appConfig) DB.appConfig=d.appConfig;
+  }
+  const since=Date.now()-(60*24*60*60*1000);
+  const ordSnap=await db.collection(FS_ORDERS).where('ts','>=',since).orderBy('ts','asc').get();
+  DB.orders=ordSnap.docs.map(d=>d.data());
+  const voidsSnap=await db.collection(FS_VOIDS).get();
+  DB.pendingVoids=voidsSnap.docs.map(d=>d.data());
+  const auditSince=Date.now()-(30*24*60*60*1000);
+  const auditSnap=await db.collection(FS_AUDIT).where('ts','>=',auditSince).orderBy('ts','desc').get();
+  DB.auditLog=auditSnap.docs.map(d=>d.data());
+  const cloudIds=new Set(DB.orders.map(o=>String(o.id)));
+  const unsynced=localOrders.filter(o=>!cloudIds.has(String(o.id)));
+  if(unsynced.length){ DB.orders=[...DB.orders,...unsynced]; }
+  if(!DB.customOptions) DB.customOptions=[];
+  recalcNextId(); saveLocal();
+  if(unsynced.length){clearTimeout(syncTimer);syncTimer=setTimeout(syncToSheet,5000);}
+  else localStorage.setItem(LS_DIRTY,'');
+  showSyncStatus('✓ '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}));
+  startOrdersListener();
+  renderOrder();
+  if(currentPage==='stores') renderStores(storeTab);
+  else if(currentPage==='manage') renderManage(mgCat);
+  else if(currentPage==='report') renderReport();
+  else if(currentPage==='sales') renderSalesToday();
+  return true;
+ }catch(e){
+  console.error('[loadFromSheet/FS]',e);
+  showSyncStatus('โหลดไม่ได้: '+(e.code||e.message));
+  toast('Firestore: '+e.message);
+  return false;
  }
- console.log('[loadFromSheet] result:', result);
-
- // ─── ตรวจสอบ error detail ───────────────────────────────
- if(!result){
-   showSyncStatus('ไม่มี response (network?)');
-   console.error('[loadFromSheet] result is null — Worker URL หรือ network ผิดพลาด');
-   toast('โหลดไม่ได้ — เปิด DevTools > Console ดู error');
-   return false;
- }
- if(result.error){
-   showSyncStatus('Error: '+result.error);
-   console.error('[loadFromSheet] GAS error:', result.error);
-   if(result.error==='Unauthorized') toast('Token ผิด — ตรวจ Worker secret');
-   else toast('GAS error: '+result.error);
-   return false;
- }
-
- // ─── โหลดสำเร็จ ─────────────────────────────────────────
- // เก็บออเดอร์ local ที่ยังไม่ได้ sync ก่อน overwrite
- const localOrders = Array.isArray(DB.orders) ? [...DB.orders] : [];
-
- Object.keys(result).forEach(k=>{
-  if(!(k in DB)) return;
-  // ไม่ overwrite ด้วย null/undefined จาก GAS
-  if(result[k] === null || result[k] === undefined) return;
-  DB[k]=result[k];
- });
-
- // merge กลับออเดอร์ local ที่ cloud ยังไม่มี (ยังไม่ได้ sync)
- const cloudIds = new Set((DB.orders||[]).map(o=>String(o.id)));
- const unsynced = localOrders.filter(o=>!cloudIds.has(String(o.id)));
- if(unsynced.length){
-  DB.orders = [...(DB.orders||[]), ...unsynced];
-  console.log('[loadFromSheet] merged', unsynced.length, 'unsynced orders back');
- }
-
- if(!DB.customOptions) DB.customOptions=[];
- recalcNextId(); // ✅ sync nextId ให้ใหญ่กว่า ID สูงสุดใน Sheet
- saveLocal();
- if(unsynced.length){
-  // trigger sync อัตโนมัติเพื่อ push ออเดอร์ค้างไปยัง cloud
-  clearTimeout(syncTimer);syncTimer=setTimeout(syncToSheet,5000);
- } else {
-  localStorage.setItem(LS_DIRTY,'');
- }
- showSyncStatus('✓ '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}));
- console.log('[loadFromSheet] ✅ ing:',DB.ingredients.length,'pkg:',DB.packages.length,'emp:',DB.employees.length,'nextId:',DB.nextId);
- renderOrder();
- if(currentPage==='stores') renderStores(storeTab);
- else if(currentPage==='manage') renderManage(mgCat);
- else if(currentPage==='report') renderReport();
- else if(currentPage==='sales') renderSalesToday();
- return true;
 }
 
 /* recalcNextId — ensure nextId > max existing ID across all collections */
@@ -482,20 +471,42 @@ function recalcNextId(){
  DB.nextId=maxId;
 }
 
-/* โหลดข้อมูลพนักงานจาก Google Sheet แยกต่างหาก */
-async function loadEmployeesFromSheet(){
- if(!isOnline) return false;
- showSyncStatus('โหลดข้อมูลพนักงาน...');
- const result = await apiGet({action:'getEmployees'});
- if(result && Array.isArray(result.employees) && result.employees.length>0){
- DB.employees = result.employees;
- saveLocal();
- showSyncStatus(`พนักงาน ${result.employees.length} คน`);
- return true;
+
+/* โหลดข้อมูลพนักงานจาก Firestore */
+async function loadEmployeesFromSheet(){ return loadFromSheet(); }
+
+/* Real-time listener — pos_orders สำหรับวันนี้ */
+function startOrdersListener(){
+ const db=_fsDB();if(!db)return;
+ if(fsOrdersUnsubscribe){ fsOrdersUnsubscribe(); fsOrdersUnsubscribe=null; }
+ const todayStart=new Date();todayStart.setHours(0,0,0,0);
+ fsOrdersUnsubscribe=db.collection(FS_ORDERS)
+  .where('ts','>=',todayStart.getTime())
+  .orderBy('ts','asc')
+  .onSnapshot(snap=>{
+   snap.docChanges().forEach(change=>{
+    const d=change.doc.data();
+    if(change.type==='removed') DB.orders=(DB.orders||[]).filter(o=>String(o.id)!==change.doc.id);
+    else {
+     const idx=(DB.orders||[]).findIndex(o=>String(o.id)===change.doc.id);
+     if(idx>=0) DB.orders[idx]=d; else DB.orders=[...(DB.orders||[]),d];
+    }
+   });
+   saveLocal();
+   if(typeof updateSalesBadge==='function') updateSalesBadge();
+   if(typeof updateKitchenBadge==='function') updateKitchenBadge();
+   if(currentPage==='kitchen') renderKitchen();
+   else if(currentPage==='sales') renderSalesToday();
+  },err=>console.error('[startOrdersListener]',err));
+}
+function _fsDB(){ return window.firestoreDB||null; }
+async function _fsBatchWrite(db,col,items,keyFn){
+ for(let i=0;i<items.length;i+=400){
+  const chunk=items.slice(i,i+400);
+  const b=db.batch();
+  chunk.forEach(item=>b.set(db.collection(col).doc(keyFn(item)),item));
+  await b.commit();
  }
- // fallback: ใช้ข้อมูล mock ที่มีอยู่
- showSyncStatus('ใช้ข้อมูลพนักงาน (local)');
- return false;
 }
 function showSyncStatus(msg){
  const el=document.getElementById('syncStatus');if(el)el.textContent=msg;
