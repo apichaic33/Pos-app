@@ -49,6 +49,7 @@ window.addEventListener('error',e=>{console.error('JS Error:',e.message);});
  // 2. โหลดจาก Firestore — รอให้เสร็จก่อนแสดง login
  if(isOnline){
    showSyncStatus('กำลังเชื่อมต่อ...');
+   await (window.firebaseAuthReady || Promise.resolve());
    try {
      await loadFromSheet();
    } catch(e) {
