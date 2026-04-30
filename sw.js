@@ -8,7 +8,7 @@
  */
 
 // ⚠️ เปลี่ยนตัวเลขนี้ทุกครั้งที่ deploy เวอร์ชันใหม่
-const APP_VERSION = '5.2.0';
+const APP_VERSION = '5.2.1';
 const CACHE_NAME  = `pos-app-${APP_VERSION}`;
 
 const PRECACHE = [
