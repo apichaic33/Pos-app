@@ -690,7 +690,7 @@ function confirmOrder(){
  const discount=orderItems.reduce((s,i)=>s+(i.autoPromoDisc||i.promoDisc||0),0);
  const total=Math.max(0,subTotal-discount);
  const order={
- id:'ORD-TMP-'+Date.now(),
+ id:DB.nextId++,
  empId: currentOperator ? String(currentOperator.id) : '',
  empName: currentOperator ? currentOperator.name : '',
  items:orderItems.map(i=>({
