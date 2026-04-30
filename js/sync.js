@@ -395,10 +395,15 @@ async function syncToSheet(){
   // อัปเดต id จริงจาก GAS: reload orders หลัง sync
   const fresh=await apiGet({action:'getAll'});
   if(fresh&&Array.isArray(fresh.orders)&&fresh.orders.length){
-    DB.orders=fresh.orders;
+    // merge กลับออเดอร์ที่เพิ่งเพิ่มระหว่างรอ response
+    const cloudIds=new Set(fresh.orders.map(o=>String(o.id)));
+    const newLocal=(DB.orders||[]).filter(o=>!cloudIds.has(String(o.id)));
+    DB.orders=[...fresh.orders,...newLocal];
+    if(newLocal.length) localStorage.setItem(LS_DIRTY,'true');
     saveLocal();
     if(typeof updateSalesBadge==='function') updateSalesBadge();
     if(typeof renderBillManagement==='function') renderBillManagement(typeof billFilter!=='undefined'?billFilter:'today');
+    if(typeof updateKitchenBadge==='function') updateKitchenBadge();
   }
 } else showSyncStatus('Sync failed');
 }
@@ -428,15 +433,33 @@ async function loadFromSheet(){
  }
 
  // ─── โหลดสำเร็จ ─────────────────────────────────────────
-  Object.keys(result).forEach(k=>{
+ // เก็บออเดอร์ local ที่ยังไม่ได้ sync ก่อน overwrite
+ const localOrders = Array.isArray(DB.orders) ? [...DB.orders] : [];
+
+ Object.keys(result).forEach(k=>{
   if(!(k in DB)) return;
   // ไม่ overwrite ด้วย null/undefined จาก GAS
   if(result[k] === null || result[k] === undefined) return;
   DB[k]=result[k];
  });
+
+ // merge กลับออเดอร์ local ที่ cloud ยังไม่มี (ยังไม่ได้ sync)
+ const cloudIds = new Set((DB.orders||[]).map(o=>String(o.id)));
+ const unsynced = localOrders.filter(o=>!cloudIds.has(String(o.id)));
+ if(unsynced.length){
+  DB.orders = [...(DB.orders||[]), ...unsynced];
+  console.log('[loadFromSheet] merged', unsynced.length, 'unsynced orders back');
+ }
+
  if(!DB.customOptions) DB.customOptions=[];
  recalcNextId(); // ✅ sync nextId ให้ใหญ่กว่า ID สูงสุดใน Sheet
- saveLocal();localStorage.setItem(LS_DIRTY,'');
+ saveLocal();
+ if(unsynced.length){
+  // trigger sync อัตโนมัติเพื่อ push ออเดอร์ค้างไปยัง cloud
+  clearTimeout(syncTimer);syncTimer=setTimeout(syncToSheet,5000);
+ } else {
+  localStorage.setItem(LS_DIRTY,'');
+ }
  showSyncStatus('✓ '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'}));
  console.log('[loadFromSheet] ✅ ing:',DB.ingredients.length,'pkg:',DB.packages.length,'emp:',DB.employees.length,'nextId:',DB.nextId);
  renderOrder();
